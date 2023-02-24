@@ -5,6 +5,7 @@ public class FadeMethodStateBehavior : IBuildMethodStateBehavior
 {
     private const byte ALPHA_THRESHOLD = 20;
     private const float FADE_SPEED_MULTIPLIER = 2f;
+    private bool isForcedCompletePressed = false;
 
     private readonly DisplayTextArchitect arch;
 
@@ -23,8 +24,9 @@ public class FadeMethodStateBehavior : IBuildMethodStateBehavior
         // called per frame
         while (true)
         {
-            float fadeSpeed = (arch.HurryUp ? arch.AppearCharactersNumPerFrame * 5 : arch.AppearCharactersNumPerFrame) * arch.BaseSpeed * FADE_SPEED_MULTIPLIER;
+            if (isForcedCompletePressed) break;
 
+            float fadeSpeed = (arch.HurryUp ? arch.AppearCharactersNumPerFrame * 5 : arch.AppearCharactersNumPerFrame) * arch.BaseSpeed * FADE_SPEED_MULTIPLIER;
             for (int i = left; i < right; i++)
             {
                 var cInfo = textInfo.characterInfo[i];
@@ -51,6 +53,7 @@ public class FadeMethodStateBehavior : IBuildMethodStateBehavior
 
     public void Prepare()
     {
+        isForcedCompletePressed = false;
         arch.TmProText.text = arch.PrevText;
         arch.TmProText.text += arch.TargetText;
         arch.TmProText.maxVisibleCharacters = int.MaxValue;
@@ -75,7 +78,8 @@ public class FadeMethodStateBehavior : IBuildMethodStateBehavior
 
     public void ForceComplete()
     {
-
+        arch.TmProText.ForceMeshUpdate();
+        isForcedCompletePressed = true;
     }
 
     public BuildMethod GetBuildMethod()

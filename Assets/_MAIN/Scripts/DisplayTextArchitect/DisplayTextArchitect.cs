@@ -90,7 +90,7 @@ public class DisplayTextArchitect
         return buildProcess;
     }
 
-    private void Stop()
+    public void Stop()
     {
         if (!IsBuilding) return;
         TmProText.StopCoroutine(buildProcess); // TMPro で動いている Coroutine を止める
