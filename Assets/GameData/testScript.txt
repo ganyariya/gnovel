@@ -1,0 +1,6 @@
+これはテストスクリプトです。
+
+Assets/GameData 以下に置かれています。
+このパスは UnityFilePathToolBox によって管理されます。
+
+よろしくおねがいします。
