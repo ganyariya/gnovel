@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TextReader
 {
-    public static List<string> ReadTextFile(string filePath, bool includeBlankLine = true)
+    public static List<string> ReadApplicationDataPathTextFile(string filePath, bool includeBlankLine = true)
     {
         if (!filePath.StartsWith('/')) filePath = Path.Combine(UnityRuntimePathToolBox.RootApplicationDataPath, filePath);
 

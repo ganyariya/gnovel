@@ -8,6 +8,7 @@ namespace Testing
     public class TestingTextReader : MonoBehaviour
     {
         public string textFileName = "testScript.txt";
+        // AssetFile は拡張子がいらない
         public string assetFileName = "testResourceScript";
 
         void Start()
@@ -18,7 +19,7 @@ namespace Testing
 
         IEnumerator ReadTextFile()
         {
-            var lines = TextReader.ReadTextFile(textFileName, false);
+            var lines = TextReader.ReadApplicationDataPathTextFile(textFileName, false);
             foreach (string line in lines)
             {
                 Debug.Log(line);
