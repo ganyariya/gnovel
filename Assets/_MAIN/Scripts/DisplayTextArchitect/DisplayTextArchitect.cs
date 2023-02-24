@@ -90,7 +90,7 @@ public class DisplayTextArchitect
         return buildProcess;
     }
 
-    private void Stop()
+    public void Stop()
     {
         if (!IsBuilding) return;
         TmProText.StopCoroutine(buildProcess); // TMPro で動いている Coroutine を止める
@@ -131,11 +131,11 @@ public class DisplayTextArchitect
         switch (CurrentBuildMethod)
         {
             case BuildMethod.instant:
-                buildMethodStateBehavior = new InstantMethodStateBehavior(this);
-                break;
+                buildMethodStateBehavior = new InstantMethodStateBehavior(this); break;
             case BuildMethod.typewriter:
-                buildMethodStateBehavior = new TypeWriterMethodStateBehavior(this);
-                break;
+                buildMethodStateBehavior = new TypeWriterMethodStateBehavior(this); break;
+            case BuildMethod.fade:
+                buildMethodStateBehavior = new FadeMethodStateBehavior(this); break;
         }
     }
 }

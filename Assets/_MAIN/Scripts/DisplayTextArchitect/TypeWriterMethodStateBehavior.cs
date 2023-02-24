@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class TypeWriterMethodStateBehavior : IBuildMethodStateBehavior
 {
+    private const float BASE_CHARACTER_WAIT_TIME = 0.015f;
     private readonly DisplayTextArchitect arch;
 
     public TypeWriterMethodStateBehavior(DisplayTextArchitect displayTextArchitect)
@@ -19,7 +20,7 @@ public class TypeWriterMethodStateBehavior : IBuildMethodStateBehavior
         while (arch.TmProText.maxVisibleCharacters < arch.TmProText.textInfo.characterCount)
         {
             arch.TmProText.maxVisibleCharacters += arch.HurryUp ? arch.AppearCharactersNumPerFrame * 5 : arch.AppearCharactersNumPerFrame;
-            yield return new WaitForSeconds(0.015f / arch.BaseSpeed);
+            yield return new WaitForSeconds(BASE_CHARACTER_WAIT_TIME / arch.BaseSpeed);
         }
     }
 
