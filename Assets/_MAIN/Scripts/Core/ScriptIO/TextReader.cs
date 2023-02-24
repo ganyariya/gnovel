@@ -2,9 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class TextReader
 {
+
+    /// <summary>
+    /// Addressable からテキストを同期的に取得する
+    /// </summary>
+    public static List<string> ReadAddressableTextFileSync(string address, bool includeBlankLine = true)
+    {
+        var handle = Addressables.LoadAssetAsync<TextAsset>(address);
+        var asset = handle.WaitForCompletion();
+        return ReadTextAsset(asset, includeBlankLine);
+    }
+
+    /// <summary>
+    /// Application.dataPath から同期的にテキストを取得する
+    /// </summary>
     public static List<string> ReadApplicationDataPathTextFile(string filePath, bool includeBlankLine = true)
     {
         if (!filePath.StartsWith('/')) filePath = Path.Combine(UnityRuntimePathToolBox.RootApplicationDataPath, filePath);
@@ -27,12 +42,15 @@ public class TextReader
         return lines;
     }
 
-    public static List<string> ReadTextAsset(string assetPath, bool includeBlankLine = true)
+    /// <summary>
+    /// アセット名を指定してResources からアセットを取得する(非推奨)
+    /// </summary>
+    public static List<string> ReadTextAsset(string assetName, bool includeBlankLine = true)
     {
-        var textAsset = Resources.Load<TextAsset>(assetPath);
+        var textAsset = Resources.Load<TextAsset>(assetName);
         if (textAsset == null)
         {
-            Debug.Log($"asset not found: {assetPath}");
+            Debug.Log($"asset not found: {assetName}");
             return null;
         }
 

@@ -11,4 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_MAIN/Scenes/VisualNovel.unity
     guid: 9bee491db63df4e5981dafc82b5535e9
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 7b8552152f40a44d68cb4bc0ef191896,
+      type: 2}
