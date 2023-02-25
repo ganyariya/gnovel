@@ -28,23 +28,65 @@ public class TestScriptParser
     public void TestDialogueParser()
     {
         var testDatas = new List<TestData> {
-            // new(
-            //     "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\", 20)",
-            //     "ganyariya",
-            //     "こんにちは。\"人生\"を過ごしています。",
-            //     "SetCli(\"10\", 20)"
-            // ),
-            // new(
-            //     "ganyariya",
-            //     "ganyariya",
-            //     "",
-            //     ""
-            // ),
+            new(
+                "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\", 20)",
+                "ganyariya",
+                "こんにちは。\"人生\"を過ごしています。",
+                "SetCli(\"10\", 20)"
+            ),
+            new(
+                "ganyariya",
+                "ganyariya",
+                "",
+                ""
+            ),
             new(
                 "SetCli(\"10\", 20)",
                 "",
                 "",
                 "SetCli(\"10\", 20)"
+            ),
+            new(
+                "ganyariya \"youkoso()\" SetCli(\"10\", 20)",
+                "ganyariya",
+                "youkoso()",
+                "SetCli(\"10\", 20)"
+            ),
+            new(
+                "cli()",
+                "",
+                "",
+                "cli()"
+            ),
+            new(
+                "fake cli()",
+                "fake",
+                "",
+                "cli()"
+            ),
+            new(
+                "fake cli()cli()",
+                "fake",
+                "",
+                "cli()cli()"
+            ),
+            new(
+                "fake cli()cli(\"\")",
+                "fake",
+                "",
+                "cli()cli(\"\")"
+            ),
+            new(
+                "fake \"hello\"",
+                "fake",
+                "hello",
+                ""
+            ),
+            new(
+                "fake \"hello()\" cli(\"a\")",
+                "fake",
+                "hello()",
+                "cli(\"a\")"
             ),
         };
 

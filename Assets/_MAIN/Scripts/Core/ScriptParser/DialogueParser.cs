@@ -41,28 +41,44 @@ namespace Core.ScriptParser
             /*
             CommandPatterns があるか調べる
             */
-            Match match = CommandsPattern.Match(rawLine);
-            int commandStart = match.Success ? match.Index : -1;
+            Match rawMatch = CommandsPattern.Match(rawLine);
+            Match rightMatch = CommandsPattern.Match(rawLine.Substring(dialogueEnd + 1));
+            int commandRawStart = rawMatch.Success ? rawMatch.Index : -1;
+            int commandRightStart = rightMatch.Success ? rightMatch.Index : -1;
+            // Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandRawStart} {commandRightStart}");
 
-            Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandStart}");
-
-            // ダイアログ("") がある + コマンドがない
-            // ダイアログ("") がある + コマンドもある
-            if (dialogueStart != -1 && dialogueEnd != -1 && (commandStart == -1 || commandStart > dialogueEnd))
+            // コマンドが確実にある
+            if (commandRightStart != -1)
             {
-                speaker = rawLine.Substring(0, dialogueStart).Trim();
-                dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
-                if (commandStart != -1) commands = rawLine.Substring(commandStart).Trim();
+                // ダイアログ + コマンド
+                if (dialogueEnd != -1)
+                {
+                    speaker = rawLine.Substring(0, dialogueStart).Trim();
+                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
+                    commands = rawLine.Substring(dialogueEnd + 1).Trim();
+                }
+                // speaker? + "のないコマンドのみ
+                else
+                {
+                    speaker = rawLine.Substring(0, commandRightStart).Trim();
+                    commands = rawLine.Substring(commandRightStart).Trim();
+                }
             }
-            // コマンドしかない
-            else if (commandStart != -1 && dialogueStart > commandStart)
+            // speaker? + "のあるコマンドのみ
+            else if (commandRawStart != -1)
             {
-                commands = rawLine;
+                speaker = rawLine.Substring(0, commandRawStart).Trim();
+                commands = rawLine.Substring(commandRawStart).Trim();
             }
-            // Speaker しかない
+            // ダイアログのみ
             else
             {
-                speaker = rawLine;
+                if (dialogueEnd == -1) speaker = rawLine.Trim();
+                else
+                {
+                    speaker = rawLine.Substring(0, dialogueStart).Trim();
+                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
+                }
             }
 
             return (speaker, dialogue, commands);
