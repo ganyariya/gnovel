@@ -35,6 +35,13 @@ public class TestScriptParser
                 "SetCli(\"10\", 20)"
             ),
             new(
+                "ganyariya \"Hello, World!\" playMusic() drawImage(10 40)",
+                "ganyariya",
+                "Hello, World!",
+                "playMusic() drawImage(10 40)"
+            ),
+            new(
+
                 "ganyariya",
                 "ganyariya",
                 "",
@@ -87,6 +94,12 @@ public class TestScriptParser
                 "fake",
                 "hello()",
                 "cli(\"a\")"
+            ),
+            new(
+                "",
+                "",
+                "",
+                ""
             ),
         };
 
