@@ -2463,6 +2463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textFileName: testScript.txt
   assetFileName: testResourceScript
+  addressableName: addressableTestScript.txt
 --- !u!1 &1763823392
 GameObject:
   m_ObjectHideFlags: 0
