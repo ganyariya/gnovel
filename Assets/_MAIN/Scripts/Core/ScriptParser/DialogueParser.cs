@@ -12,6 +12,7 @@ namespace Core.ScriptParser
         public static DialogueLineData Parse(string rawLine)
         {
             var (speaker, dialogue, commands) = SplitRawLine(rawLine);
+            Debug.Log($"{rawLine} {speaker} {dialogue} {commands}");
             return new DialogueLineData(speaker, dialogue, commands);
         }
 
@@ -42,6 +43,8 @@ namespace Core.ScriptParser
             */
             Match match = CommandsPattern.Match(rawLine);
             int commandStart = match.Success ? match.Index : -1;
+
+            Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandStart}");
 
             // ダイアログ("") がある + コマンドがない
             // ダイアログ("") がある + コマンドもある

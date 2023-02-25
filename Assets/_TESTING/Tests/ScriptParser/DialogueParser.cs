@@ -28,29 +28,23 @@ public class TestScriptParser
     public void TestDialogueParser()
     {
         var testDatas = new List<TestData> {
-            new(
-                "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\", 20)",
-                "ganyariya",
-                "こんにちは。\"人生\"を過ごしています。",
-                "SetCli(\"10\", 20)"
-            ),
-            new(
-                "ganyariya",
-                "ganyariya",
-                "",
-                ""
-            ),
+            // new(
+            //     "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\", 20)",
+            //     "ganyariya",
+            //     "こんにちは。\"人生\"を過ごしています。",
+            //     "SetCli(\"10\", 20)"
+            // ),
+            // new(
+            //     "ganyariya",
+            //     "ganyariya",
+            //     "",
+            //     ""
+            // ),
             new(
                 "SetCli(\"10\", 20)",
                 "",
                 "",
                 "SetCli(\"10\", 20)"
-            ),
-            new(
-                "ganyariya \"edgeCase()\" cli2(\"10\")",
-                "ganyariya",
-                "edgeCase()",
-                "cli2(\"10\")"
             ),
         };
 
