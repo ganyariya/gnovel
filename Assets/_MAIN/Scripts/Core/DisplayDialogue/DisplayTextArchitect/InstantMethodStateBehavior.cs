@@ -1,34 +1,37 @@
 using System.Collections;
 
-public class InstantMethodStateBehavior : IBuildMethodStateBehavior
+namespace Core.DisplayDialogue
 {
-    private readonly DisplayTextArchitect arch;
-
-    public InstantMethodStateBehavior(DisplayTextArchitect displayTextArchitect)
+    public class InstantMethodStateBehavior : IBuildMethodStateBehavior
     {
-        arch = displayTextArchitect;
-    }
+        private readonly DisplayTextArchitect arch;
 
-    public IEnumerator Building()
-    {
-        yield return null;
-    }
+        public InstantMethodStateBehavior(DisplayTextArchitect displayTextArchitect)
+        {
+            arch = displayTextArchitect;
+        }
 
-    public void Prepare()
-    {
-        arch.TmProText.color = arch.TmProText.color;
-        arch.TmProText.text = arch.FullTargetText;
-        arch.TmProText.ForceMeshUpdate();
-        arch.TmProText.maxVisibleCharacters = arch.TmProText.textInfo.characterCount;
-    }
+        public IEnumerator Building()
+        {
+            yield return null;
+        }
 
-    public void ForceComplete()
-    {
+        public void Prepare()
+        {
+            arch.TmProText.color = arch.TmProText.color;
+            arch.TmProText.text = arch.FullTargetText;
+            arch.TmProText.ForceMeshUpdate();
+            arch.TmProText.maxVisibleCharacters = arch.TmProText.textInfo.characterCount;
+        }
 
-    }
+        public void ForceComplete()
+        {
 
-    public BuildMethod GetBuildMethod()
-    {
-        return BuildMethod.instant;
+        }
+
+        public BuildMethod GetBuildMethod()
+        {
+            return BuildMethod.instant;
+        }
     }
 }

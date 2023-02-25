@@ -2,30 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// DialogueContainer を管理する シングルトン
-/// dialogueContainer.dialogueText が DisplayTextArchitect に参照される
-/// </summary>
-public class DialogueSystem : MonoBehaviour
+namespace Core.DisplayDialogue
 {
-    public DialogueContainer dialogueContainer = new();
-
-    public static DialogueSystem instance;
-
-    void Awake()
+    /// <summary>
+    /// DialogueContainer を管理する シングルトン
+    /// dialogueContainer.dialogueText が DisplayTextArchitect に参照される
+    /// </summary>
+    public class DialogueSystem : MonoBehaviour
     {
-        // Singleton
-        if (instance == null) instance = this;
-        else DestroyImmediate(gameObject);
-    }
+        public DialogueContainer dialogueContainer = new();
 
-    void Start()
-    {
+        public static DialogueSystem instance;
 
-    }
+        void Awake()
+        {
+            // Singleton
+            if (instance == null) instance = this;
+            else DestroyImmediate(gameObject);
+        }
 
-    void Update()
-    {
+        void Start()
+        {
 
+        }
+
+        void Update()
+        {
+
+        }
     }
 }

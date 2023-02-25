@@ -11,11 +11,14 @@ Application.dataPath
 Unity が各 Platform でデータを保存・取得できるパス
 */
 
-public class UnityRuntimePathToolBox
+namespace Core.ScriptIO
 {
-    /// <summary>
-    /// GameData が置かれる RootFolderPath
-    /// Application.dataPath は unity editor の場合 Assets
-    /// </summary>
-    public static readonly string RootApplicationDataPath = $"{Application.dataPath}/GameData";
+    public class UnityRuntimePathToolBox
+    {
+        /// <summary>
+        /// GameData が置かれる RootFolderPath
+        /// Application.dataPath は unity editor の場合 Assets
+        /// </summary>
+        public static readonly string RootApplicationDataPath = $"{Application.dataPath}/GameData";
+    }
 }

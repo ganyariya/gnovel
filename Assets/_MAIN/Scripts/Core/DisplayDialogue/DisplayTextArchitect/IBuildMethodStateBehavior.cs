@@ -1,11 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-public interface IBuildMethodStateBehavior
+namespace Core.DisplayDialogue
 {
-    public IEnumerator Building();
-    public void Prepare();
-    public void ForceComplete();
-    public BuildMethod GetBuildMethod();
-}
+    public interface IBuildMethodStateBehavior
+    {
+        public IEnumerator Building();
+        public void Prepare();
+        public void ForceComplete();
+        public BuildMethod GetBuildMethod();
+    }
 
+}

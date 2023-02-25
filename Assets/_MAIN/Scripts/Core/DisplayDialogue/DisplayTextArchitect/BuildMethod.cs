@@ -1,4 +1,7 @@
-public enum BuildMethod
+namespace Core.DisplayDialogue
 {
-    instant, typewriter, fade
+    public enum BuildMethod
+    {
+        instant, typewriter, fade
+    }
 }
