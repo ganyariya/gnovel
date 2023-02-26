@@ -107,6 +107,48 @@ public class TestScriptParser
                 "",
                 ""
             ),
+            new(
+                "\"並行してBackend(go/gcp)もがんばるぞ\"",
+                "",
+                "並行してBackend(go/gcp)もがんばるぞ",
+                ""
+            ),
+            new(
+                "speaker \"hello\"",
+                "speaker",
+                "hello",
+                ""
+            ),
+            new(
+                "speaker \"hello()\"",
+                "speaker",
+                "hello()",
+                ""
+            ),
+            new(
+                "speaker \"hello()\" cli()",
+                "speaker",
+                "hello()",
+                "cli()"
+            ),
+            new(
+                "speaker \"hello()\" cli(\"a\")",
+                "speaker",
+                "hello()",
+                "cli(\"a\")"
+            ),
+            new(
+                "speaker cli(\"a\")",
+                "speaker",
+                "",
+                "cli(\"a\")"
+            ),
+            new(
+                "speaker cli(a)",
+                "speaker",
+                "",
+                "cli(a)"
+            ),
         };
 
         foreach (var data in testDatas)

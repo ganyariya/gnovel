@@ -45,7 +45,7 @@ namespace Core.ScriptParser
             Match rightMatch = CommandsPattern.Match(rawLine.Substring(dialogueEnd + 1));
             int commandRawStart = rawMatch.Success ? rawMatch.Index : -1;
             int commandRightStart = rightMatch.Success ? rightMatch.Index : -1;
-            // Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandRawStart} {commandRightStart}");
+            Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandRawStart} {commandRightStart}");
 
             // コマンドが確実にある
             if (commandRightStart != -1)
@@ -57,18 +57,26 @@ namespace Core.ScriptParser
                     dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
                     commands = rawLine.Substring(dialogueEnd + 1).Trim();
                 }
-                // speaker? + "のないコマンドのみ
+                // speakerがあるかも? + "のないコマンドのみ
                 else
                 {
                     speaker = rawLine.Substring(0, commandRightStart).Trim();
                     commands = rawLine.Substring(commandRightStart).Trim();
                 }
             }
-            // speaker? + "のあるコマンドのみ
+            // speakerがあるかも? + ("のあるコマンドのみ or ()を持つダイアログのみ)
             else if (commandRawStart != -1)
             {
-                speaker = rawLine.Substring(0, commandRawStart).Trim();
-                commands = rawLine.Substring(commandRawStart).Trim();
+                if (commandRawStart < dialogueStart)
+                {
+                    speaker = rawLine.Substring(0, commandRawStart).Trim();
+                    commands = rawLine.Substring(commandRawStart).Trim();
+                }
+                else
+                {
+                    speaker = rawLine.Substring(0, dialogueStart).Trim();
+                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
+                }
             }
             // ダイアログのみ
             else
