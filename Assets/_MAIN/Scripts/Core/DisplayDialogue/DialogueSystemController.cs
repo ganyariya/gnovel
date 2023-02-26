@@ -8,11 +8,11 @@ namespace Core.DisplayDialogue
     /// DialogueContainer を管理する シングルトン
     /// dialogueContainer.dialogueText が DisplayTextArchitect に参照される
     /// </summary>
-    public class DialogueSystem : MonoBehaviour
+    public class DialogueSystemController : MonoBehaviour
     {
         public DialogueContainer dialogueContainer = new();
 
-        public static DialogueSystem instance;
+        public static DialogueSystemController instance;
 
         void Awake()
         {

@@ -7,7 +7,7 @@ namespace Testing
 {
     public class TestingTextArchitect : MonoBehaviour
     {
-        DialogueSystem dialogueSystem;
+        DialogueSystemController dialogueSystem;
         DisplayTextArchitect displayTextArchitect;
         public DisplayMethod displayMethod = DisplayMethod.fade;
 
@@ -29,7 +29,7 @@ namespace Testing
 
         void Start()
         {
-            dialogueSystem = DialogueSystem.instance;
+            dialogueSystem = DialogueSystemController.instance;
             displayTextArchitect = new(dialogueSystem.dialogueContainer.dialogueText, null)
             {
                 CurrentDisplayMethod = displayMethod
