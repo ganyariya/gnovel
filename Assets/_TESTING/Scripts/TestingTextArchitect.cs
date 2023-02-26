@@ -9,7 +9,7 @@ namespace Testing
     {
         DialogueSystem dialogueSystem;
         DisplayTextArchitect displayTextArchitect;
-        public BuildMethod buildMethod = BuildMethod.fade;
+        public DisplayMethod displayMethod = DisplayMethod.fade;
 
         readonly string[] lines = new string[] {
              "『ダンガンロンパ 希望の学園と絶望の高校生』はハイスピード推理アクションゲームである。「超高校級」と呼ばれる類稀なる才能を持つ生徒たちが「コロシアイ」生活に巻き込まれ、事件後に開廷される「学級裁判」にて殺人犯を特定する。作品名の通り相手の言葉の矛盾などを「論破」していくことに焦点が当てられており、各登場人物・キャラクターのセリフが重要な意味を持つ。",
@@ -32,15 +32,15 @@ namespace Testing
             dialogueSystem = DialogueSystem.instance;
             displayTextArchitect = new(dialogueSystem.dialogueContainer.dialogueText, null)
             {
-                CurrentBuildMethod = buildMethod
+                CurrentDisplayMethod = displayMethod
             };
         }
 
         void Update()
         {
-            if (buildMethod != displayTextArchitect.CurrentBuildMethod)
+            if (displayMethod != displayTextArchitect.CurrentDisplayMethod)
             {
-                displayTextArchitect.CurrentBuildMethod = buildMethod;
+                displayTextArchitect.CurrentDisplayMethod = displayMethod;
                 displayTextArchitect.Stop();
             }
 
@@ -48,19 +48,19 @@ namespace Testing
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (displayTextArchitect.IsBuilding)
+                if (displayTextArchitect.IsDisplaying)
                 {
                     if (!displayTextArchitect.HurryUp) displayTextArchitect.HurryUp = true;
                     else displayTextArchitect.ForceComplete();
                 }
                 else
                 {
-                    displayTextArchitect.Build(lines[Random.Range(0, lines.Length)]);
+                    displayTextArchitect.Display(lines[Random.Range(0, lines.Length)]);
                 }
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
-                displayTextArchitect.Append(lines[Random.Range(0, lines.Length)]);
+                displayTextArchitect.AppendDisplay(lines[Random.Range(0, lines.Length)]);
             }
         }
     }

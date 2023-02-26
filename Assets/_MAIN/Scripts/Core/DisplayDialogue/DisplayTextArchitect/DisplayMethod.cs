@@ -1,6 +1,6 @@
 namespace Core.DisplayDialogue
 {
-    public enum BuildMethod
+    public enum DisplayMethod
     {
         instant, typewriter, fade
     }

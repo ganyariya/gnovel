@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Core.DisplayDialogue
 {
-    public class FadeMethodStateBehavior : IBuildMethodStateBehavior
+    public class FadeMethodStateBehavior : IDisplayMethodStateBehavior
     {
         private const byte ALPHA_THRESHOLD = 20;
         private const float FADE_SPEED_MULTIPLIER = 2f;
@@ -16,7 +16,7 @@ namespace Core.DisplayDialogue
             arch = displayTextArchitect;
         }
 
-        public IEnumerator Building()
+        public IEnumerator Displaying()
         {
             int left = arch.PrevText.Length;
             int right = left + 1;
@@ -84,9 +84,9 @@ namespace Core.DisplayDialogue
             isForcedCompletePressed = true;
         }
 
-        public BuildMethod GetBuildMethod()
+        public DisplayMethod GetDisplayMethod()
         {
-            return BuildMethod.fade;
+            return DisplayMethod.fade;
         }
     }
 }

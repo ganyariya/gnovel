@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Core.DisplayDialogue
 {
-    public interface IBuildMethodStateBehavior
+    public interface IDisplayMethodStateBehavior
     {
-        public IEnumerator Building();
+        public IEnumerator Displaying();
         public void Prepare();
         public void ForceComplete();
-        public BuildMethod GetBuildMethod();
+        public DisplayMethod GetDisplayMethod();
     }
 
 }

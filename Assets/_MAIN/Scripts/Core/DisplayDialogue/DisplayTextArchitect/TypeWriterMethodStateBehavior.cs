@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Core.DisplayDialogue
 {
-    public class TypeWriterMethodStateBehavior : IBuildMethodStateBehavior
+    public class TypeWriterMethodStateBehavior : IDisplayMethodStateBehavior
     {
         private const float BASE_CHARACTER_WAIT_TIME = 0.015f;
         private readonly DisplayTextArchitect arch;
@@ -14,7 +14,7 @@ namespace Core.DisplayDialogue
             arch = displayTextArchitect;
         }
 
-        public IEnumerator Building()
+        public IEnumerator Displaying()
         {
             while (arch.TmProText.maxVisibleCharacters < arch.TmProText.textInfo.characterCount)
             {
@@ -45,9 +45,9 @@ namespace Core.DisplayDialogue
             arch.TmProText.maxVisibleCharacters = arch.TmProText.textInfo.characterCount;
         }
 
-        public BuildMethod GetBuildMethod()
+        public DisplayMethod GetDisplayMethod()
         {
-            return BuildMethod.typewriter;
+            return DisplayMethod.typewriter;
         }
     }
 

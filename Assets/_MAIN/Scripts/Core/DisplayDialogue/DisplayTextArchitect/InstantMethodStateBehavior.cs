@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace Core.DisplayDialogue
 {
-    public class InstantMethodStateBehavior : IBuildMethodStateBehavior
+    public class InstantMethodStateBehavior : IDisplayMethodStateBehavior
     {
         private readonly DisplayTextArchitect arch;
 
@@ -11,7 +11,7 @@ namespace Core.DisplayDialogue
             arch = displayTextArchitect;
         }
 
-        public IEnumerator Building()
+        public IEnumerator Displaying()
         {
             yield return null;
         }
@@ -29,9 +29,9 @@ namespace Core.DisplayDialogue
 
         }
 
-        public BuildMethod GetBuildMethod()
+        public DisplayMethod GetDisplayMethod()
         {
-            return BuildMethod.instant;
+            return DisplayMethod.instant;
         }
     }
 }

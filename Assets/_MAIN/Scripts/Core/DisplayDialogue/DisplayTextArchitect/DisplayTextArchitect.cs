@@ -34,11 +34,11 @@ namespace Core.DisplayDialogue
         /// </summary>
         public string FullTargetText => PrevText + TargetText;
 
-        private BuildMethod _currentBuildMethod = BuildMethod.typewriter;
-        public BuildMethod CurrentBuildMethod
+        private DisplayMethod _currentDisplayMethod = DisplayMethod.typewriter;
+        public DisplayMethod CurrentDisplayMethod
         {
-            get { return _currentBuildMethod; }
-            set { _currentBuildMethod = value; SetupBuildMethodStateBehavior(); }
+            get { return _currentDisplayMethod; }
+            set { _currentDisplayMethod = value; SetupDisplayMethodStateBehavior(); }
         }
 
         public Color TextColor { get { return TmProText.color; } set { TmProText.color = value; } }
@@ -55,57 +55,57 @@ namespace Core.DisplayDialogue
         /// <summary>
         /// TMProText に実行させているコルーチン処理
         /// </summary>
-        private Coroutine buildProcess = null;
-        public bool IsBuilding => buildProcess != null;
-        public IBuildMethodStateBehavior buildMethodStateBehavior;
+        private Coroutine displayingProcess = null;
+        public bool IsDisplaying => displayingProcess != null;
+        public IDisplayMethodStateBehavior displayMethodStateBehavior;
 
         public DisplayTextArchitect(TextMeshProUGUI tmProUI, TextMeshPro tmProWorld)
         {
             this.tmProUI = tmProUI;
             this.tmProWorld = tmProWorld;
-            SetupBuildMethodStateBehavior();
+            SetupDisplayMethodStateBehavior();
         }
 
         /// <summary>
         /// 前回テキストをすべてクリアして新たな text を TMProText に出力する
         /// </summary>
-        public Coroutine Build(string text)
+        public Coroutine Display(string text)
         {
             PrevText = "";
             TargetText = text;
 
-            Stop(); // TMProText に対して this.Building を非同期で実行させる
-            buildProcess = TmProText.StartCoroutine(Building());
-            return buildProcess;
+            Stop(); // TMProText に対して this.Displaying を非同期で実行させる
+            displayingProcess = TmProText.StartCoroutine(Displaying());
+            return displayingProcess;
         }
 
         /// <summary>
         /// 前回のテキストに対して新たに text を追加する
         /// </summary>
-        public Coroutine Append(string text)
+        public Coroutine AppendDisplay(string text)
         {
             PrevText = TmProText.text;
             TargetText = text;
 
             Stop();
-            buildProcess = TmProText.StartCoroutine(Building());
-            return buildProcess;
+            displayingProcess = TmProText.StartCoroutine(Displaying());
+            return displayingProcess;
         }
 
         public void Stop()
         {
-            if (!IsBuilding) return;
-            TmProText.StopCoroutine(buildProcess); // TMPro で動いている Coroutine を止める
-            buildProcess = null;
+            if (!IsDisplaying) return;
+            TmProText.StopCoroutine(displayingProcess); // TMPro で動いている Coroutine を止める
+            displayingProcess = null;
         }
 
         /// <summary>
-        /// Build/Append で指定された text を mode に従って非同期に表示する (tmPro で実行される)
+        /// Display/Append で指定された text を mode に従って非同期に表示する (tmPro で実行される)
         /// </summary>
-        private IEnumerator Building()
+        private IEnumerator Displaying()
         {
             Prepare();
-            yield return buildMethodStateBehavior.Building();
+            yield return displayMethodStateBehavior.Displaying();
             OnComplete();
         }
 
@@ -114,30 +114,30 @@ namespace Core.DisplayDialogue
         /// </summary>
         private void Prepare()
         {
-            buildMethodStateBehavior.Prepare();
+            displayMethodStateBehavior.Prepare();
         }
 
         private void OnComplete()
         {
-            buildProcess = null;
+            displayingProcess = null;
             HurryUp = false;
         }
 
         public void ForceComplete()
         {
-            buildMethodStateBehavior.ForceComplete();
+            displayMethodStateBehavior.ForceComplete();
         }
 
-        private void SetupBuildMethodStateBehavior()
+        private void SetupDisplayMethodStateBehavior()
         {
-            switch (CurrentBuildMethod)
+            switch (CurrentDisplayMethod)
             {
-                case BuildMethod.instant:
-                    buildMethodStateBehavior = new InstantMethodStateBehavior(this); break;
-                case BuildMethod.typewriter:
-                    buildMethodStateBehavior = new TypeWriterMethodStateBehavior(this); break;
-                case BuildMethod.fade:
-                    buildMethodStateBehavior = new FadeMethodStateBehavior(this); break;
+                case DisplayMethod.instant:
+                    displayMethodStateBehavior = new InstantMethodStateBehavior(this); break;
+                case DisplayMethod.typewriter:
+                    displayMethodStateBehavior = new TypeWriterMethodStateBehavior(this); break;
+                case DisplayMethod.fade:
+                    displayMethodStateBehavior = new FadeMethodStateBehavior(this); break;
             }
         }
     }
