@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Core.DisplayDialogue
 {
     /// <summary>
-    /// 会話を Unity 画面に出力する
+    /// RawTestList をもとに DialogueLineData を生成し 非同期で textArchitect を使って画面に出力する
     /// </summary>
     public class ConversationManager
     {
@@ -19,13 +19,17 @@ namespace Core.DisplayDialogue
 
         public ConversationManager(DialogueSystemController dialogueSystem, DisplayTextArchitect textArchitect)
         {
-            dialogueSystem.UserPromptNextEvent += UserPromptNextEventReceive; // イベントを subscribe する
+            dialogueSystem.UserPromptNextEvent += UserPromptNextEventReceived; // イベントを subscribe する
             this.dialogueSystem = dialogueSystem;
             this.textArchitect = textArchitect;
             this.process = null;
         }
 
-        private void UserPromptNextEventReceive()
+        /// <summary>
+        /// DisplaySystemController からイベントが発火されたときの Subscribe 処理
+        /// 次の処理に進む
+        /// </summary>
+        private void UserPromptNextEventReceived()
         {
             userPromptNext = true;
         }
@@ -60,7 +64,7 @@ namespace Core.DisplayDialogue
         {
             if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speaker);
 
-            // TMProGUI が dialogue の表示を開始する
+            // TMProGUI が dialogue の表示を開始する（非同期で文字が画面に出力され始める）
             textArchitect.Display(lineData.dialogue);
 
             while (textArchitect.IsDisplaying)
