@@ -101,6 +101,12 @@ public class TestScriptParser
                 "",
                 ""
             ),
+            new(
+                "hide",
+                "hide",
+                "",
+                ""
+            ),
         };
 
         foreach (var data in testDatas)

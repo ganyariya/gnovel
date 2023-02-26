@@ -17,9 +17,16 @@ namespace Core.DisplayDialogue
         public DialogueContainer dialogueContainer = new();
         private ConversationManager conversationManager;
         private DisplayTextArchitect displayTextArchitect;
+        [SerializeField] private DisplayMethod displayMethod;
 
         public bool IsRunningConversation => conversationManager.IsRunning;
-        [SerializeField] private DisplayMethod displayMethod;
+
+        /// <summary>
+        /// ユーザからの入力を受け付けたときに発火する Event Sender
+        /// 他 Manager からの Subscribe を受け付けて、 Event を subscriber に対して Send する
+        /// </summary>
+        public event DialogueSystemEvent UserPromptNextEvent;
+        public delegate void DialogueSystemEvent();
 
         private void Awake()
         {
@@ -39,7 +46,11 @@ namespace Core.DisplayDialogue
             displayTextArchitect.CurrentDisplayMethod = displayMethod;
         }
 
-        public void DisplaySpeakerName(string speaker = "") => dialogueContainer.nameContainer.Show(speaker);
+        public void DisplaySpeakerName(string speaker = "")
+        {
+            if (speaker.ToLower() == "hide" || speaker.ToLower() == "narrator") HideSpeakerName();
+            else if (!string.IsNullOrWhiteSpace(speaker)) dialogueContainer.nameContainer.Show(speaker);
+        }
         public void HideSpeakerName() => dialogueContainer.nameContainer.Hide();
 
         /// <summary>
@@ -56,6 +67,14 @@ namespace Core.DisplayDialogue
         public void Say(List<string> conversation)
         {
             conversationManager.StartConversation(conversation);
+        }
+
+        /// <summary>
+        /// キー入力など 次に進める処理が行われたら Subscriber に対して イベントを send する
+        /// </summary>
+        public void OnUserPromptNextEvent()
+        {
+            UserPromptNextEvent?.Invoke();
         }
     }
 }

@@ -15,12 +15,19 @@ namespace Core.DisplayDialogue
         private readonly DialogueSystemController dialogueSystem;
         private readonly DisplayTextArchitect textArchitect;
         private Coroutine process;
+        private bool userPromptNext = false;
 
         public ConversationManager(DialogueSystemController dialogueSystem, DisplayTextArchitect textArchitect)
         {
+            dialogueSystem.UserPromptNextEvent += UserPromptNextEventReceive; // イベントを subscribe する
             this.dialogueSystem = dialogueSystem;
             this.textArchitect = textArchitect;
             this.process = null;
+        }
+
+        private void UserPromptNextEventReceive()
+        {
+            userPromptNext = true;
         }
 
         public void StartConversation(List<string> conversation)
@@ -46,19 +53,28 @@ namespace Core.DisplayDialogue
 
                 if (lineData.HasDialogue) yield return RunningSingleDialogue(lineData);
                 if (lineData.HasCommands) yield return RunningSingleCommands(lineData);
-
-                yield return new WaitForSeconds(1);
             }
         }
 
         private IEnumerator RunningSingleDialogue(DialogueLineData lineData)
         {
             if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speaker);
-            else dialogueSystem.HideSpeakerName();
 
+            // TMProGUI が dialogue の表示を開始する
             textArchitect.Display(lineData.dialogue);
 
-            while (textArchitect.IsDisplaying) yield return null;
+            while (textArchitect.IsDisplaying)
+            {
+                if (userPromptNext)
+                {
+                    if (!textArchitect.HurryUp) textArchitect.HurryUp = true;
+                    else textArchitect.ForceComplete();
+                    userPromptNext = false;
+                }
+                yield return null;
+            }
+
+            yield return WaitForUserAdvance();
         }
 
         private IEnumerator RunningSingleCommands(DialogueLineData lineData)
@@ -67,5 +83,10 @@ namespace Core.DisplayDialogue
             yield return null;
         }
 
+        private IEnumerator WaitForUserAdvance()
+        {
+            while (!userPromptNext) yield return null;
+            userPromptNext = false;
+        }
     }
 }
