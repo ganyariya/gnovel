@@ -53,6 +53,8 @@ namespace Core.DisplayDialogue
             foreach (var rawText in conversation)
             {
                 if (string.IsNullOrWhiteSpace(rawText)) continue;
+
+                // 生 string をパースして DialogueLineData に変換する
                 DialogueLineData lineData = DialogueParser.Parse(rawText);
 
                 if (lineData.HasDialogue) yield return RunningSingleDialogue(lineData);
@@ -60,12 +62,55 @@ namespace Core.DisplayDialogue
             }
         }
 
+        /// <summary>
+        /// ある 1 つの DialogueLineData.dialogueLine をもとに 画面にテキストを出力する
+        /// 内部で dialogueLine.Segments を呼び出す
+        /// </summary>
         private IEnumerator RunningSingleDialogue(DialogueLineData lineData)
         {
             if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speaker);
 
+            foreach (var segment in lineData.dialogueLine.segments)
+            {
+                yield return RunningSingleDialogueSegment(segment);
+            }
+
+            yield return WaitForUserAdvance();
+        }
+
+        private IEnumerator RunningSingleDialogueSegment(DialogueSegment segment)
+        {
+            yield return WaitForDialogueSegmentTriggered(segment);
+            yield return DisplayingSingleDialogueText(segment.dialogue, segment.IsAppendText);
+        }
+
+        private IEnumerator WaitForDialogueSegmentTriggered(DialogueSegment segment)
+        {
+            switch (segment.startSignal)
+            {
+                case StartSignal.C:
+                case StartSignal.A:
+                    yield return WaitForUserAdvance();
+                    break;
+                case StartSignal.WA:
+                case StartSignal.WC:
+                    yield return new WaitForSeconds(segment.signalDelay);
+                    break;
+                default:
+                    break;
+            }
+            yield return null;
+        }
+
+        /// <summary>
+        /// 画面に非同期に 1 行の生stringテキストを表示する
+        /// 表示中に userPrompt されたら加速させる
+        /// </summary>
+        private IEnumerator DisplayingSingleDialogueText(string dialogueText, bool append = true)
+        {
             // TMProGUI が dialogue の表示を開始する（非同期で文字が画面に出力され始める）
-            textArchitect.Display(lineData.dialogue);
+            if (append) textArchitect.AppendDisplay(dialogueText);
+            else textArchitect.Display(dialogueText);
 
             while (textArchitect.IsDisplaying)
             {
@@ -77,8 +122,6 @@ namespace Core.DisplayDialogue
                 }
                 yield return null;
             }
-
-            yield return WaitForUserAdvance();
         }
 
         private IEnumerator RunningSingleCommands(DialogueLineData lineData)

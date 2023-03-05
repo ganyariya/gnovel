@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class TestScriptParser
+public class TestDialogueParser
 {
 
     class TestData
@@ -25,7 +25,7 @@ public class TestScriptParser
     }
 
     [Test]
-    public void TestDialogueParser()
+    public void TestDialogueParse()
     {
         var testDatas = new List<TestData> {
             new(
@@ -155,7 +155,7 @@ public class TestScriptParser
         {
             var lineData = DialogueParser.Parse(data.rawLine);
             Assert.That(lineData.speaker, Is.EqualTo(data.expectedSpeaker));
-            Assert.That(lineData.dialogue, Is.EqualTo(data.expectedDialogue));
+            Assert.That(lineData.originalDialogue, Is.EqualTo(data.expectedDialogue));
             Assert.That(lineData.commands, Is.EqualTo(data.expectedCommands));
         }
 
