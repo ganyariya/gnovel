@@ -9,7 +9,7 @@ namespace Core.DisplayDialogue
     /// </summary>
     public class DialogueSystemController : MonoBehaviour
     {
-        public static DialogueSystemController instance;
+        public static DialogueSystemController instance { get; private set; }
 
         /// <summary>
         /// Unity Inspector から設定され textArchitect に dialogueUGUI を渡す
