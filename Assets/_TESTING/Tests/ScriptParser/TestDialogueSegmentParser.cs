@@ -11,9 +11,9 @@ public class TestDialogueSegmentParser
     class TestData
     {
         public string rawDialogue;
-        public DialogueLine expectedDialogueLine;
+        public DLD_DialogueLine expectedDialogueLine;
 
-        public TestData(string rawDialogue, DialogueLine dialogueLine)
+        public TestData(string rawDialogue, DLD_DialogueLine dialogueLine)
         {
             this.rawDialogue = rawDialogue;
             this.expectedDialogueLine = dialogueLine;
@@ -27,46 +27,46 @@ public class TestDialogueSegmentParser
         {
             new(
                 "hello, world",
-                new(new List<DialogueSegment>{
-                    new DialogueSegment("hello, world", StartSignal.NONE, 0)
+                new(new List<DLD_DialogueSegment>{
+                    new DLD_DialogueSegment("hello, world", StartSignal.NONE, 0)
                 })
             ),
             new(
                 "hello, world{a}Second",
-                new(new List<DialogueSegment>{
-                    new DialogueSegment("hello, world", StartSignal.NONE, 0),
-                    new DialogueSegment("Second", StartSignal.A, 0)
+                new(new List<DLD_DialogueSegment>{
+                    new DLD_DialogueSegment("hello, world", StartSignal.NONE, 0),
+                    new DLD_DialogueSegment("Second", StartSignal.A, 0)
                 })
             ),
             new(
                 "hello, world{a}Second{c}Third",
-                new(new List<DialogueSegment>{
-                    new DialogueSegment("hello, world", StartSignal.NONE, 0),
-                    new DialogueSegment("Second", StartSignal.A, 0),
-                    new DialogueSegment("Third", StartSignal.C, 0)
+                new(new List<DLD_DialogueSegment>{
+                    new DLD_DialogueSegment("hello, world", StartSignal.NONE, 0),
+                    new DLD_DialogueSegment("Second", StartSignal.A, 0),
+                    new DLD_DialogueSegment("Third", StartSignal.C, 0)
                 })
             ),
             new(
                 "hello, world{a}Second{wa 3}Third",
-                new(new List<DialogueSegment>{
-                    new DialogueSegment("hello, world", StartSignal.NONE, 0),
-                    new DialogueSegment("Second", StartSignal.A, 0),
-                    new DialogueSegment("Third", StartSignal.WA, 3)
+                new(new List<DLD_DialogueSegment>{
+                    new DLD_DialogueSegment("hello, world", StartSignal.NONE, 0),
+                    new DLD_DialogueSegment("Second", StartSignal.A, 0),
+                    new DLD_DialogueSegment("Third", StartSignal.WA, 3)
                 })
             ),
             new(
                 "hello, world{a}Second{wc 3.2}Third",
-                new(new List<DialogueSegment>{
-                    new DialogueSegment("hello, world", StartSignal.NONE, 0),
-                    new DialogueSegment("Second", StartSignal.A, 0),
-                    new DialogueSegment("Third", StartSignal.WC, 3.2f)
+                new(new List<DLD_DialogueSegment>{
+                    new DLD_DialogueSegment("hello, world", StartSignal.NONE, 0),
+                    new DLD_DialogueSegment("Second", StartSignal.A, 0),
+                    new DLD_DialogueSegment("Third", StartSignal.WC, 3.2f)
                 })
             ),
         };
 
         foreach (var data in testDatas)
         {
-            var dialogueLine = new DialogueLine(data.rawDialogue);
+            var dialogueLine = new DLD_DialogueLine(data.rawDialogue);
 
             DialogueParserChecker.CheckDialogueLineEquals(
                 dialogueLine, data.expectedDialogueLine
