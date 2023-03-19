@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.ScriptParser;
@@ -68,7 +69,7 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator RunningSingleDialogue(DialogueLineData lineData)
         {
-            if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speaker);
+            if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speaker.DisplayName);
 
             foreach (var segment in lineData.dialogueLine.segments)
             {

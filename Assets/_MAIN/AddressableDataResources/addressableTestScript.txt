@@ -1,4 +1,6 @@
-ganyariya "こんにちは! 私は ganyariya といいます。"
+ganyariya as ??? "こんにちは！{wa 2}"
+
+ganyariya "私は ganyariya といいます。"
 
 "普段はバックエンドの処理を書いたり{wa 2}、競技プログラミングをしたりしています。"
 

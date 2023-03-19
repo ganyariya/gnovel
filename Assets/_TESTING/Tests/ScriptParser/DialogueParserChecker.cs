@@ -21,4 +21,20 @@ public class DialogueParserChecker
         Assert.That(actualSegment.startSignal, Is.EqualTo(expectedSegment.startSignal));
         Assert.That(actualSegment.signalDelay, Is.EqualTo(expectedSegment.signalDelay));
     }
+
+    public static void CheckDLDSpakerEquals(DLD_SpeakerData actualSpeakerData, DLD_SpeakerData expectedSpeakerData)
+    {
+        Assert.That(actualSpeakerData.name, Is.EqualTo(expectedSpeakerData.name));
+        Assert.That(actualSpeakerData.castName, Is.EqualTo(expectedSpeakerData.castName));
+        Assert.That(actualSpeakerData.castPosition.x, Is.EqualTo(expectedSpeakerData.castPosition.x));
+        Assert.That(actualSpeakerData.castPosition.y, Is.EqualTo(expectedSpeakerData.castPosition.y));
+
+        for (int i = 0; i < expectedSpeakerData.CastExpressions.Count; i++)
+        {
+            var a = actualSpeakerData.CastExpressions[i];
+            var e = expectedSpeakerData.CastExpressions[i];
+            Assert.That(a.layer, Is.EqualTo(e.layer));
+            Assert.That(a.expression, Is.EqualTo(e.expression));
+        }
+    }
 }

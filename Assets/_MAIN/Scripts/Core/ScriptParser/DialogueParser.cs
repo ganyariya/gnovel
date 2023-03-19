@@ -45,7 +45,7 @@ namespace Core.ScriptParser
             Match rightMatch = CommandsPattern.Match(rawLine.Substring(dialogueEnd + 1));
             int commandRawStart = rawMatch.Success ? rawMatch.Index : -1;
             int commandRightStart = rightMatch.Success ? rightMatch.Index : -1;
-            Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandRawStart} {commandRightStart}");
+            // Debug.Log($"{rawLine} {dialogueStart} {dialogueEnd} {commandRawStart} {commandRightStart}");
 
             // コマンドが確実にある
             if (commandRightStart != -1)

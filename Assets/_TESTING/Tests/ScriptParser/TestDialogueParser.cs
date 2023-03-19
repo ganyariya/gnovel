@@ -154,7 +154,7 @@ public class TestDialogueParser
         foreach (var data in testDatas)
         {
             var lineData = DialogueParser.Parse(data.rawLine);
-            Assert.That(lineData.speaker, Is.EqualTo(data.expectedSpeaker));
+            Assert.That(lineData.originalSpeaker, Is.EqualTo(data.expectedSpeaker));
             Assert.That(lineData.originalDialogue, Is.EqualTo(data.expectedDialogue));
             Assert.That(lineData.commands, Is.EqualTo(data.expectedCommands));
         }
