@@ -8,16 +8,20 @@ namespace Core.ScriptParser
 {
     public enum StartSignal { NONE, C, A, WA, WC };
 
-    public class DialogueSegment
+    public class DLD_DialogueSegment
     {
+        /// <summary>
+        /// すでに DialogueParser によって スクリプトファイルがパースされており
+        /// Segment としてこのクラスで受け取り、そのまま画面に displayArchitect で出力する
+        /// </summary>
         public string dialogue;
         public StartSignal startSignal;
         public float signalDelay;
 
         public bool IsAppendText => startSignal == StartSignal.A || startSignal == StartSignal.WA;
 
-        public DialogueSegment() { }
-        public DialogueSegment(string dialogue, StartSignal startSignal, float signalDelay)
+        public DLD_DialogueSegment() { }
+        public DLD_DialogueSegment(string dialogue, StartSignal startSignal, float signalDelay)
         {
             this.dialogue = dialogue;
             this.startSignal = startSignal;
@@ -25,31 +29,31 @@ namespace Core.ScriptParser
         }
     }
 
-    public class DialogueLine
+    public class DLD_DialogueLine
     {
-        public List<DialogueSegment> segments;
+        public List<DLD_DialogueSegment> segments;
         private readonly static Regex segmentIdentifierPattern = new Regex(@"\{[ca]\}|\{w[ca]\s+\d*\.?\d*\}");
 
-        public DialogueLine(string rawDialogue)
+        public DLD_DialogueLine(string rawDialogue)
         {
             segments = SplitSegments(rawDialogue);
         }
 
-        public DialogueLine(List<DialogueSegment> segments)
+        public DLD_DialogueLine(List<DLD_DialogueSegment> segments)
         {
             this.segments = segments;
         }
 
         public bool HasDialogue => segments.Count > 0;
 
-        public static List<DialogueSegment> SplitSegments(string rawDialogue)
+        public static List<DLD_DialogueSegment> SplitSegments(string rawDialogue)
         {
-            var segments = new List<DialogueSegment>();
+            var segments = new List<DLD_DialogueSegment>();
             MatchCollection matches = segmentIdentifierPattern.Matches(rawDialogue);
             int lastIndex = 0;
 
             // Find First Segment
-            var segment = new DialogueSegment();
+            var segment = new DLD_DialogueSegment();
             segment.dialogue = matches.Count == 0 ? rawDialogue : rawDialogue.Substring(0, matches[0].Index);
             segment.startSignal = StartSignal.NONE;
             segment.signalDelay = 0;
@@ -61,7 +65,7 @@ namespace Core.ScriptParser
             for (int i = 0; i < matches.Count; i++)
             {
                 var match = matches[i];
-                segment = new DialogueSegment();
+                segment = new DLD_DialogueSegment();
 
                 string signalMatch = match.Value;
                 signalMatch = signalMatch.Substring(1, match.Length - 2);

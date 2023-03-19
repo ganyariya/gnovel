@@ -72,19 +72,19 @@ namespace Core.DisplayDialogue
 
             foreach (var segment in lineData.dialogueLine.segments)
             {
-                yield return RunningSingleDialogueSegment(segment);
+                yield return RunningSingleDLDDialogueSegment(segment);
             }
 
             yield return WaitForUserAdvance();
         }
 
-        private IEnumerator RunningSingleDialogueSegment(DialogueSegment segment)
+        private IEnumerator RunningSingleDLDDialogueSegment(DLD_DialogueSegment segment)
         {
             yield return WaitForDialogueSegmentTriggered(segment);
             yield return DisplayingSingleDialogueText(segment.dialogue, segment.IsAppendText);
         }
 
-        private IEnumerator WaitForDialogueSegmentTriggered(DialogueSegment segment)
+        private IEnumerator WaitForDialogueSegmentTriggered(DLD_DialogueSegment segment)
         {
             switch (segment.startSignal)
             {
