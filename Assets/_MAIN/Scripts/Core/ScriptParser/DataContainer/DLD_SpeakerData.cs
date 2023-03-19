@@ -35,12 +35,12 @@ namespace Core.ScriptParser
 
         public DLD_SpeakerData(string rawSpeaker)
         {
-            Debug.Log("DLD" + rawSpeaker);
             var parsed = ParseSpeakerData(rawSpeaker);
             this.name = parsed.name;
             this.castName = parsed.castName;
             this.castPosition = parsed.castPosition;
             this.CastExpressions = parsed.castExpressions;
+            Debug.Log(@$"DLD_SpeakerData Parsed [original={rawSpeaker}][name={name}][castName={castName}][castPosition={castPosition}][castExpressions={string.Join(',', CastExpressions.Select(x => $"{x.layer}:{x.expression}"))}]");
         }
 
         public DLD_SpeakerData(string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions)
