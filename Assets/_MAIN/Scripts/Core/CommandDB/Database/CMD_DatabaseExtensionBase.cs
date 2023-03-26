@@ -12,5 +12,7 @@ namespace Core.CommandDB
     public abstract class CMD_DatabaseExtensionBase
     {
         public static void Extend(CommandDatabase commandDatabase) { }
+
+        public static string GetCommandName() { return ""; }
     }
 }

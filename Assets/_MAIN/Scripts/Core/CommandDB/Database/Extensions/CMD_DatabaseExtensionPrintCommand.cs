@@ -9,7 +9,12 @@ namespace Core.CommandDB
     {
         new public static void Extend(CommandDatabase commandDatabase)
         {
-            commandDatabase.AddCommand("print", new Action(PrintDefaultMessage));
+            commandDatabase.AddCommand(GetCommandName(), new Action(PrintDefaultMessage));
+        }
+
+        new public static string GetCommandName()
+        {
+            return "print";
         }
 
         private static void PrintDefaultMessage()
