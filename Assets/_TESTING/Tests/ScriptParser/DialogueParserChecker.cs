@@ -37,4 +37,23 @@ public class DialogueParserChecker
             Assert.That(a.expression, Is.EqualTo(e.expression));
         }
     }
+
+    public static void CheckDLDCommandEquals(DLD_CommandData actualCommandData, DLD_CommandData expectedCommandData)
+    {
+        Assert.That(actualCommandData.commands.Count, Is.EqualTo(expectedCommandData.commands.Count));
+
+        for (int i = 0; i < expectedCommandData.commands.Count; i++)
+        {
+            var ac = actualCommandData.commands[i];
+            var ec = expectedCommandData.commands[i];
+
+            Assert.That(ac.name, Is.EqualTo(ec.name));
+            Assert.That(ac.arguments.Length, Is.EqualTo(ec.arguments.Length));
+
+            for (int j = 0; j < ec.arguments.Length; j++)
+            {
+                Assert.That(ac.arguments[j], Is.EqualTo(ec.arguments[j]));
+            }
+        }
+    }
 }
