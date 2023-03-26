@@ -13,11 +13,11 @@ namespace Core.ScriptParser
 
         public DLD_SpeakerData speaker;
         public DLD_DialogueLine dialogueLine;
-        public string commands;
+        public DLD_CommandData commands;
 
         public bool HasSpeaker => speaker.HasSpeaker;
         public bool HasDialogue => dialogueLine.HasDialogue;
-        public bool HasCommands => commands != string.Empty;
+        public bool HasCommands => commands.HasCommands;
 
         public DialogueLineData(string speaker, string dialogue, string commands)
         {
@@ -27,7 +27,7 @@ namespace Core.ScriptParser
 
             this.speaker = new DLD_SpeakerData(speaker);
             this.dialogueLine = new DLD_DialogueLine(dialogue);
-            this.commands = commands;
+            this.commands = new DLD_CommandData(commands);
         }
     }
 }
