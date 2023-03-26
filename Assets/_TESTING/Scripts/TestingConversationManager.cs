@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Core.CommandDB;
 using Core.DisplayDialogue;
 using Core.ScriptIO;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class TestingConversationManager : MonoBehaviour
 
     void Start()
     {
+        CommandManager.instance.ExecuteCommand("print");
         StartConversation();
     }
 
