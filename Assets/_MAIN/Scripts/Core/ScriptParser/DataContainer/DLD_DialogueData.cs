@@ -6,6 +6,11 @@ using UnityEngine;
 
 namespace Core.ScriptParser
 {
+    /// <summary>
+    /// W は WaitSeconds
+    /// A は Append
+    /// C は Clear
+    /// </summary>
     public enum StartSignal { NONE, C, A, WA, WC };
 
     public class DLD_DialogueSegment
@@ -29,17 +34,21 @@ namespace Core.ScriptParser
         }
     }
 
-    public class DLD_DialogueLine
+    /// <summary>
+    /// DialogueLineData の dialogue をさらに segment に分割したもの
+    /// Wait
+    /// </summary>
+    public class DLD_DialogueData
     {
         public List<DLD_DialogueSegment> segments;
         private readonly static Regex segmentIdentifierPattern = new Regex(@"\{[ca]\}|\{w[ca]\s+\d*\.?\d*\}");
 
-        public DLD_DialogueLine(string rawDialogue)
+        public DLD_DialogueData(string rawDialogue)
         {
             segments = SplitSegments(rawDialogue);
         }
 
-        public DLD_DialogueLine(List<DLD_DialogueSegment> segments)
+        public DLD_DialogueData(List<DLD_DialogueSegment> segments)
         {
             this.segments = segments;
         }

@@ -29,6 +29,7 @@ namespace Core.ScriptParser
 
         public DLD_CommandData(string rawCommands)
         {
+            Debug.Log(rawCommands);
             commands = ParseCommands(rawCommands);
         }
 

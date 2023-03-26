@@ -69,9 +69,9 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator RunningSingleDialogue(DialogueLineData lineData)
         {
-            if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speaker.DisplayName);
+            if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speakerData.DisplayName);
 
-            foreach (var segment in lineData.dialogueLine.segments)
+            foreach (var segment in lineData.dialogueData.segments)
             {
                 yield return RunningSingleDLDDialogueSegment(segment);
             }
@@ -127,7 +127,7 @@ namespace Core.DisplayDialogue
 
         private IEnumerator RunningSingleCommands(DialogueLineData lineData)
         {
-            Debug.Log(lineData.commands);
+            Debug.Log(lineData.commandData);
             yield return null;
         }
 

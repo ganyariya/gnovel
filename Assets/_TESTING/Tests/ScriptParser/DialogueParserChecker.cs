@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 
 public class DialogueParserChecker
 {
-    public static void CheckDialogueLineEquals(DLD_DialogueLine actualLine, DLD_DialogueLine expectedLine)
+    public static void CheckDialogueLineEquals(DLD_DialogueData actualLine, DLD_DialogueData expectedLine)
     {
         for (int i = 0; i < actualLine.segments.Count; i++)
         {
@@ -22,7 +22,7 @@ public class DialogueParserChecker
         Assert.That(actualSegment.signalDelay, Is.EqualTo(expectedSegment.signalDelay));
     }
 
-    public static void CheckDLDSpakerEquals(DLD_SpeakerData actualSpeakerData, DLD_SpeakerData expectedSpeakerData)
+    public static void CheckDLDSpeakerEquals(DLD_SpeakerData actualSpeakerData, DLD_SpeakerData expectedSpeakerData)
     {
         Assert.That(actualSpeakerData.name, Is.EqualTo(expectedSpeakerData.name));
         Assert.That(actualSpeakerData.castName, Is.EqualTo(expectedSpeakerData.castName));

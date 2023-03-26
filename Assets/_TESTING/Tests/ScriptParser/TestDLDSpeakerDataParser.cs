@@ -65,7 +65,7 @@ public class TestDLDSpeakerDataParser
         foreach (var data in testDatas)
         {
             var speakerData = new DLD_SpeakerData(data.rawSpeaker);
-            DialogueParserChecker.CheckDLDSpakerEquals(speakerData, data.expectedSpeakerData);
+            DialogueParserChecker.CheckDLDSpeakerEquals(speakerData, data.expectedSpeakerData);
         }
     }
 }

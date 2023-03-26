@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Core.ScriptParser
 {
+    /// <summary>
+    /// Script テキスト 1 行を構文解析して得られたデータ
+    /// </summary>
     public class DialogueLineData
     {
 
@@ -11,13 +14,13 @@ namespace Core.ScriptParser
         public readonly string originalDialogue;
         public readonly string originalCommands;
 
-        public DLD_SpeakerData speaker;
-        public DLD_DialogueLine dialogueLine;
-        public DLD_CommandData commands;
+        public DLD_SpeakerData speakerData;
+        public DLD_DialogueData dialogueData;
+        public DLD_CommandData commandData;
 
-        public bool HasSpeaker => speaker.HasSpeaker;
-        public bool HasDialogue => dialogueLine.HasDialogue;
-        public bool HasCommands => commands.HasCommands;
+        public bool HasSpeaker => speakerData.HasSpeaker;
+        public bool HasDialogue => dialogueData.HasDialogue;
+        public bool HasCommands => commandData.HasCommands;
 
         public DialogueLineData(string speaker, string dialogue, string commands)
         {
@@ -25,9 +28,9 @@ namespace Core.ScriptParser
             this.originalDialogue = dialogue;
             this.originalCommands = commands;
 
-            this.speaker = new DLD_SpeakerData(speaker);
-            this.dialogueLine = new DLD_DialogueLine(dialogue);
-            this.commands = new DLD_CommandData(commands);
+            this.speakerData = new DLD_SpeakerData(speaker);
+            this.dialogueData = new DLD_DialogueData(dialogue);
+            this.commandData = new DLD_CommandData(commands);
         }
     }
 }
