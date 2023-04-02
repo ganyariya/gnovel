@@ -15,6 +15,8 @@ namespace Core.CommandDB
     {
         public static CommandManager instance { get; private set; }
         private CommandDatabase commandDatabase;
+        private static Coroutine commandProcess = null;
+        private static bool IsRunningCommandProcess = commandProcess != null;
 
         void Awake()
         {
@@ -44,11 +46,40 @@ namespace Core.CommandDB
 
         /// <summary>
         /// 外部から Command を呼び出す
+        /// コマンドは Coroutine で実行される
         /// </summary>
-        public void ExecuteCommand(string commandName)
+        public Coroutine ExecuteCommand(string commandName, params string[] args)
         {
             Delegate command = commandDatabase.GetCommand(commandName);
-            command?.DynamicInvoke();
+            if (command == null) return null;
+
+            return StartCommandProcess(command, commandName, args);
+        }
+
+        private Coroutine StartCommandProcess(Delegate command, string commandName, params string[] args)
+        {
+            StopCurrentCommandProcess();
+            commandProcess = StartCoroutine(RunningCommandProcess(command, args));
+            return commandProcess;
+        }
+
+        private void StopCurrentCommandProcess()
+        {
+            if (commandProcess != null) StopCoroutine(commandProcess);
+            commandProcess = null;
+        }
+
+        private IEnumerator RunningCommandProcess(Delegate command, string[] args)
+        {
+            if (command is Action) command.DynamicInvoke();
+            if (command is Action<string>) command.DynamicInvoke(args[0]);
+            if (command is Action<string[]>) command.DynamicInvoke((object)args);
+
+            if (command is Func<IEnumerator>) yield return ((Func<IEnumerator>)command)();
+            if (command is Func<string, IEnumerator>) yield return ((Func<string, IEnumerator>)command)(args[0]);
+            if (command is Func<string[], IEnumerator>) yield return ((Func<string[], IEnumerator>)command)(args);
+
+            commandProcess = null; // Command DONE
         }
     }
 }

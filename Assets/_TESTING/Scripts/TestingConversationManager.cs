@@ -11,8 +11,21 @@ public class TestingConversationManager : MonoBehaviour
 
     void Start()
     {
-        CommandManager.instance.ExecuteCommand("print");
+        StartCoroutine(Running());
         StartConversation();
+    }
+
+    IEnumerator Running()
+    {
+        yield return CommandManager.instance.ExecuteCommand("print");
+        yield return CommandManager.instance.ExecuteCommand("print_mp", "Line1", "Line2");
+
+        yield return CommandManager.instance.ExecuteCommand("print_lambda");
+        yield return CommandManager.instance.ExecuteCommand("print_lambda_mp", "Line1", "Line2");
+
+        yield return CommandManager.instance.ExecuteCommand("print_process");
+        yield return CommandManager.instance.ExecuteCommand("print_process_1p", "4");
+        yield return CommandManager.instance.ExecuteCommand("print_process_mp", "Line1", "Line2");
     }
 
     void StartConversation()
