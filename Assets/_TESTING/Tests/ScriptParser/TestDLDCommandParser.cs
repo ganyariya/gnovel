@@ -31,6 +31,12 @@ public class TestDLDCommand
                 )
             ),
             new(
+                "[wait]setMode(normal)",
+                new(
+                    new List<Command>{ new("setMode", new []{"normal"}, true) }
+                )
+            ),
+            new(
                 "setMode(normal -v 10)",
                 new(
                     new List<Command>{ new("setMode", new []{"normal", "-v", "10"}, false) }
