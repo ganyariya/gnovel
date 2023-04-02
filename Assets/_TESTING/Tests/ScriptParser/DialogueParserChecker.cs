@@ -48,6 +48,7 @@ public class DialogueParserChecker
             var ec = expectedCommandData.commands[i];
 
             Assert.That(ac.name, Is.EqualTo(ec.name));
+            Assert.That(ac.waitForCompletion, Is.EqualTo(ec.waitForCompletion));
             Assert.That(ac.arguments.Length, Is.EqualTo(ec.arguments.Length));
 
             for (int j = 0; j < ec.arguments.Length; j++)

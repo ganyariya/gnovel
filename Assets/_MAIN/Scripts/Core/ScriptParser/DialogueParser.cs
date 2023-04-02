@@ -7,7 +7,7 @@ namespace Core.ScriptParser
 {
     public class DialogueParser
     {
-        private static readonly Regex CommandsPattern = new Regex("\\w+[^\\s]\\(", RegexOptions.Compiled);
+        private static readonly Regex CommandsPattern = new Regex(@"[\w\[\]]+[^\s]\(", RegexOptions.Compiled);
 
         public static DialogueLineData Parse(string rawLine)
         {

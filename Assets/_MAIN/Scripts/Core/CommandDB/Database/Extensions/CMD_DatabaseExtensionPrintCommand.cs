@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Core.CommandDB
@@ -21,6 +22,8 @@ namespace Core.CommandDB
             commandDatabase.AddCommand("print_process", new Func<IEnumerator>(SimpleProcess));
             commandDatabase.AddCommand("print_process_1p", new Func<string, IEnumerator>(SimpleProcessLine));
             commandDatabase.AddCommand("print_process_mp", new Func<string[], IEnumerator>(SimpleProcessLines));
+
+            commandDatabase.AddCommand("move_character", new Func<string, IEnumerator>(MoveCharacter));
         }
 
         new public static string GetCommandName()
@@ -71,6 +74,26 @@ namespace Core.CommandDB
                 Debug.Log($"Process Runnnng... {i}, {string.Join(',', lines)}");
                 yield return new WaitForSeconds(1);
             }
+        }
+
+        private static IEnumerator MoveCharacter(string direction)
+        {
+            bool left = direction.ToLower() == "left";
+
+            Transform characterTransform = GameObject.Find("Image").transform;
+            const float moveSpeed = 15;
+
+            float targetX = left ? -100 : 100;
+            float currentX = characterTransform.position.x;
+
+            while (Mathf.Abs(targetX - currentX) > 0.1)
+            {
+                currentX = Mathf.MoveTowards(currentX, targetX, moveSpeed * Time.deltaTime);
+                characterTransform.position = new Vector3(currentX, characterTransform.position.y, characterTransform.position.z);
+                yield return null;
+            }
+
+            yield return null;
         }
     }
 }

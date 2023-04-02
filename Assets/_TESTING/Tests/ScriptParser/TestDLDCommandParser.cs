@@ -27,33 +27,33 @@ public class TestDLDCommand
             new(
                 "setMode(normal)",
                 new(
-                    new List<Command>{ new("setMode", new []{"normal"}) }
+                    new List<Command>{ new("setMode", new []{"normal"}, false) }
                 )
             ),
             new(
                 "setMode(normal -v 10)",
                 new(
-                    new List<Command>{ new("setMode", new []{"normal", "-v", "10"}) }
+                    new List<Command>{ new("setMode", new []{"normal", "-v", "10"}, false) }
                 )
             ),
             new(
                 "setMode(\"high power\" -v 10)",
                 new(
-                    new List<Command>{ new("setMode", new []{"high power", "-v", "10"}) }
+                    new List<Command>{ new("setMode", new []{"high power", "-v", "10"}, false) }
                 )
             ),
             new(
                 "setCli(Elen 0:Angle1 1:High -s)",
                 new(
-                    new List<Command>{ new("setCli", new []{"Elen", "0:Angle1", "1:High", "-s"}) }
+                    new List<Command>{ new("setCli", new []{"Elen", "0:Angle1", "1:High", "-s"}, false) }
                 )
             ),
             new(
                 "setMode(normal),playMusic(\"Dog Land\" -p 10)",
                 new(
                     new List<Command>{
-                        new("setMode", new []{"normal"}),
-                        new("playMusic", new []{"Dog Land", "-p", "10"}),
+                        new("setMode", new []{"normal"}, false),
+                        new("playMusic", new []{"Dog Land", "-p", "10"}, false),
                     }
                 )
             ),

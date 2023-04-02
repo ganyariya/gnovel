@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.CommandDB;
 using Core.ScriptParser;
 using UnityEngine;
 
@@ -60,6 +61,9 @@ namespace Core.DisplayDialogue
 
                 if (lineData.HasDialogue) yield return RunningSingleDialogue(lineData);
                 if (lineData.HasCommands) yield return RunningSingleCommands(lineData);
+
+                // Dialogue がある場合のみ待つ
+                if (lineData.HasDialogue) yield return WaitForUserAdvance();
             }
         }
 
@@ -76,7 +80,7 @@ namespace Core.DisplayDialogue
                 yield return RunningSingleDLDDialogueSegment(segment);
             }
 
-            yield return WaitForUserAdvance();
+            // yield return WaitForUserAdvance();
         }
 
         private IEnumerator RunningSingleDLDDialogueSegment(DLD_DialogueSegment segment)
@@ -127,7 +131,14 @@ namespace Core.DisplayDialogue
 
         private IEnumerator RunningSingleCommands(DialogueLineData lineData)
         {
-            Debug.Log(lineData.commandData);
+            Debug.Log("RuninngSingleCommands: " + lineData.commandData);
+
+            List<Command> commands = lineData.commandData.commands;
+            foreach (var command in commands)
+            {
+                if (command.waitForCompletion) yield return CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                else CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+            }
             yield return null;
         }
 

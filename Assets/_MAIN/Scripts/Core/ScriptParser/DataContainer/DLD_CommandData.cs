@@ -10,11 +10,13 @@ namespace Core.ScriptParser
     {
         public string name;
         public string[] arguments;
+        public bool waitForCompletion;
 
-        public Command(string name, string[] arguments)
+        public Command(string name, string[] arguments, bool waitForCompletion)
         {
             this.name = name;
             this.arguments = arguments;
+            this.waitForCompletion = waitForCompletion;
         }
     }
 
@@ -24,6 +26,7 @@ namespace Core.ScriptParser
 
         private const char COMMANDS_SPLITTER_ID = ',';
         private const char ARGUMENTS_IDENTIFIER = '(';
+        private const string WAIT_COMMAND_ID = "[wait]";
 
         public bool HasCommands => commands.Count > 0;
 
@@ -47,8 +50,16 @@ namespace Core.ScriptParser
             {
                 int index = cmd.IndexOf(ARGUMENTS_IDENTIFIER);
                 var name = cmd[..index].Trim();
+
+                var wait = false;
+                if (name.ToLower().StartsWith(WAIT_COMMAND_ID))
+                {
+                    wait = true;
+                    name = name[WAIT_COMMAND_ID.Length..];
+                }
+
                 var args = ParseArguments(cmd.Substring(index + 1, cmd.Length - index - 2));
-                var command = new Command(name, args);
+                var command = new Command(name, args, wait);
                 results.Add(command);
             }
             return results;
