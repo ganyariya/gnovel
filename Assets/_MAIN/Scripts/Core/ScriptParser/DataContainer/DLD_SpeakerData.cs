@@ -6,6 +6,10 @@ using UnityEngine;
 
 namespace Core.ScriptParser
 {
+    /// <summary>
+    /// speaker Name をさらにパースしたもの
+    /// 名前・cast,position, layer をもつ
+    /// </summary>
     public class DLD_SpeakerData
     {
         public string name;

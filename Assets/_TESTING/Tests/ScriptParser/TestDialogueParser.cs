@@ -29,10 +29,10 @@ public class TestDialogueParser
     {
         var testDatas = new List<TestData> {
             new(
-                "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\", 20)",
+                "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\" 20)",
                 "ganyariya",
                 "こんにちは。\"人生\"を過ごしています。",
-                "SetCli(\"10\", 20)"
+                "SetCli(\"10\" 20)"
             ),
             new(
                 "ganyariya \"Hello, World!\" playMusic() drawImage(10 40)",
@@ -48,16 +48,16 @@ public class TestDialogueParser
                 ""
             ),
             new(
-                "SetCli(\"10\", 20)",
+                "SetCli(\"10\" 20)",
                 "",
                 "",
-                "SetCli(\"10\", 20)"
+                "SetCli(\"10\" 20)"
             ),
             new(
-                "ganyariya \"youkoso()\" SetCli(\"10\", 20)",
+                "ganyariya \"youkoso()\" SetCli(\"10\" 20)",
                 "ganyariya",
                 "youkoso()",
-                "SetCli(\"10\", 20)"
+                "SetCli(\"10\" 20)"
             ),
             new(
                 "cli()",
@@ -156,10 +156,7 @@ public class TestDialogueParser
             var lineData = DialogueParser.Parse(data.rawLine);
             Assert.That(lineData.originalSpeaker, Is.EqualTo(data.expectedSpeaker));
             Assert.That(lineData.originalDialogue, Is.EqualTo(data.expectedDialogue));
-            Assert.That(lineData.commands, Is.EqualTo(data.expectedCommands));
+            Assert.That(lineData.originalCommands, Is.EqualTo(data.expectedCommands));
         }
-
-        string rawLine = "ganyariya \"こんにちは。\\\"人生\\\"を過ごしています。\" SetCli(\"10\", 20)";
-        DialogueParser.Parse(rawLine);
     }
 }

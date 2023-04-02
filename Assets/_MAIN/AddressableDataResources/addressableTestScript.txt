@@ -1,6 +1,12 @@
+print_1p(テストだよ)
+
 ganyariya as ??? "こんにちは！{wa 2}"
 
+
 ganyariya "私は ganyariya といいます。"
+
+ganyariya "動いてみます。" [wait]move_character(left),move_character(right)
+
 
 "普段はバックエンドの処理を書いたり{wa 2}、競技プログラミングをしたりしています。"
 

@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 
 public class DialogueParserChecker
 {
-    public static void CheckDialogueLineEquals(DLD_DialogueLine actualLine, DLD_DialogueLine expectedLine)
+    public static void CheckDialogueLineEquals(DLD_DialogueData actualLine, DLD_DialogueData expectedLine)
     {
         for (int i = 0; i < actualLine.segments.Count; i++)
         {
@@ -22,7 +22,7 @@ public class DialogueParserChecker
         Assert.That(actualSegment.signalDelay, Is.EqualTo(expectedSegment.signalDelay));
     }
 
-    public static void CheckDLDSpakerEquals(DLD_SpeakerData actualSpeakerData, DLD_SpeakerData expectedSpeakerData)
+    public static void CheckDLDSpeakerEquals(DLD_SpeakerData actualSpeakerData, DLD_SpeakerData expectedSpeakerData)
     {
         Assert.That(actualSpeakerData.name, Is.EqualTo(expectedSpeakerData.name));
         Assert.That(actualSpeakerData.castName, Is.EqualTo(expectedSpeakerData.castName));
@@ -35,6 +35,26 @@ public class DialogueParserChecker
             var e = expectedSpeakerData.CastExpressions[i];
             Assert.That(a.layer, Is.EqualTo(e.layer));
             Assert.That(a.expression, Is.EqualTo(e.expression));
+        }
+    }
+
+    public static void CheckDLDCommandEquals(DLD_CommandData actualCommandData, DLD_CommandData expectedCommandData)
+    {
+        Assert.That(actualCommandData.commands.Count, Is.EqualTo(expectedCommandData.commands.Count));
+
+        for (int i = 0; i < expectedCommandData.commands.Count; i++)
+        {
+            var ac = actualCommandData.commands[i];
+            var ec = expectedCommandData.commands[i];
+
+            Assert.That(ac.name, Is.EqualTo(ec.name));
+            Assert.That(ac.waitForCompletion, Is.EqualTo(ec.waitForCompletion));
+            Assert.That(ac.arguments.Length, Is.EqualTo(ec.arguments.Length));
+
+            for (int j = 0; j < ec.arguments.Length; j++)
+            {
+                Assert.That(ac.arguments[j], Is.EqualTo(ec.arguments[j]));
+            }
         }
     }
 }

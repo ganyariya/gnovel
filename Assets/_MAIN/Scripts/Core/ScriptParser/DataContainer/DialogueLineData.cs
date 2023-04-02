@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Core.ScriptParser
 {
+    /// <summary>
+    /// Script テキスト 1 行を構文解析して得られたデータ
+    /// </summary>
     public class DialogueLineData
     {
 
@@ -11,13 +14,13 @@ namespace Core.ScriptParser
         public readonly string originalDialogue;
         public readonly string originalCommands;
 
-        public DLD_SpeakerData speaker;
-        public DLD_DialogueLine dialogueLine;
-        public string commands;
+        public DLD_SpeakerData speakerData;
+        public DLD_DialogueData dialogueData;
+        public DLD_CommandData commandData;
 
-        public bool HasSpeaker => speaker.HasSpeaker;
-        public bool HasDialogue => dialogueLine.HasDialogue;
-        public bool HasCommands => commands != string.Empty;
+        public bool HasSpeaker => speakerData != null;
+        public bool HasDialogue => dialogueData != null;
+        public bool HasCommands => commandData != null;
 
         public DialogueLineData(string speaker, string dialogue, string commands)
         {
@@ -25,9 +28,13 @@ namespace Core.ScriptParser
             this.originalDialogue = dialogue;
             this.originalCommands = commands;
 
-            this.speaker = new DLD_SpeakerData(speaker);
-            this.dialogueLine = new DLD_DialogueLine(dialogue);
-            this.commands = commands;
+            this.speakerData = string.IsNullOrWhiteSpace(speaker) ? null : new DLD_SpeakerData(speaker);
+            this.dialogueData = string.IsNullOrWhiteSpace(dialogue) ? null : new DLD_DialogueData(dialogue);
+            this.commandData = string.IsNullOrWhiteSpace(commands) ? null : new DLD_CommandData(commands);
+
+            // this.speakerData = new DLD_SpeakerData(speaker);
+            // this.dialogueData = new DLD_DialogueData(dialogue);
+            // this.commandData = new DLD_CommandData(commands);
         }
     }
 }

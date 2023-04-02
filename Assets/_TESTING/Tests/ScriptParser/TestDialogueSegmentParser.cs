@@ -11,9 +11,9 @@ public class TestDialogueSegmentParser
     class TestData
     {
         public string rawDialogue;
-        public DLD_DialogueLine expectedDialogueLine;
+        public DLD_DialogueData expectedDialogueLine;
 
-        public TestData(string rawDialogue, DLD_DialogueLine dialogueLine)
+        public TestData(string rawDialogue, DLD_DialogueData dialogueLine)
         {
             this.rawDialogue = rawDialogue;
             this.expectedDialogueLine = dialogueLine;
@@ -66,7 +66,7 @@ public class TestDialogueSegmentParser
 
         foreach (var data in testDatas)
         {
-            var dialogueLine = new DLD_DialogueLine(data.rawDialogue);
+            var dialogueLine = new DLD_DialogueData(data.rawDialogue);
 
             DialogueParserChecker.CheckDialogueLineEquals(
                 dialogueLine, data.expectedDialogueLine
