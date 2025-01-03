@@ -13,11 +13,14 @@ namespace Core.DisplayDialogue
     public class DialogueContainer
     {
         /// <summary>
-        /// Layers.4Dialogue
-        /// 表示・非表示などに使える
+        /// Layers.4 - Dialogue
+        /// ダイアログレイヤ全体（名前・ダイアログを含む）表示・非表示などに使える
         /// </summary>
         public GameObject rootGameObject;
 
+        /// <summary>
+        /// Name を管理する
+        /// </summary>
         public NameContainer nameContainer;
 
         /// <summary>

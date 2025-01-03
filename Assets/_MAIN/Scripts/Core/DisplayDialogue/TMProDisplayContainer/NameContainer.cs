@@ -13,7 +13,15 @@ namespace Core.DisplayDialogue
     [Serializable]
     public class NameContainer
     {
+        /// <summary>
+        /// Name 自体を表示するか、しないかを設定するための gameObject
+        /// </summary>
         [SerializeField] private GameObject rootGameObject;
+
+        /// <summary>
+        /// TextMeshProUGUI コンポーネントが設定されている gameObject を
+        /// Inspector 上で紐づける
+        /// </summary>
         [SerializeField] private TextMeshProUGUI nameText;
 
         public void Show(string name = "")

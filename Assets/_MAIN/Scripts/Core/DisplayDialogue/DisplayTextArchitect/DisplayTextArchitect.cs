@@ -9,6 +9,8 @@ namespace Core.DisplayDialogue
     /// コンストラクタで与えられた TMProUGUI GameObject に対して動的にテキストを表示する
     /// 構文解析などは行わず Instant / TypeWriter で表示するのみ
     /// テキストの描画自体は TMProUGUI GameObject 自身が行うので DisplayTextArchitect の知るところではない
+    /// 
+    /// DisplayTextArchitect 自体は MonoBehaviour ではない
     /// </summary>
     public class DisplayTextArchitect
     {
@@ -59,6 +61,9 @@ namespace Core.DisplayDialogue
         public bool IsDisplaying => displayingProcess != null;
         public IDisplayMethodStateBehavior displayMethodStateBehavior;
 
+        /// <summary>
+        /// コンストラクタで TextMexhProUGUI, TextMeshPro コンポーネントを渡す
+        /// </summary>
         public DisplayTextArchitect(TextMeshProUGUI tmProUI, TextMeshPro tmProWorld)
         {
             this.tmProUI = tmProUI;
@@ -74,7 +79,10 @@ namespace Core.DisplayDialogue
             PrevText = "";
             TargetText = text;
 
-            Stop(); // TMProText に対して this.Displaying を非同期で実行させる
+            Stop(); 
+            
+            // TMProText に対して this.Displaying を非同期で実行させる
+            // このクラス自体は MonoBehaviour ではなく、 TmProText にコルーチン処理を依頼している
             displayingProcess = TmProText.StartCoroutine(Displaying());
             return displayingProcess;
         }
@@ -105,6 +113,7 @@ namespace Core.DisplayDialogue
         private IEnumerator Displaying()
         {
             Prepare();
+            // 表示中はずっと yield return IEnumerator を返してここで待機する
             yield return displayMethodStateBehavior.Displaying();
             OnComplete();
         }

@@ -18,6 +18,7 @@ namespace Core.DisplayDialogue
         {
             while (arch.TmProText.maxVisibleCharacters < arch.TmProText.textInfo.characterCount)
             {
+                // maxVisibleCharacters を増やすことで表示テキストを増やしていく
                 arch.TmProText.maxVisibleCharacters += arch.HurryUp ? arch.AppearCharactersNumPerFrame * 5 : arch.AppearCharactersNumPerFrame;
                 yield return new WaitForSeconds(BASE_CHARACTER_WAIT_TIME / arch.BaseSpeed);
             }

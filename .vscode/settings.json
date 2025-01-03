@@ -52,14 +52,12 @@
         "Temp/": true,
         "Logs/": true,
         "UserSettings/": true,
-        // 外すかも
-        "*.csproj": true,
-        "*.sln": true,
         "TestResults/": true,
         "Assets/AddressableAssetsData": true,
         "Assets/Settings": true,
         "Assets/TextMesh Pro": true,
-        "Assets/TutorialInfo": true,
-        "Assets/TutorialInfo": true,
-    }
+        "Assets/TutorialInfo": true
+    },
+    "dotnet.preferCSharpExtension": true,
+    "dotnet.defaultSolution": "ganovel.sln"
 }
