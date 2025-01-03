@@ -6,10 +6,24 @@ using UnityEngine;
 
 namespace Core.ScriptParser
 {
+    /// <summary>
+    /// Command を管理するクラス
+    /// </summary>
     public class Command
     {
+        /// <summary>
+        /// コマンド名
+        /// </summary>
         public string name;
+
+        /// <summary>
+        /// コマンドにわたす引数たち
+        /// </summary>
         public string[] arguments;
+
+        /// <summary>
+        /// wait を実行するか
+        /// </summary>
         public bool waitForCompletion;
 
         public Command(string name, string[] arguments, bool waitForCompletion)
@@ -30,6 +44,13 @@ namespace Core.ScriptParser
 
         public bool HasCommands => commands.Count > 0;
 
+        /// <summary>
+        /// 1 行の会話テキストダイアログには、複数のコマンドが設定されることがある
+        /// "setMode(normal),playMusic(\"Dog Land\" -p 10)"
+        /// 
+        /// そのためこれらを それぞれ Command に変換して
+        /// その Collection として DLD_CommandData がある
+        /// </summary>
         public DLD_CommandData(string rawCommands)
         {
             Debug.Log(rawCommands);

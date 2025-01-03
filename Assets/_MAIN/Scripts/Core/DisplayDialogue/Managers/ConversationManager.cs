@@ -9,6 +9,8 @@ namespace Core.DisplayDialogue
 {
     /// <summary>
     /// RawTestList をもとに DialogueLineData を生成し 非同期で textArchitect を使って画面に出力する
+    /// 
+    /// MonoBehavior でないことに注意
     /// </summary>
     public class ConversationManager
     {
@@ -36,11 +38,19 @@ namespace Core.DisplayDialogue
             userPromptNext = true;
         }
 
+        /// <summary>
+        /// DialogueSystemController から呼び出される
+        /// 
+        /// rawText を split して
+        /// - DialogueLineData に変換
+        /// - textArchitect を介して会話を画面に出力
+        /// する
+        /// </summary>
         public void StartConversation(List<string> conversation)
         {
             StopConversation();
 
-            // Coroutine 自体は monobehavior を持つ dialogueSystem に移譲する
+            // Coroutine 自体は MonoBehavior を持つ dialogueSystem に移譲する
             process = dialogueSystem.StartCoroutine(RunningConversation(conversation));
         }
 
@@ -80,6 +90,9 @@ namespace Core.DisplayDialogue
                 yield return RunningSingleDLDDialogueSegment(segment);
             }
 
+            // 動画だとここで WaitForUserAdvance を呼び出していたが
+            // どうやら過去の自分がこの処理を別の場所に移したらしい
+            // そのためコメントアウトされている
             // yield return WaitForUserAdvance();
         }
 
@@ -119,6 +132,9 @@ namespace Core.DisplayDialogue
 
             while (textArchitect.IsDisplaying)
             {
+                // 表示中だが、ユーザが矯正実行を入力したら
+                // - テキストをすべて表示する
+                // - testArchitect.IsDisplaying が false になる (表示コルーチンが null になるので)
                 if (userPromptNext)
                 {
                     if (!textArchitect.HurryUp) textArchitect.HurryUp = true;

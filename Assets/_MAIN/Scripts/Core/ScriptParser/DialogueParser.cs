@@ -16,6 +16,13 @@ namespace Core.ScriptParser
             return new DialogueLineData(speaker, dialogue, commands);
         }
 
+        /// <summary>
+        /// 1 行の raw text を構文解析して
+        /// - speaker
+        /// - dialogue (会話)
+        /// - command
+        /// に分解する
+        /// </summary>
         private static (string, string, string) SplitRawLine(string rawLine)
         {
             string speaker = "", dialogue = "", commands = "";

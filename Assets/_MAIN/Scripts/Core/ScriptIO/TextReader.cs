@@ -6,6 +6,9 @@ using UnityEngine.AddressableAssets;
 
 namespace Core.ScriptIO
 {
+    /// <summary>
+    /// 特定のファイルからテキストデータを List<string> として読み込む
+    /// </summary>
     public class TextReader
     {
 
