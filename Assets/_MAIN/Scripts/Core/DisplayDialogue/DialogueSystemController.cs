@@ -69,17 +69,17 @@ namespace Core.DisplayDialogue
         /// <summary>
         /// 画面に speaker & dialogue を出力する
         /// </summary>
-        public void Say(string speaker, string dialogue)
+        public Coroutine Say(string speaker, string dialogue)
         {
-            Say(new List<string>() { $"{speaker} \"{dialogue}\"" });
+            return Say(new List<string>() { $"{speaker} \"{dialogue}\"" });
         }
 
         /// <summary>
         /// ConversationManager に一連の会話を表示させる
         /// </summary>
-        public void Say(List<string> conversation)
+        public Coroutine Say(List<string> conversation)
         {
-            conversationManager.StartConversation(conversation);
+            return conversationManager.StartConversation(conversation);
         }
 
         /// <summary>

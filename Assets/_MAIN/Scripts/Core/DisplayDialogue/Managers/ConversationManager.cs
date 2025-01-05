@@ -46,12 +46,14 @@ namespace Core.DisplayDialogue
         /// - textArchitect を介して会話を画面に出力
         /// する
         /// </summary>
-        public void StartConversation(List<string> conversation)
+        public Coroutine StartConversation(List<string> conversation)
         {
             StopConversation();
 
             // Coroutine 自体は MonoBehavior を持つ dialogueSystem に移譲する
             process = dialogueSystem.StartCoroutine(RunningConversation(conversation));
+
+            return process;
         }
 
         public void StopConversation()
