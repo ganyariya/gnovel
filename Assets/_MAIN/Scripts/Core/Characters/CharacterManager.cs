@@ -23,6 +23,19 @@ namespace Core.Characters
             instance = this;
         }
 
+        public CharacterConfig GetCharacterConfig(string characterName)
+        {
+            return characterConfigSO.FetchTargetCharacterConfig(characterName);
+        }
+
+        public Character GetCharacter(string characterName, bool create = false)
+        {
+            if (characters.ContainsKey(characterName.ToLower())) return characters[characterName.ToLower()];
+            if (create) return CreateCharacter(characterName);
+
+            return null;
+        }
+
         public Character CreateCharacter(string characterName)
         {
             if (characters.ContainsKey(characterName.ToLower()))
@@ -54,13 +67,13 @@ namespace Core.Characters
             switch (info.config.characterType)
             {
                 case Character.CharacterType.Text:
-                    return new TextCharacter(info.name);
+                    return new TextCharacter(info.name, info.config);
                 case Character.CharacterType.Sprite or Character.CharacterType.SpriteSheet:
-                    return new SpriteCharacter(info.name);
+                    return new SpriteCharacter(info.name, info.config);
                 case Character.CharacterType.Live2D:
-                    return new Live2DCharacter(info.name);
+                    return new Live2DCharacter(info.name, info.config);
                 case Character.CharacterType.Model3D:
-                    return new Model3DCharacter(info.name);
+                    return new Model3DCharacter(info.name, info.config);
                 default:
                     Debug.LogError("Character type not recognized.");
                     throw new Exception();

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Core.ScriptableObjects;
+using Core.Characters;
 
 namespace Core.DisplayDialogue
 {
@@ -88,6 +89,25 @@ namespace Core.DisplayDialogue
         public void OnUserPromptNextEvent()
         {
             UserPromptNextEvent?.Invoke();
+        }
+
+        /// <summary>
+        /// speakerCharacter の設定を DialogueContainer に適用することで
+        /// - font
+        /// - fontColor
+        /// を変更する
+        /// </summary>
+        public void ApplySpeakerConfigToDialogueContainer(string speakerName)
+        {
+            Character character = CharacterManager.instance.GetCharacter(speakerName, true);
+            CharacterConfig config = character != null ? character.config : CharacterConfig.Default;
+
+            ApplySpeakerConfigToDialogueContainer(config);
+        }
+
+        public void ApplySpeakerConfigToDialogueContainer(CharacterConfig config)
+        {
+            dialogueContainer.ApplyCharacterConfig(config);
         }
     }
 }

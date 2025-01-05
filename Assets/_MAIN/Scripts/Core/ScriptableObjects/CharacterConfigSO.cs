@@ -21,6 +21,10 @@ namespace Core.ScriptableObjects
         /// </summary>
         public CharacterConfig[] characterConfigs;
 
+        /// <summary>
+        /// characterName に一致する CharacterConfig をマスタデータから取得する
+        /// なければデフォルト値を返す
+        /// </summary>
         public CharacterConfig FetchTargetCharacterConfig(string characterName)
         {
             characterName = characterName.ToLower();
