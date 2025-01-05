@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.DisplayDialogue;
+using TMPro;
 using UnityEngine;
 
 namespace Core.Characters
@@ -36,9 +37,17 @@ namespace Core.Characters
         public Coroutine Say(List<string> dialogues)
         {
             dialogueSystem.DisplaySpeakerName(displayName);
-            dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);
+            ApplyTextConfigOnScreen();
             return dialogueSystem.Say(dialogues);
         }
+
+        public void SetNameColor(Color color) => config.nameColor = color;
+        public void SetDialogueColor(Color color) => config.dialogueColor = color;
+        public void SetNameFont(TMP_FontAsset font) => config.nameFont = font;
+        public void SetDialogueFont(TMP_FontAsset font) => config.dialogueFont = font;
+
+        public void ApplyTextConfigOnScreen() => dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);
+        public void ResetConfig() => config = CharacterManager.instance.GetCharacterConfig(name);
 
         public enum CharacterType
         {
