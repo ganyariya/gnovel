@@ -29,6 +29,12 @@ namespace Testing
 
             yield return ganyariya.Say(dialogues);
 
+            ganyariya.SetDialogueColor(Color.red);
+            yield return ganyariya.Say(dialogues);
+
+            ganyariya.ResetConfig();
+            yield return ganyariya.Say(dialogues);
+
             var yourDialogues = new List<string> {
                 "\"私の名前は you です。\"",
                 "\"この世界における架空的存在です\"",
