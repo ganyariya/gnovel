@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a8c5e03f57ba497a9ebb59214134ff6, type: 3}
+  m_Name: CharacterConfigAsset
+  m_EditorClassIdentifier: 
+  characterConfigs:
+  - name: ganyariya
+    alias: yu
+    characterType: 0
+    nameColor: {r: 1, g: 1, b: 1, a: 0}
+    dialogueColor: {r: 1, g: 1, b: 1, a: 0}
+    nameFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
+  - name: elen
+    alias: el
+    characterType: 0
+    nameColor: {r: 0.8962264, g: 0.19023676, b: 0.19023676, a: 0}
+    dialogueColor: {r: 0.18970275, g: 0.73147184, b: 0.8207547, a: 0}
+    nameFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}

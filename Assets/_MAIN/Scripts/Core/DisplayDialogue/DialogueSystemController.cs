@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Core.ScriptableObjects;
 
 namespace Core.DisplayDialogue
 {
@@ -10,6 +11,18 @@ namespace Core.DisplayDialogue
     public class DialogueSystemController : MonoBehaviour
     {
         public static DialogueSystemController instance { get; private set; }
+
+        /// <summary>
+        /// Unity Inspector 上から会話システムの設定を行う（SerializeField に設定する）
+        /// 
+        /// この会話システムの設定が他クラスから
+        /// systemController.instance.dialogSystemConfig として参照される
+        /// 
+        /// これによって MonoBehaviour でないクラスから会話システムの設定値を取得できる
+        /// </summary>
+        [SerializeField]
+        private DialogueSystemConfigurationSO _dialogueSystemConfig;
+        public DialogueSystemConfigurationSO dialogSystemConfig => _dialogueSystemConfig;
 
         /// <summary>
         /// Unity Inspector から設定され textArchitect に dialogueUGUI を渡す
