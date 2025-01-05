@@ -12,12 +12,14 @@ namespace Core.Characters
         public string name;
         public string displayName;
         public RectTransform root;
+        public CharacterConfig config;
 
-        public Character(string name)
+        public Character(string name, CharacterConfig config)
         {
             this.name = name;
             this.displayName = name;
             this.root = null;
+            this.config = config;
         }
 
         /// <summary>
@@ -34,6 +36,7 @@ namespace Core.Characters
         public Coroutine Say(List<string> dialogues)
         {
             dialogueSystem.DisplaySpeakerName(displayName);
+            dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);
             return dialogueSystem.Say(dialogues);
         }
 

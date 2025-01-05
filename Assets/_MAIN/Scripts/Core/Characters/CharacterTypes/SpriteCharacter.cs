@@ -6,7 +6,7 @@ namespace Core.Characters
 {
     public class SpriteCharacter : Character
     {
-        public SpriteCharacter(string name) : base(name)
+        public SpriteCharacter(string name, CharacterConfig config) : base(name, config)
         {
         }
     }

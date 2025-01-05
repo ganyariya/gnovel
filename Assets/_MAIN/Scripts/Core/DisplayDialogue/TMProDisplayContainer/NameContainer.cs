@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Characters;
 using TMPro;
 using UnityEngine;
 
@@ -16,13 +17,13 @@ namespace Core.DisplayDialogue
         /// <summary>
         /// Name 自体を表示するか、しないかを設定するための gameObject
         /// </summary>
-        [SerializeField] private GameObject rootGameObject;
+        public GameObject rootGameObject;
 
         /// <summary>
         /// TextMeshProUGUI コンポーネントが設定されている gameObject を
         /// Inspector 上で紐づける
         /// </summary>
-        [SerializeField] private TextMeshProUGUI nameText;
+        public TextMeshProUGUI nameText;
 
         public void Show(string name = "")
         {
@@ -33,9 +34,21 @@ namespace Core.DisplayDialogue
                 nameText.text = name;
             }
         }
+
         public void Hide()
         {
             rootGameObject.SetActive(false);
+        }
+
+        public void ApplyCharacterConfig(CharacterConfig characterConfig)
+        {
+            /*
+            なぜか色を設定すると画面上から name が消えてしまう
+            そのためコメントアウトして、別途原因を調査したい
+            https://www.youtube.com/watch?v=3LfpzaFqNsc&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=17
+            */
+            // nameText.color = characterConfig.nameColor;
+            nameText.font = characterConfig.nameFont;
         }
     }
 }

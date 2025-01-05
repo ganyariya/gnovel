@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Core.Characters;
 
 namespace Core.DisplayDialogue
 {
@@ -28,5 +29,12 @@ namespace Core.DisplayDialogue
         /// TextMeshProUGUI をコンポーネントにもつ gameObject が紐付けられる
         /// </summary>
         public TextMeshProUGUI dialogueText;
+
+        public void ApplyCharacterConfig(CharacterConfig characterConfig)
+        {
+            nameContainer.ApplyCharacterConfig(characterConfig);
+            dialogueText.color = characterConfig.dialogueColor;
+            dialogueText.font = characterConfig.dialogueFont;
+        }
     }
 }
