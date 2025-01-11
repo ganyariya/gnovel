@@ -16,16 +16,22 @@ namespace Testing
         IEnumerator CharacterShowHideTest()
         {
             var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya");
-            // 表示できるけど見づらいので student 2 は非表示にする
-            // var femaleStudent2 = CharacterManager.instance.CreateCharacter("Female Student 2");
 
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(1.0f);
 
             yield return ganyariya.Show();
 
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(1.0f);
 
             yield return ganyariya.Say("\"Hello, I'm ganyariya!\"");
+
+            yield return ganyariya.Hide();
+
+            var guard1 = CharacterManager.instance.CreateCharacter("guard1 as Generic");
+            var guard2 = CharacterManager.instance.CreateCharacter("guard2 as Generic");
+
+            yield return guard1.Show();
+            yield return guard2.Show();
 
             yield return null;
         }
