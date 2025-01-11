@@ -15,7 +15,7 @@ MonoBehaviour:
   characterConfigs:
   - name: ganyariya
     alias: yu
-    characterType: 0
+    characterType: 1
     nameColor: {r: 1, g: 0.9858491, b: 0.9858491, a: 0}
     dialogueColor: {r: 1, g: 1, b: 1, a: 0}
     nameFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
@@ -25,5 +25,12 @@ MonoBehaviour:
     characterType: 0
     nameColor: {r: 0.8962264, g: 0.19023676, b: 0.19023676, a: 0}
     dialogueColor: {r: 0.18970275, g: 0.73147184, b: 0.8207547, a: 0}
+    nameFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
+    dialogueFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
+  - name: Female Student 2
+    alias: fs2
+    characterType: 1
+    nameColor: {r: 1, g: 1, b: 1, a: 0}
+    dialogueColor: {r: 1, g: 1, b: 1, a: 0}
     nameFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}
     dialogueFont: {fileID: 11400000, guid: 4a3710b2df6dc4f2490da3d7f49727bb, type: 2}

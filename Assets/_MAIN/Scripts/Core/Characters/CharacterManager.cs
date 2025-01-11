@@ -12,6 +12,14 @@ namespace Core.Characters
         public static CharacterManager instance { get; private set; }
         private Dictionary<string, Character> characters = new Dictionary<string, Character>();
 
+        [SerializeField] private RectTransform _characterLayer = null;
+        public RectTransform characterLayer => _characterLayer;
+
+        private const string CHARACTER_NAME_ID = "<character-name-id>";
+        private string characterRootPath => $"Characters/{CHARACTER_NAME_ID}";
+        private string characterPrefabPath => $"{characterRootPath}/Character-[{CHARACTER_NAME_ID}]";
+        private string FormatCharacterPath(string path, string characterName) => path.Replace(CHARACTER_NAME_ID, characterName);
+
         /// <summary>
         /// DialogueSystemController のシングルトンを介して
         /// Unity 上で設定されたキャラクタの設定を取得する
@@ -58,8 +66,15 @@ namespace Core.Characters
 
             info.name = characterName;
             info.config = characterConfigSO.FetchTargetCharacterConfig(characterName);
+            info.prefab = FetchCharacterPrefab(characterName);
 
             return info;
+        }
+
+        private GameObject FetchCharacterPrefab(string characterName)
+        {
+            string path = FormatCharacterPath(characterPrefabPath, characterName);
+            return Resources.Load<GameObject>(path);
         }
 
         private Character CreateAppropriateCharacterFromInfo(CharacterInfo info)
@@ -69,11 +84,11 @@ namespace Core.Characters
                 case Character.CharacterType.Text:
                     return new TextCharacter(info.name, info.config);
                 case Character.CharacterType.Sprite or Character.CharacterType.SpriteSheet:
-                    return new SpriteCharacter(info.name, info.config);
+                    return new SpriteCharacter(info.name, info.config, info.prefab);
                 case Character.CharacterType.Live2D:
-                    return new Live2DCharacter(info.name, info.config);
+                    return new Live2DCharacter(info.name, info.config, info.prefab);
                 case Character.CharacterType.Model3D:
-                    return new Model3DCharacter(info.name, info.config);
+                    return new Model3DCharacter(info.name, info.config, info.prefab);
                 default:
                     Debug.LogError("Character type not recognized.");
                     throw new Exception();
@@ -84,6 +99,7 @@ namespace Core.Characters
         {
             public string name;
             public CharacterConfig config;
+            public GameObject prefab;
         }
     }
 }

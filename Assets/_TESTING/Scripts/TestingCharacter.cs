@@ -10,10 +10,24 @@ namespace Testing
     {
         void Start()
         {
-            // Character ganyariya = CharacterManager.instance.CreateCharacter("ganyariya");
-            // Character notFound = CharacterManager.instance.CreateCharacter("notFound");
+            StartCoroutine(CharacterShowHideTest());
+        }
 
-            StartCoroutine(CharacterSpeakTest());
+        IEnumerator CharacterShowHideTest()
+        {
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya");
+            // 表示できるけど見づらいので student 2 は非表示にする
+            // var femaleStudent2 = CharacterManager.instance.CreateCharacter("Female Student 2");
+
+            yield return new WaitForSeconds(2.0f);
+
+            yield return ganyariya.Show();
+
+            yield return new WaitForSeconds(2.0f);
+
+            yield return ganyariya.Say("\"Hello, I'm ganyariya!\"");
+
+            yield return null;
         }
 
         IEnumerator CharacterSpeakTest()

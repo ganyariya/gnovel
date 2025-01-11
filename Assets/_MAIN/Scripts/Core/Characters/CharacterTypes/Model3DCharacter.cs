@@ -6,7 +6,7 @@ namespace Core.Characters
 {
     public class Model3DCharacter : Character
     {
-        public Model3DCharacter(string name, CharacterConfig config) : base(name, config)
+        public Model3DCharacter(string name, CharacterConfig config, GameObject prefab) : base(name, config, prefab)
         {
         }
     }
