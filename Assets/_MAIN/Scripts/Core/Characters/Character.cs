@@ -14,13 +14,34 @@ namespace Core.Characters
         public string displayName;
         public RectTransform root;
         public CharacterConfig config;
+        protected Animator animator;
 
-        public Character(string name, CharacterConfig config)
+        protected Coroutine revealingCoroutine;
+        protected Coroutine hidingCoroutine;
+
+        public virtual bool isVisible => false;
+
+        public bool isRevealing => revealingCoroutine != null;
+        public bool isHiding => hidingCoroutine != null;
+
+        protected CharacterManager characterManager => CharacterManager.instance;
+
+        public Character(string name, CharacterConfig config, GameObject prefab)
         {
             this.name = name;
             this.displayName = name;
             this.root = null;
             this.config = config;
+
+            // prefab があるのであればここで characterLayer に追加してしまう
+            // ただこの設計だと Character が直接 Unity と依存してしまい うれしくないね...
+            if (prefab != null)
+            {
+                GameObject prefabInstance = Object.Instantiate(prefab, characterManager.characterLayer);
+                prefabInstance.SetActive(true);
+                root = prefabInstance.GetComponent<RectTransform>();
+                animator = root.GetComponentInChildren<Animator>();
+            }
         }
 
         /// <summary>
@@ -40,6 +61,23 @@ namespace Core.Characters
             ApplyTextConfigOnScreen();
             return dialogueSystem.Say(dialogues);
         }
+
+        public virtual Coroutine Show()
+        {
+            if (isRevealing) return revealingCoroutine;
+            if (isHiding) characterManager.StopCoroutine(hidingCoroutine);
+
+            return revealingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(true));
+        }
+        public virtual Coroutine Hide()
+        {
+            if (isHiding) return hidingCoroutine;
+            if (isRevealing) characterManager.StopCoroutine(revealingCoroutine);
+
+            return hidingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(false));
+        }
+
+        protected virtual IEnumerator ShowingOrHiding(bool isShow) => null;
 
         public void SetNameColor(Color color) => config.nameColor = color;
         public void SetDialogueColor(Color color) => config.dialogueColor = color;
