@@ -15,6 +15,11 @@ namespace Core.Characters
         [SerializeField] private RectTransform _characterLayer = null;
         public RectTransform characterLayer => _characterLayer;
 
+        /// <summary>
+        /// CreateCharacter(guard1:name as Generic:prefabName) のようにすることで同じ prefab のキャラを複数用意できるようにする
+        /// </summary>
+        private const string CHARACTER_PREFAB_CAST_ID = " as ";
+
         private const string CHARACTER_NAME_ID = "<character-name-id>";
         private string characterRootPath => $"Characters/{CHARACTER_NAME_ID}";
         private string characterPrefabPath => $"{characterRootPath}/Character-[{CHARACTER_NAME_ID}]";
@@ -64,9 +69,16 @@ namespace Core.Characters
         {
             CharacterInfo info = new CharacterInfo();
 
-            info.name = characterName;
-            info.config = characterConfigSO.FetchTargetCharacterConfig(characterName);
-            info.prefab = FetchCharacterPrefab(characterName);
+            string[] splitNames = characterName.Split(CHARACTER_PREFAB_CAST_ID, System.StringSplitOptions.RemoveEmptyEntries);
+            string name = splitNames[0];
+            string prefabName = splitNames.Length > 1 ? splitNames[1] : splitNames[0];
+
+            info.name = name;
+            info.prefabName = prefabName;
+
+            // prefab 名をつかって config, prefab を取得する
+            info.config = characterConfigSO.FetchTargetCharacterConfig(prefabName);
+            info.prefab = FetchCharacterPrefab(prefabName);
 
             return info;
         }
@@ -97,7 +109,16 @@ namespace Core.Characters
 
         private class CharacterInfo
         {
+            /// <summary>
+            /// Dialogue ファイル上で一意に認識できるキャラ名
+            /// </summary>
             public string name;
+
+            /// <summary>
+
+            /// 表示したい画像 prefab の名前
+            /// </summary>
+            public string prefabName;
             public CharacterConfig config;
             public GameObject prefab;
         }

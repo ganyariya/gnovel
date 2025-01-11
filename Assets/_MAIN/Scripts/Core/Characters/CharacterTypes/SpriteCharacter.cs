@@ -10,17 +10,8 @@ namespace Core.Characters
 
         public SpriteCharacter(string name, CharacterConfig config, GameObject prefab) : base(name, config, prefab)
         {
-            RevealOnInstantiation();
-        }
-
-        /// <summary>
-        /// キャラクタを強制的にゆっくり表示する
-        /// TODO: 将来的にはここをパラメータ化してもよい（作成時に alpha=0, alpha=1 などを切り替えられるようにする）
-        /// </summary>
-        private void RevealOnInstantiation()
-        {
+            // キャラクタ作成時は非表示にする
             canvasGroup.alpha = 0;
-            Show();
         }
 
         protected override IEnumerator ShowingOrHiding(bool isShow)
