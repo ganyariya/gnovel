@@ -23,6 +23,17 @@ namespace Testing
 
             yield return new WaitForSeconds(1.0f);
 
+            ganyariya.SetScreenPosition(Vector2.zero);
+            yield return new WaitForSeconds(1.0f);
+
+            yield return ganyariya.MoveToScreenPosition(new Vector2(0.5f, 0.5f), 1.0f);
+            yield return new WaitForSeconds(1.0f);
+
+            yield return ganyariya.MoveToScreenPosition(Vector2.one, 3.0f, true);
+            yield return new WaitForSeconds(1.0f);
+
+            yield return new WaitForSeconds(1.0f);
+
             yield return ganyariya.Say("\"Hello, I'm ganyariya!\"");
 
             yield return ganyariya.Hide();

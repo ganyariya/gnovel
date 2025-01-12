@@ -6,7 +6,7 @@ namespace Core.Characters
 {
     public class SpriteCharacter : Character
     {
-        private CanvasGroup canvasGroup => root.GetComponent<CanvasGroup>();
+        private CanvasGroup canvasGroup => rootRectTransform.GetComponent<CanvasGroup>();
 
         public SpriteCharacter(string name, CharacterConfig config, GameObject prefab) : base(name, config, prefab)
         {
