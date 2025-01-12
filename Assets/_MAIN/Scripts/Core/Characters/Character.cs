@@ -45,6 +45,7 @@ namespace Core.Characters
             if (prefab != null)
             {
                 GameObject prefabInstance = Object.Instantiate(prefab, characterManager.characterLayer);
+                prefabInstance.name = characterManager.FormatCharacterPath(characterManager.characterPrefabNameFormat, name);
                 prefabInstance.SetActive(true);
                 rootRectTransform = prefabInstance.GetComponent<RectTransform>();
                 animator = rootRectTransform.GetComponentInChildren<Animator>();

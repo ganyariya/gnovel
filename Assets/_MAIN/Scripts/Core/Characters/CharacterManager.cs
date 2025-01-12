@@ -21,9 +21,12 @@ namespace Core.Characters
         private const string CHARACTER_PREFAB_CAST_ID = " as ";
 
         private const string CHARACTER_NAME_ID = "<character-name-id>";
-        private string characterRootPath => $"Characters/{CHARACTER_NAME_ID}";
-        private string characterPrefabPath => $"{characterRootPath}/Character-[{CHARACTER_NAME_ID}]";
-        private string FormatCharacterPath(string path, string characterName) => path.Replace(CHARACTER_NAME_ID, characterName);
+
+        public string characterRootPathFormat => $"Characters/{CHARACTER_NAME_ID}";
+        public string characterPrefabNameFormat => $"Character-[{CHARACTER_NAME_ID}]";
+        public string characterPrefabPathFormat => $"{characterRootPathFormat}/{characterPrefabNameFormat}";
+
+        public string FormatCharacterPath(string path, string characterName) => path.Replace(CHARACTER_NAME_ID, characterName);
 
         /// <summary>
         /// DialogueSystemController のシングルトンを介して
@@ -85,7 +88,7 @@ namespace Core.Characters
 
         private GameObject FetchCharacterPrefab(string characterName)
         {
-            string path = FormatCharacterPath(characterPrefabPath, characterName);
+            string path = FormatCharacterPath(characterPrefabPathFormat, characterName);
             return Resources.Load<GameObject>(path);
         }
 
