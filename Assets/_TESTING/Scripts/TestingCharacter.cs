@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Characters;
@@ -11,7 +12,54 @@ namespace Testing
         void Start()
         {
             // StartCoroutine(CharacterShowHideMoveTest());
-            StartCoroutine(SpriteChangeTest());
+            // StartCoroutine(SpriteChangeTest());
+            StartCoroutine(Chap81TutorialTest());
+        }
+
+        IEnumerator Chap81TutorialTest()
+        {
+            Func<float, WaitForSeconds> wait = (float seconds) => new WaitForSeconds(seconds);
+
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+            var raelin = CharacterManager.instance.CreateCharacter("raelin") as SpriteCharacter;
+            ganyariya.isVisible = false;
+            raelin.isVisible = false;
+
+            yield return wait(1.0f);
+            yield return ganyariya.Show();
+
+            yield return ganyariya.Say("\"ここ 1 週間の進捗を振り返るよ〜\"");
+            yield return ganyariya.Say("\"まずはじめに、Sprite Character が自由に表示できるようになったよ。僕自身がそうだね\"");
+
+            ganyariya.MoveToScreenPosition(Vector2.one, 1.0f, true);
+            yield return ganyariya.Say("\"続いて、画面上の好きな位置に移動できるようになったよ。\"");
+
+            ganyariya.MoveToScreenPosition(Vector2.zero, 2.0f, false);
+            yield return ganyariya.Say("\"どこにでも動けて嬉しいね\"");
+
+            yield return ganyariya.Say("\"次の機能は自分では説明できないから他の人にでてきてもらうね\"");
+
+            yield return raelin.Show();
+            yield return wait(1.0f);
+
+            var bodySprite = raelin.FetchSpriteFromResources("B2");
+            var faceSprite = raelin.FetchSpriteFromResources("B_Normal");
+
+            raelin.ExecuteTransitionSprite(bodySprite, 0, 1.0f);
+            raelin.ExecuteTransitionSprite(faceSprite, 1, 1.0f);
+            yield return ganyariya.Say("\"好きな CharacterLayer の Sprite を変更できるようになったよ\"");
+
+            faceSprite = raelin.FetchSpriteFromResources("B_SoSmile");
+            raelin.ExecuteTransitionSprite(faceSprite, 1, 1.0f);
+            yield return raelin.Say("\"これで表情も変えられるようになったよ。うれしいね\"");
+
+            bodySprite = raelin.FetchSpriteFromResources("A1");
+            faceSprite = raelin.FetchSpriteFromResources("A_Normal");
+            raelin.ExecuteTransitionSprite(bodySprite, 0, 1.0f);
+            raelin.ExecuteTransitionSprite(faceSprite, 1, 1.0f);
+            yield return ganyariya.Say("\"今週は以上だよ、来週もがんばるぞ〜\"");
+
+            yield return null;
         }
 
         IEnumerator SpriteChangeTest()
