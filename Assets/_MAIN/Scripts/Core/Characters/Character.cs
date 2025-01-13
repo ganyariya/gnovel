@@ -8,6 +8,8 @@ namespace Core.Characters
 {
     public abstract class Character
     {
+        public const bool INITIAL_ENABLE = false;
+
         public DialogueSystemController dialogueSystem => DialogueSystemController.instance;
 
         public string name;
@@ -20,12 +22,13 @@ namespace Core.Characters
         public RectTransform rootRectTransform;
         public CharacterConfig config;
         protected Animator animator;
+        protected string rootCharacterFolder;
 
         protected Coroutine revealingCoroutine;
         protected Coroutine hidingCoroutine;
         protected Coroutine movingCoroutine;
 
-        public virtual bool isVisible => false;
+        public virtual bool isVisible { get; set; }
 
         public bool isRevealing => revealingCoroutine != null;
         public bool isHiding => hidingCoroutine != null;
@@ -33,12 +36,13 @@ namespace Core.Characters
 
         protected CharacterManager characterManager => CharacterManager.instance;
 
-        public Character(string name, CharacterConfig config, GameObject prefab)
+        public Character(string name, CharacterConfig config, GameObject prefab, string rootCharacterFolder)
         {
             this.name = name;
             this.displayName = name;
             this.rootRectTransform = null;
             this.config = config;
+            this.rootCharacterFolder = rootCharacterFolder;
 
             // prefab があるのであればここで characterLayer に追加してしまう
             // ただこの設計だと Character が直接 Unity と依存してしまい うれしくないね...
