@@ -6,7 +6,7 @@ namespace Core.Characters
 {
     public class TextCharacter : Character
     {
-        public TextCharacter(string name, CharacterConfig config) : base(name, config, prefab: null)
+        public TextCharacter(string name, CharacterConfig config) : base(name, config, prefab: null, rootCharacterFolder: "")
         {
             Debug.Log("TextCharacter created name: " + name);
         }

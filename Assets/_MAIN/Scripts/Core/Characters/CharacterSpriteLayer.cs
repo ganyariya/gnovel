@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 namespace Core.Characters
 {
+    /// <summary>
+    /// あるキャラ X を描画するために必要な Layer Y の情報を持つ
+    /// 
+    /// 1 つの Layer Y には 1 つの Image と Z 個の過去 Image の情報を持つ
+    /// そうすることで過去の alpha を少しずつ減らすことで fade out を実現する
+    /// </summary>
     public class CharacterSpriteLayer
     {
         private CharacterManager characterManager => CharacterManager.instance;
@@ -28,6 +34,11 @@ namespace Core.Characters
         {
             this.layerIndex = layerIndex;
             this.renderer = defaultRenderer;
+        }
+
+        public void SetSprite(Sprite sprite)
+        {
+            renderer.sprite = sprite;
         }
     }
 }

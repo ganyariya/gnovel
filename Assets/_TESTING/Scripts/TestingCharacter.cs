@@ -10,20 +10,43 @@ namespace Testing
     {
         void Start()
         {
-            StartCoroutine(CharacterShowHideTest());
+            // StartCoroutine(CharacterShowHideMoveTest());
+            StartCoroutine(SpriteChangeTest());
         }
 
-        IEnumerator CharacterShowHideTest()
+        IEnumerator SpriteChangeTest()
         {
-            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya");
-            var raelin = CharacterManager.instance.CreateCharacter("raelin");
+            SpriteCharacter guard = CharacterManager.instance.CreateCharacter("guard1 as Generic") as SpriteCharacter;
+            SpriteCharacter ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+
+            yield return guard.Show();
+
+            Sprite monkSprite = guard.FetchSpriteFromResources("Default-Monk");
+            guard.SetSprite(monkSprite, 0);
+
+            yield return new WaitForSeconds(1.0f);
+
+            yield return guard.MoveToScreenPosition(Vector2.zero, 3, false);
+
+            yield return ganyariya.Show();
+        }
+
+        IEnumerator CharacterShowHideMoveTest()
+        {
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+            var raelin = CharacterManager.instance.CreateCharacter("raelin") as SpriteCharacter;
+            var femaleStudent2 = CharacterManager.instance.CreateCharacter("Female Student 2") as SpriteCharacter;
 
             yield return new WaitForSeconds(1.0f);
 
             yield return ganyariya.Show();
             yield return raelin.Show();
+            yield return femaleStudent2.Show();
 
             yield return new WaitForSeconds(1.0f);
+
+            var fullBodySprite = femaleStudent2.FetchSpriteFromResources("female student 2 - upset");
+            femaleStudent2.SetSprite(fullBodySprite, 0);
 
             ganyariya.SetScreenPosition(Vector2.zero);
             yield return new WaitForSeconds(1.0f);

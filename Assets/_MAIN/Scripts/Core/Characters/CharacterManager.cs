@@ -82,6 +82,7 @@ namespace Core.Characters
             // prefab 名をつかって config, prefab を取得する
             info.config = characterConfigSO.FetchTargetCharacterConfig(prefabName);
             info.prefab = FetchCharacterPrefab(prefabName);
+            info.rootCharacterFolder = FormatCharacterPath(characterRootPathFormat, prefabName);
 
             return info;
         }
@@ -99,11 +100,11 @@ namespace Core.Characters
                 case Character.CharacterType.Text:
                     return new TextCharacter(info.name, info.config);
                 case Character.CharacterType.Sprite or Character.CharacterType.SpriteSheet:
-                    return new SpriteCharacter(info.name, info.config, info.prefab);
+                    return new SpriteCharacter(info.name, info.config, info.prefab, info.rootCharacterFolder);
                 case Character.CharacterType.Live2D:
-                    return new Live2DCharacter(info.name, info.config, info.prefab);
+                    return new Live2DCharacter(info.name, info.config, info.prefab, info.rootCharacterFolder);
                 case Character.CharacterType.Model3D:
-                    return new Model3DCharacter(info.name, info.config, info.prefab);
+                    return new Model3DCharacter(info.name, info.config, info.prefab, info.rootCharacterFolder);
                 default:
                     Debug.LogError("Character type not recognized.");
                     throw new Exception();
@@ -122,6 +123,9 @@ namespace Core.Characters
             /// 表示したい画像 prefab の名前
             /// </summary>
             public string prefabName;
+
+            public string rootCharacterFolder;
+
             public CharacterConfig config;
             public GameObject prefab;
         }

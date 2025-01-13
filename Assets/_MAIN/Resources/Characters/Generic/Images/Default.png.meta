@@ -117,7 +117,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Characters_0
+      name: Monk
       rect:
         serializedVersion: 2
         x: 5
@@ -125,7 +125,7 @@ TextureImporter:
         width: 496
         height: 746
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -138,28 +138,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Characters_1
-      rect:
-        serializedVersion: 2
-        x: 508
-        y: 1511
-        width: 496
-        height: 746
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4cad1764d82724481b92b50b6676b717
-      internalID: -1497089694
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Characters_2
+      name: Girl
       rect:
         serializedVersion: 2
         x: 5
@@ -167,7 +146,7 @@ TextureImporter:
         width: 496
         height: 746
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -180,7 +159,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Characters_3
+      name: Man
       rect:
         serializedVersion: 2
         x: 508
@@ -188,7 +167,7 @@ TextureImporter:
         width: 496
         height: 746
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -201,7 +180,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Characters_4
+      name: Guard
       rect:
         serializedVersion: 2
         x: 5
@@ -209,7 +188,7 @@ TextureImporter:
         width: 496
         height: 746
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -232,12 +211,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Man: -1700623344
       Characters_1: -1497089694
-      Characters_2: 1308203649
       Characters_5: 1204043641
-      Characters_0: -810818620
-      Characters_4: 86911509
-      Characters_3: -1700623344
+      Monk: -810818620
+      Girl: 1308203649
+      Guard: 86911509
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
