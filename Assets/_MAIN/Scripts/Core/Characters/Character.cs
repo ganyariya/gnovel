@@ -28,7 +28,7 @@ namespace Core.Characters
         protected Coroutine hidingCoroutine;
         protected Coroutine movingCoroutine;
 
-        public virtual bool isVisible => false;
+        public virtual bool isVisible { get; set; }
 
         public bool isRevealing => revealingCoroutine != null;
         public bool isHiding => hidingCoroutine != null;

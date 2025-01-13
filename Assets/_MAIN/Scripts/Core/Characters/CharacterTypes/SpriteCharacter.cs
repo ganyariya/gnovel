@@ -16,7 +16,7 @@ namespace Core.Characters
         /// SpriteCharacter Root に設定されている CanvasGroup
         /// alpha 値を変更して画像の表示・非表示を制御するために使用される
         /// </summary>
-        private CanvasGroup canvasGroup => rootRectTransform.GetComponent<CanvasGroup>();
+        private CanvasGroup rootCanvasGroup => rootRectTransform.GetComponent<CanvasGroup>();
 
         /// <summary>
         /// SpriteCharacter がそれぞれ、自身を描画するサブ spriteLayer の list を持つ
@@ -25,12 +25,16 @@ namespace Core.Characters
 
         private string imageAssetDirectory = "";
 
-        public override bool isVisible => isRevealing || canvasGroup.alpha == 1;
+        public override bool isVisible
+        {
+            get { return isRevealing || rootCanvasGroup.alpha == 1; }
+            set { rootCanvasGroup.alpha = value ? 1.0f : 0.0f; }
+        }
 
         public SpriteCharacter(string name, CharacterConfig config, GameObject prefab, string rootCharacterFolder) : base(name, config, prefab, rootCharacterFolder)
         {
             // キャラクタ作成時は非表示にする
-            canvasGroup.alpha = INITIAL_ENABLE ? 1.0f : 0.0f;
+            rootCanvasGroup.alpha = INITIAL_ENABLE ? 1.0f : 0.0f;
             this.imageAssetDirectory = rootCharacterFolder + "/Images";
 
             CollectDefaultLayers();
@@ -49,7 +53,7 @@ namespace Core.Characters
             for (int i = 0; i < rendererRoot.childCount; i++)
             {
                 Transform child = rendererRoot.GetChild(i);
-                Image rendererImage = child.GetComponent<Image>();
+                Image rendererImage = child.GetComponentInChildren<Image>();
 
                 if (rendererImage == null) continue;
 
@@ -110,7 +114,7 @@ namespace Core.Characters
         protected override IEnumerator ShowingOrHiding(bool isShow)
         {
             float targetAlpha = isShow ? 1.0f : 0.0f;
-            CanvasGroup cg = canvasGroup;
+            CanvasGroup cg = rootCanvasGroup;
 
             // 目的の alpha になるまで Coroutine で alpha を変更する
             while (cg.alpha != targetAlpha)
