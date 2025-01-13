@@ -16,10 +16,12 @@ namespace Testing
         IEnumerator CharacterShowHideTest()
         {
             var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya");
+            var raelin = CharacterManager.instance.CreateCharacter("raelin");
 
             yield return new WaitForSeconds(1.0f);
 
             yield return ganyariya.Show();
+            yield return raelin.Show();
 
             yield return new WaitForSeconds(1.0f);
 
