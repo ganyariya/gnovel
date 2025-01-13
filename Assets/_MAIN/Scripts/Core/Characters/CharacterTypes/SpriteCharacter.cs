@@ -101,6 +101,12 @@ namespace Core.Characters
             return Array.Find(sprites, sprite => sprite.name == spriteName);
         }
 
+        public Coroutine ExecuteTransitionSprite(Sprite sprite, int layerIndex = 0, float speed = 1)
+        {
+            if (layerIndex < 0 || layerIndex >= spriteLayers.Count) return null;
+            return spriteLayers[layerIndex].ExecuteTransitionSprite(sprite, speed);
+        }
+
         protected override IEnumerator ShowingOrHiding(bool isShow)
         {
             float targetAlpha = isShow ? 1.0f : 0.0f;

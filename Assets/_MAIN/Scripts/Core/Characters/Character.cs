@@ -8,7 +8,7 @@ namespace Core.Characters
 {
     public abstract class Character
     {
-        public const bool INITIAL_ENABLE = true;
+        public const bool INITIAL_ENABLE = false;
 
         public DialogueSystemController dialogueSystem => DialogueSystemController.instance;
 
