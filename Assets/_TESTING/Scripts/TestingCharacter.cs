@@ -14,7 +14,46 @@ namespace Testing
             // StartCoroutine(CharacterShowHideMoveTest());
             // StartCoroutine(SpriteChangeTest());
             // StartCoroutine(Chap81TutorialTest());
-            StartCoroutine(ColorTest());
+            // StartCoroutine(ColorTest());
+            StartCoroutine(PriorityTest());
+        }
+
+        IEnumerator PriorityTest()
+        {
+            var guard = CharacterManager.instance.CreateCharacter("guard as Generic");
+            var guardRed = CharacterManager.instance.CreateCharacter("Guard Red as Generic");
+            var raelin = CharacterManager.instance.CreateCharacter("raelin") as SpriteCharacter;
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+
+            guardRed.SetColor(Color.red);
+
+            guard.Show();
+            guardRed.Show();
+            ganyariya.Show();
+            raelin.Show();
+
+            raelin.SetScreenPosition(new Vector2(0.3f, 0));
+            ganyariya.SetScreenPosition(new Vector2(0.45f, 0));
+            guard.SetScreenPosition(new Vector2(0.6f, 0));
+            guardRed.SetScreenPosition(new Vector2(0.75f, 0));
+
+            yield return new WaitForSeconds(3);
+
+            guardRed.SetPriority(1000);
+            ganyariya.SetPriority(15);
+            raelin.SetPriority(8);
+            guard.SetPriority(30);
+
+            yield return new WaitForSeconds(3);
+
+            CharacterManager.instance.SortCharacters(new string[] { "Raelin", "ganyariya" });
+
+            yield return new WaitForSeconds(3);
+
+            CharacterManager.instance.SortCharacters();
+
+            yield return new WaitForSeconds(3);
+            CharacterManager.instance.SortCharacters(new string[] { "Raelin", "Guard Red", "Guard", "ganyariya" });
         }
 
         IEnumerator ColorTest()
