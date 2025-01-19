@@ -36,6 +36,18 @@ namespace Testing
 
             yield return ganyariya.ExecuteChangingColor(Color.white, 1);
             yield return new WaitForSeconds(1);
+
+            yield return ganyariya.Flip();
+            yield return new WaitForSeconds(1);
+
+            yield return ganyariya.Flip();
+            yield return new WaitForSeconds(1);
+
+            yield return ganyariya.FlipToLeft(1);
+            yield return new WaitForSeconds(1);
+
+            yield return ganyariya.FlipToLeft(1);
+            yield return new WaitForSeconds(1);
         }
 
         IEnumerator Chap81TutorialTest()

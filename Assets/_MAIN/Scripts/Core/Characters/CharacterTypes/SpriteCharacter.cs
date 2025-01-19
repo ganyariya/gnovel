@@ -166,5 +166,16 @@ namespace Core.Characters
 
             highlightingCoroutine = null;
         }
+
+        public override IEnumerator FlippingToDirection(bool facingLeft, float speed = 1f, bool immediate = false)
+        {
+            var coroutines = new List<Coroutine>();
+            foreach (var layer in spriteLayers)
+            {
+                if (facingLeft) coroutines.Add(layer.FlipToLeft(speed, immediate));
+                else coroutines.Add(layer.FlipToRight(speed, immediate));
+            }
+            foreach (var c in coroutines) yield return c;
+        }
     }
 }
