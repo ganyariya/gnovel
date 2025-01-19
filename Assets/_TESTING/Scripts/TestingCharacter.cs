@@ -15,7 +15,26 @@ namespace Testing
             // StartCoroutine(SpriteChangeTest());
             // StartCoroutine(Chap81TutorialTest());
             // StartCoroutine(ColorTest());
-            StartCoroutine(PriorityTest());
+            // StartCoroutine(PriorityTest());
+            StartCoroutine(AnimateTest());
+        }
+
+        IEnumerator AnimateTest()
+        {
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+            yield return ganyariya.Show();
+
+            yield return new WaitForSeconds(1);
+
+            ganyariya.CallTriggerAnimation("Hop");
+
+            yield return new WaitForSeconds(1);
+
+            ganyariya.CallStateAnimation("Shiver", true);
+
+            yield return new WaitForSeconds(5);
+
+            ganyariya.CallStateAnimation("Shiver", false);
         }
 
         IEnumerator PriorityTest()

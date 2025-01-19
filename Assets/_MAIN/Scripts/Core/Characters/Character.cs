@@ -17,6 +17,7 @@ namespace Core.Characters
         /// （ただしできればゲーム全体で立ち絵で揃えたほうがいい）
         /// </summary>
         public const bool DEFAULT_ORIENTATION_LEFT = true;
+        public const string ANIMATION_REFRESH_TRIGGER = "Refresh";
 
         public DialogueSystemController dialogueSystem => DialogueSystemController.instance;
 
@@ -275,6 +276,23 @@ namespace Core.Characters
         {
             this.priority = priority;
             if (autoSortCharactersOnUI) characterManager.SortCharacters();
+        }
+
+        /// <summary>
+        /// 特定の Trigger を設定することで Animation を呼び出す
+        /// </summary>
+        public void CallTriggerAnimation(string triggerName)
+        {
+            animator.SetTrigger(triggerName);
+        }
+
+        /// <summary>
+        /// 特定の Bool Parameter を設定することで Animation を呼び出す
+        /// </summary>
+        public void CallStateAnimation(string boolName, bool setState)
+        {
+            animator.SetBool(boolName, setState);
+            animator.SetTrigger(ANIMATION_REFRESH_TRIGGER);
         }
 
         public void ApplyTextConfigOnScreen() => dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);
