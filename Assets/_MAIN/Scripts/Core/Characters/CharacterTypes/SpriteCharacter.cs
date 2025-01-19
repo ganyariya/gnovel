@@ -126,5 +126,30 @@ namespace Core.Characters
             revealingCoroutine = null;
             hidingCoroutine = null;
         }
+
+        public override void SetColor(Color color)
+        {
+            base.SetColor(color);
+
+            foreach (var layer in spriteLayers)
+            {
+                layer.SetColor(color);
+            }
+        }
+
+        protected override IEnumerator ChangingColor(Color color, float speed = 1)
+        {
+            var coroutines = new List<Coroutine>();
+            foreach (var layer in spriteLayers)
+            {
+                coroutines.Add(layer.ExecuteChangingColor(color, speed));
+            }
+            foreach (var c in coroutines)
+            {
+                yield return c;
+            }
+
+            changingColorCoroutine = null;
+        }
     }
 }

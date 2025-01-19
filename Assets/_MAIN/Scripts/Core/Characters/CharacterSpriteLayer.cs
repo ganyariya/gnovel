@@ -39,8 +39,10 @@ namespace Core.Characters
 
         private Coroutine transitionLayerCoroutine;
         private Coroutine levelingAlphaCoroutine;
+        private Coroutine changingColorCoroutine;
         public bool isTransitioningLayer => transitionLayerCoroutine != null;
         public bool isLevelingAlpha => levelingAlphaCoroutine != null;
+        public bool isChangingColor => changingColorCoroutine != null;
 
         public CharacterSpriteLayer(Image defaultRenderer, int layerIndex = 0)
         {
@@ -133,6 +135,38 @@ namespace Core.Characters
             }
 
             levelingAlphaCoroutine = null;
+        }
+
+        public void SetColor(Color color)
+        {
+            renderer.color = color;
+            foreach (var oldCG in oldRenderCanvasGroups) oldCG.GetComponent<Image>().color = color;
+        }
+
+        public Coroutine ExecuteChangingColor(Color color, float speed)
+        {
+            if (isChangingColor) characterManager.StopCoroutine(changingColorCoroutine);
+            changingColorCoroutine = characterManager.StartCoroutine(ChangingColor(color, speed));
+            return changingColorCoroutine;
+        }
+
+        private IEnumerator ChangingColor(Color color, float speed)
+        {
+            Color oldColor = renderer.color;
+            List<Image> oldImages = oldRenderCanvasGroups.Select((x) => x.GetComponent<Image>()).ToList();
+
+            float colorPercent = 0;
+            while (colorPercent < 1.0f)
+            {
+                colorPercent += DEFAULT_TRANSITION_SPEED * speed * Time.deltaTime;
+                var targetColor = Color.Lerp(oldColor, color, colorPercent);
+                renderer.color = targetColor;
+                foreach (var image in oldImages) image.color = targetColor;
+                yield return null;
+            }
+
+            // 色の変更が完了
+            changingColorCoroutine = null;
         }
     }
 }
