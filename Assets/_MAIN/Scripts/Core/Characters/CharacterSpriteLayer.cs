@@ -168,5 +168,13 @@ namespace Core.Characters
             // 色の変更が完了
             changingColorCoroutine = null;
         }
+
+        public void StopChangingColor()
+        {
+            if (!isChangingColor) return;
+
+            characterManager.StopCoroutine(changingColorCoroutine);
+            changingColorCoroutine = null;
+        }
     }
 }

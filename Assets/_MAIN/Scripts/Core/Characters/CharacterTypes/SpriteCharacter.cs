@@ -129,10 +129,18 @@ namespace Core.Characters
 
         public override void SetColor(Color color)
         {
+            // Entity に目指すべき色を保持する
             base.SetColor(color);
 
+            // 実際に表示されるべき色（ハイライト考慮）を用意する
+            color = displayColor;
+
+            // 実際の色変更は各レイヤーごとに行う
             foreach (var layer in spriteLayers)
             {
+                // Coroutine で実行中の色遷移処理を停止する
+                layer.StopChangingColor();
+
                 layer.SetColor(color);
             }
         }
@@ -140,16 +148,23 @@ namespace Core.Characters
         protected override IEnumerator ChangingColor(Color color, float speed = 1)
         {
             var coroutines = new List<Coroutine>();
-            foreach (var layer in spriteLayers)
-            {
-                coroutines.Add(layer.ExecuteChangingColor(color, speed));
-            }
-            foreach (var c in coroutines)
-            {
-                yield return c;
-            }
+
+            foreach (var layer in spriteLayers) coroutines.Add(layer.ExecuteChangingColor(displayColor, speed));
+            foreach (var c in coroutines) yield return c;
 
             changingColorCoroutine = null;
+        }
+
+        protected override IEnumerator Highlighting(bool highlighted, float speed = 1f)
+        {
+            Color targetColor = displayColor;
+
+            var coroutines = new List<Coroutine>();
+
+            foreach (var layer in spriteLayers) coroutines.Add(layer.ExecuteChangingColor(targetColor, speed));
+            foreach (var c in coroutines) yield return c;
+
+            highlightingCoroutine = null;
         }
     }
 }
