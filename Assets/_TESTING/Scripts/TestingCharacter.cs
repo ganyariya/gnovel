@@ -13,7 +13,23 @@ namespace Testing
         {
             // StartCoroutine(CharacterShowHideMoveTest());
             // StartCoroutine(SpriteChangeTest());
-            StartCoroutine(Chap81TutorialTest());
+            // StartCoroutine(Chap81TutorialTest());
+            StartCoroutine(ColorTest());
+        }
+
+        IEnumerator ColorTest()
+        {
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+            yield return ganyariya.Show();
+
+            yield return new WaitForSeconds(1);
+            yield return ganyariya.ExecuteChangingColor(Color.white, 1);
+
+            yield return new WaitForSeconds(1);
+            yield return ganyariya.ExecuteChangingColor(Color.green, 1);
+
+            yield return new WaitForSeconds(1);
+            yield return ganyariya.ExecuteChangingColor(Color.blue, 1);
         }
 
         IEnumerator Chap81TutorialTest()
