@@ -52,6 +52,8 @@ namespace Core.Characters
         public bool isFacingLeft => facingLeft;
         public bool isFacingRight => !facingLeft;
 
+        public int priority { get; protected set; } = 0;
+
         protected Coroutine revealingCoroutine;
         protected Coroutine hidingCoroutine;
         protected Coroutine movingCoroutine;
@@ -267,6 +269,12 @@ namespace Core.Characters
         public virtual IEnumerator FlippingToDirection(bool facingLeft, float speed = 1f, bool immediate = false)
         {
             yield return null;
+        }
+
+        public void SetPriority(int priority, bool autoSortCharactersOnUI = true)
+        {
+            this.priority = priority;
+            if (autoSortCharactersOnUI) characterManager.SortCharacters();
         }
 
         public void ApplyTextConfigOnScreen() => dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);

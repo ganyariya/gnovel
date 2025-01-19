@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Core.DisplayDialogue;
 using Core.ScriptableObjects;
 using UnityEngine;
@@ -63,7 +64,7 @@ namespace Core.Characters
             var characterInfo = GetCharacterInfo(characterName);
             var character = CreateAppropriateCharacterFromInfo(characterInfo);
 
-            characters.Add(characterName.ToLower(), character);
+            characters.Add(characterInfo.name.ToLower(), character);
 
             return character;
         }
@@ -108,6 +109,66 @@ namespace Core.Characters
                 default:
                     Debug.LogError("Character type not recognized.");
                     throw new Exception();
+            }
+        }
+
+        /// <summary>
+        /// priority にしたがって画面上のキャラクタの表示順をソートする
+        /// priority が大きいほど画面の手前側のレイヤに表示される
+        /// </summary>
+        public void SortCharacters()
+        {
+            List<Character> activeCharacters =
+                characters
+                .Values
+                .Where(c => c.rootRectTransform.gameObject.activeInHierarchy && c.isVisible)
+                .ToList();
+            List<Character> inactiveCharacters =
+                characters
+                .Values
+                .Except(activeCharacters)
+                .ToList();
+
+            activeCharacters.Sort((a, b) => a.priority.CompareTo(b.priority));
+            List<Character> sortedCharacters = activeCharacters.Concat(inactiveCharacters).ToList();
+
+            SortCharacterIndicesOnHierarchy(sortedCharacters);
+        }
+
+        /// <summary>
+        /// 指定されたキャラクタの表示優先度を上げる
+        /// 
+        /// 未指定のキャラクタの priority は変わらないが, 指定したキャラはそれらより大きくなるため注意
+        /// </summary>
+        public void SortCharacters(string[] characterNames)
+        {
+            List<Character> targetCharacters =
+                characterNames
+                .Select(x => GetCharacter(x))
+                .Where(c => c != null).ToList();
+            List<Character> remainCharacters =
+                characters
+                .Values
+                .Except(targetCharacters)
+                .OrderBy(c => c.priority)
+                .ToList();
+
+            int maxPriority = remainCharacters.Count > 0 ? remainCharacters.Max(c => c.priority) : 0;
+            for (int i = 0; i < targetCharacters.Count; i++)
+            {
+                // 無限ループにならないように false
+                targetCharacters[i].SetPriority(maxPriority + i + 1, autoSortCharactersOnUI: false);
+            }
+
+            List<Character> sortedCharacters = remainCharacters.Concat(targetCharacters).ToList();
+            SortCharacterIndicesOnHierarchy(sortedCharacters);
+        }
+
+        private void SortCharacterIndicesOnHierarchy(List<Character> sortedCharacters)
+        {
+            for (int i = 0; i < sortedCharacters.Count; i++)
+            {
+                sortedCharacters[i].rootRectTransform.SetSiblingIndex(i);
             }
         }
 
