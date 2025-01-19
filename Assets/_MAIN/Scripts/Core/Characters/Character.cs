@@ -9,6 +9,7 @@ namespace Core.Characters
     public abstract class Character
     {
         public const bool INITIAL_ENABLE = false;
+        private const float UN_HIGHLIGHTED_STRENGTH = 0.65f;
 
         public DialogueSystemController dialogueSystem => DialogueSystemController.instance;
 
@@ -29,6 +30,15 @@ namespace Core.Characters
         /// ただし実際に色を適用するには Image の color を変更する必要がある
         /// </summary>
         public Color color { get; protected set; } = Color.white;
+        /// <summary>
+        /// color は Character が目指す DDD 的な色のことを指す
+        /// 一方 displayColor は実際に画面に表示されている色のことを指す
+        /// </summary>
+        protected Color displayColor => isHighlighted ? highlightedColor : unHighlightedColor;
+
+        protected Color highlightedColor => color;
+        protected Color unHighlightedColor => new Color(color.r * UN_HIGHLIGHTED_STRENGTH, color.g * UN_HIGHLIGHTED_STRENGTH, color.b * UN_HIGHLIGHTED_STRENGTH, color.a);
+        public bool isHighlighted { get; protected set; } = true;
 
         public virtual bool isVisible { get; set; }
 
@@ -36,12 +46,16 @@ namespace Core.Characters
         protected Coroutine hidingCoroutine;
         protected Coroutine movingCoroutine;
         protected Coroutine changingColorCoroutine;
-
+        protected Coroutine highlightingCoroutine;
 
         public bool isRevealing => revealingCoroutine != null;
         public bool isHiding => hidingCoroutine != null;
         public bool isMoving => movingCoroutine != null;
         public bool isChangingColor => changingColorCoroutine != null;
+
+        private bool isTransitioningHighlight => highlightingCoroutine != null;
+        public bool isHighlighting => isHighlighted && isTransitioningHighlight;
+        public bool isUnHighlighting => !isHighlighted && isTransitioningHighlight;
 
         protected CharacterManager characterManager => CharacterManager.instance;
 
@@ -189,6 +203,27 @@ namespace Core.Characters
             changingColorCoroutine = characterManager.StartCoroutine(ChangingColor(color, speed));
 
             return changingColorCoroutine;
+        }
+
+        public Coroutine ExecuteHighlighting(float speed = 1f)
+        {
+            if (isHighlighting) return highlightingCoroutine;
+            if (isUnHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
+
+            isHighlighted = true;
+            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(true, speed));
+        }
+        public Coroutine ExecuteUnHighlighting(float speed = 1f)
+        {
+            if (isUnHighlighting) return highlightingCoroutine;
+            if (isHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
+
+            isHighlighted = false;
+            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed));
+        }
+        protected virtual IEnumerator Highlighting(bool highlighted, float speed = 1f)
+        {
+            yield return null;
         }
 
         /// <summary>

@@ -22,14 +22,20 @@ namespace Testing
             var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
             yield return ganyariya.Show();
 
+            yield return ganyariya.ExecuteHighlighting();
             yield return new WaitForSeconds(1);
+
+            yield return ganyariya.ExecuteUnHighlighting();
+            yield return new WaitForSeconds(1);
+
+            yield return ganyariya.ExecuteChangingColor(Color.red, 1);
+            yield return new WaitForSeconds(1);
+
+            yield return ganyariya.ExecuteHighlighting();
+            yield return new WaitForSeconds(1);
+
             yield return ganyariya.ExecuteChangingColor(Color.white, 1);
-
             yield return new WaitForSeconds(1);
-            yield return ganyariya.ExecuteChangingColor(Color.green, 1);
-
-            yield return new WaitForSeconds(1);
-            yield return ganyariya.ExecuteChangingColor(Color.blue, 1);
         }
 
         IEnumerator Chap81TutorialTest()
