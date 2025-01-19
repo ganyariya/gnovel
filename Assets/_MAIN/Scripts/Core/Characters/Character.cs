@@ -10,6 +10,13 @@ namespace Core.Characters
     {
         public const bool INITIAL_ENABLE = false;
         private const float UN_HIGHLIGHTED_STRENGTH = 0.65f;
+        /// <summary>
+        /// 今回のゲームエンジンでは　左向きがデフォルト
+        /// @todo
+        /// 各キャラの ScriptableObject にどちら向きか？の設定を用意すれば各キャラごとにデフォの向きを設定できる
+        /// （ただしできればゲーム全体で立ち絵で揃えたほうがいい）
+        /// </summary>
+        public const bool DEFAULT_ORIENTATION_LEFT = true;
 
         public DialogueSystemController dialogueSystem => DialogueSystemController.instance;
 
@@ -39,14 +46,18 @@ namespace Core.Characters
         protected Color highlightedColor => color;
         protected Color unHighlightedColor => new Color(color.r * UN_HIGHLIGHTED_STRENGTH, color.g * UN_HIGHLIGHTED_STRENGTH, color.b * UN_HIGHLIGHTED_STRENGTH, color.a);
         public bool isHighlighted { get; protected set; } = true;
+        protected bool facingLeft = DEFAULT_ORIENTATION_LEFT;
 
         public virtual bool isVisible { get; set; }
+        public bool isFacingLeft => facingLeft;
+        public bool isFacingRight => !facingLeft;
 
         protected Coroutine revealingCoroutine;
         protected Coroutine hidingCoroutine;
         protected Coroutine movingCoroutine;
         protected Coroutine changingColorCoroutine;
         protected Coroutine highlightingCoroutine;
+        protected Coroutine flippingCoroutine;
 
         public bool isRevealing => revealingCoroutine != null;
         public bool isHiding => hidingCoroutine != null;
@@ -56,6 +67,8 @@ namespace Core.Characters
         private bool isTransitioningHighlight => highlightingCoroutine != null;
         public bool isHighlighting => isHighlighted && isTransitioningHighlight;
         public bool isUnHighlighting => !isHighlighted && isTransitioningHighlight;
+
+        public bool isFlipping => flippingCoroutine != null;
 
         protected CharacterManager characterManager => CharacterManager.instance;
 
@@ -230,6 +243,28 @@ namespace Core.Characters
         /// override method で実装する
         /// </summary>
         protected virtual IEnumerator ChangingColor(Color color, float speed = 1.0f)
+        {
+            yield return null;
+        }
+
+        public Coroutine Flip(float speed = 1f, bool immediate = false)
+        {
+            if (isFacingLeft) return FlipToRight(speed, immediate);
+            else return FlipToLeft(speed, immediate);
+        }
+        public Coroutine FlipToLeft(float speed = 1f, bool immediate = false)
+        {
+            if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
+            facingLeft = true;
+            return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(true, speed, immediate));
+        }
+        public Coroutine FlipToRight(float speed = 1f, bool immediate = false)
+        {
+            if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
+            facingLeft = false;
+            return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(false, speed, immediate));
+        }
+        public virtual IEnumerator FlippingToDirection(bool facingLeft, float speed = 1f, bool immediate = false)
         {
             yield return null;
         }

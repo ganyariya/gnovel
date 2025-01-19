@@ -36,13 +36,17 @@ namespace Core.Characters
         /// 画像の fade out を実現する
         /// </summary>
         private List<CanvasGroup> oldRenderCanvasGroups = new List<CanvasGroup>();
+        private bool isFacingLeft = Character.DEFAULT_ORIENTATION_LEFT;
 
         private Coroutine transitionLayerCoroutine;
         private Coroutine levelingAlphaCoroutine;
         private Coroutine changingColorCoroutine;
+        private Coroutine flippingCoroutine;
+
         public bool isTransitioningLayer => transitionLayerCoroutine != null;
         public bool isLevelingAlpha => levelingAlphaCoroutine != null;
         public bool isChangingColor => changingColorCoroutine != null;
+        public bool isFlipping => flippingCoroutine != null;
 
         public CharacterSpriteLayer(Image defaultRenderer, int layerIndex = 0)
         {
@@ -84,6 +88,9 @@ namespace Core.Characters
         /// <summary>
         /// renderer を複製して新しい renderer を作成して parent 配下に設定する
         /// 副作用を多く持つことに注意する
+        /// 
+        /// この時点では新しい renderer は alpha=0 のため表示されない
+        /// ExecuteLevelingAlpha を呼ぶことで新しい画像を表示する
         /// </summary>
         private Image CopyAndRegisterRenderer(Transform parent)
         {
@@ -102,6 +109,11 @@ namespace Core.Characters
             return newRenderer;
         }
 
+        /// <summary>
+        /// 新しい画像の alpha を 1 に近づける
+        /// かつ古い画像の alpha を 0 に近づける
+        /// これで画像の transition を実現する
+        /// </summary>
         private Coroutine ExecuteLevelingAlpha()
         {
             if (isLevelingAlpha) return levelingAlphaCoroutine;
@@ -176,5 +188,52 @@ namespace Core.Characters
             characterManager.StopCoroutine(changingColorCoroutine);
             changingColorCoroutine = null;
         }
+
+        /// <summary>
+        /// Character の Flip はすべての画像を判定させる
+        /// 一方で CharacterSpriteLayer の Flip は指定したレイヤーの画像のみを判定させる
+        /// これによって 目線だけ左を向く、などが行える
+        /// </summary>
+        public Coroutine Flip(float speed = 1f, bool immediate = false)
+        {
+            if (isFacingLeft) return FlipToRight(speed, immediate);
+            else return FlipToLeft(speed, immediate);
+        }
+        public Coroutine FlipToLeft(float speed = 1f, bool immediate = false)
+        {
+            if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
+            isFacingLeft = true;
+            return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(true, speed, immediate));
+        }
+        public Coroutine FlipToRight(float speed = 1f, bool immediate = false)
+        {
+            if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
+            isFacingLeft = false;
+            return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(false, speed, immediate));
+        }
+
+        public IEnumerator FlippingToDirection(bool facingLeft, float speed = 1f, bool immediate = false)
+        {
+            float xScale = facingLeft ? 1 : -1;
+            Vector3 targetScale = new Vector3(xScale, renderer.transform.localScale.y, renderer.transform.localScale.z);
+
+            if (immediate)
+            {
+                renderer.transform.localScale = targetScale;
+            }
+            else
+            {
+                // 新しい Image を作成して反転させる
+                // 反転前の画像は oldRenderCanvasGroups に送る
+                Image newRenderer = CopyAndRegisterRenderer(renderer.transform.parent);
+                newRenderer.transform.localScale = targetScale;
+
+                transitionSpeedMultiplier = speed;
+                yield return ExecuteLevelingAlpha();
+            }
+
+            flippingCoroutine = null;
+        }
     }
 }
+
