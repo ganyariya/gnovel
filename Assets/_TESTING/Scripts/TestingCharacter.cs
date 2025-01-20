@@ -16,7 +16,52 @@ namespace Testing
             // StartCoroutine(Chap81TutorialTest());
             // StartCoroutine(ColorTest());
             // StartCoroutine(PriorityTest());
-            StartCoroutine(AnimateTest());
+            // StartCoroutine(AnimateTest());
+
+            StartCoroutine(Chap93TutorialTest());
+        }
+
+        IEnumerator Chap93TutorialTest()
+        {
+            Func<float, WaitForSeconds> wait = (float seconds) => new WaitForSeconds(seconds);
+
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+            var raelin = CharacterManager.instance.CreateCharacter("raelin") as SpriteCharacter;
+
+            ganyariya.isVisible = false;
+            raelin.isVisible = false;
+
+            ganyariya.MoveToScreenPosition(new Vector2(0.1f, 0));
+            raelin.MoveToScreenPosition(new Vector2(0.9f, 0));
+
+            yield return wait(1.0f);
+
+            ganyariya.Show();
+            yield return raelin.Show();
+            yield return wait(0.5f);
+
+            yield return ganyariya.Say("\"こんにちは。今週の進捗を振り返るよ\"");
+
+            ganyariya.ExecuteHighlighting();
+            raelin.ExecuteUnHighlighting();
+            yield return ganyariya.Say("\"はじめに、色が変更できるようになったよ\"");
+
+            ganyariya.ExecuteUnHighlighting();
+            raelin.ExecuteHighlighting();
+            yield return raelin.Say("\"色を暗くすることで、今話している人がわかりやすくなったね\"");
+
+            ganyariya.CallTriggerAnimation("Hop");
+            ganyariya.ExecuteHighlighting();
+            yield return ganyariya.Say("\"続いて、簡単なアニメーションを実行できるようになったよ\"");
+
+            raelin.CallStateAnimation("Shiver", true);
+            raelin.Say("\"Animation 、よくわからない...\"");
+            yield return wait(1f);
+
+            raelin.CallStateAnimation("Shiver", false);
+            yield return wait(1f);
+
+            yield return ganyariya.Say("\"また来週もがんばろう\"");
         }
 
         IEnumerator AnimateTest()
