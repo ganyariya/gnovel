@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58229d41c24a7fb4aafd097ab43bcc2a, type: 3}
-  m_Name: exp_02.exp3
+  m_Name: shocked.exp3
   m_EditorClassIdentifier: 
   Type: Live2D Expression
   FadeInTime: 0.5
@@ -20,19 +20,19 @@ MonoBehaviour:
     Value: 0
     Blend: 1
   - Id: ParamEyeLOpen
-    Value: 0
+    Value: 1.2
     Blend: 2
   - Id: ParamEyeLSmile
-    Value: 1
+    Value: 0
     Blend: 1
   - Id: ParamEyeLForm
     Value: 0
     Blend: 1
   - Id: ParamEyeROpen
-    Value: 0
+    Value: 1.2
     Blend: 2
   - Id: ParamEyeRSmile
-    Value: 1
+    Value: 0
     Blend: 1
   - Id: ParamEyeRForm
     Value: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
     Value: 0
     Blend: 1
   - Id: ParamEyeBallForm
-    Value: 0
+    Value: -1
     Blend: 1
   - Id: ParamEyeEffect
     Value: 0
@@ -68,10 +68,10 @@ MonoBehaviour:
     Value: 0
     Blend: 1
   - Id: ParamBrowLForm
-    Value: 0
+    Value: 1
     Blend: 1
   - Id: ParamBrowRForm
-    Value: 0
+    Value: 1
     Blend: 1
   - Id: ParamA
     Value: 0
@@ -89,10 +89,10 @@ MonoBehaviour:
     Value: 0
     Blend: 1
   - Id: ParamMouthUp
-    Value: 0
+    Value: -1
     Blend: 1
   - Id: ParamMouthDown
-    Value: 0
+    Value: 1
     Blend: 1
   - Id: ParamMouthAngry
     Value: 0
