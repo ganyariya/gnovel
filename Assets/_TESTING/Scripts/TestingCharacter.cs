@@ -26,8 +26,10 @@ namespace Testing
         IEnumerator Live2DTest()
         {
             var mao = CharacterManager.instance.CreateCharacter("mao") as Live2DCharacter;
-            mao.SetScreenPosition(Vector2.one);
-            yield return null;
+            mao.SetScreenPosition(new Vector2(0.5f, 0f));
+            yield return new WaitForSeconds(3.0f);
+
+            mao.playMotion("Bounce");
         }
 
         IEnumerator Chap93TutorialTest()
