@@ -13,8 +13,15 @@ namespace Core.Characters
         public static CharacterManager instance { get; private set; }
         private Dictionary<string, Character> characters = new Dictionary<string, Character>();
 
-        [SerializeField] private RectTransform _characterLayer = null;
-        public RectTransform characterLayer => _characterLayer;
+        [SerializeField] private RectTransform _spriteCharacterPanel = null;
+        /// <summary>
+        /// Panel RectTransform 配下に sprite character をそれぞれ生成して配置する
+        /// </summary>
+        public RectTransform spriteCharacterPanel => _spriteCharacterPanel;
+        [SerializeField] private RectTransform _live2DCharacterPanel = null;
+        public RectTransform live2DCharacterPanel => _live2DCharacterPanel;
+        [SerializeField] private RectTransform _model3DCharacterPanel = null;
+        public RectTransform model3DCharacterPanel => _model3DCharacterPanel;
 
         /// <summary>
         /// CreateCharacter(guard1:name as Generic:prefabName) のようにすることで同じ prefab のキャラを複数用意できるようにする
