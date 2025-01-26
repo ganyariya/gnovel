@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Characters;
 using Core.DisplayDialogue;
+using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
 namespace Testing
@@ -18,7 +19,15 @@ namespace Testing
             // StartCoroutine(PriorityTest());
             // StartCoroutine(AnimateTest());
 
-            StartCoroutine(Chap93TutorialTest());
+            // StartCoroutine(Chap93TutorialTest());
+            StartCoroutine(Live2DTest());
+        }
+
+        IEnumerator Live2DTest()
+        {
+            var mao = CharacterManager.instance.CreateCharacter("mao") as Live2DCharacter;
+            mao.SetScreenPosition(Vector2.one);
+            yield return null;
         }
 
         IEnumerator Chap93TutorialTest()

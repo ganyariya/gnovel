@@ -87,7 +87,24 @@ namespace Core.Characters
             // ただこの設計だと Character が直接 Unity と依存してしまい うれしくないね...
             if (prefab != null)
             {
-                GameObject prefabInstance = Object.Instantiate(prefab, characterManager.characterLayer);
+                RectTransform targetCharacterPanel = null;
+                switch (config.characterType)
+                {
+                    case CharacterType.Sprite:
+                    case CharacterType.SpriteSheet:
+                        targetCharacterPanel = characterManager.spriteCharacterPanel;
+                        break;
+                    case CharacterType.Live2D:
+                        targetCharacterPanel = characterManager.live2DCharacterPanel;
+                        break;
+                    case CharacterType.Model3D:
+                        targetCharacterPanel = characterManager.model3DCharacterPanel;
+                        break;
+                    default:
+                        break;
+                }
+
+                GameObject prefabInstance = Object.Instantiate(prefab, targetCharacterPanel);
                 prefabInstance.name = characterManager.FormatCharacterPath(characterManager.characterPrefabNameFormat, name);
                 prefabInstance.SetActive(true);
                 rootRectTransform = prefabInstance.GetComponent<RectTransform>();
