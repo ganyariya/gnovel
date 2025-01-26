@@ -27,9 +27,25 @@ namespace Testing
         {
             var mao = CharacterManager.instance.CreateCharacter("mao") as Live2DCharacter;
             mao.SetScreenPosition(new Vector2(0.5f, 0f));
+
+            var rice = CharacterManager.instance.CreateCharacter("rice") as Live2DCharacter;
+            rice.SetScreenPosition(new Vector2(0.2f, 0f));
             yield return new WaitForSeconds(3.0f);
 
             mao.playMotion("Bounce");
+            yield return new WaitForSeconds(6.0f);
+
+            mao.SetExpression(5);
+            yield return new WaitForSeconds(1.0f);
+
+            mao.SetExpression(2);
+            yield return new WaitForSeconds(1.0f);
+
+            mao.SetExpression(4);
+            yield return new WaitForSeconds(1.0f);
+
+            mao.SetExpression("shocked");
+            yield return new WaitForSeconds(1.0f);
         }
 
         IEnumerator Chap93TutorialTest()
