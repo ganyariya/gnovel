@@ -26,7 +26,7 @@ namespace Core.Characters
             cubismExpressionController = live2DMotionAnimator.GetComponent<CubismExpressionController>();
         }
 
-        public void playMotion(string animationName)
+        public void PlayMotion(string animationName)
         {
             live2DMotionAnimator.Play(animationName);
         }

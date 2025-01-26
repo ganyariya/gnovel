@@ -32,7 +32,7 @@ namespace Testing
             rice.SetScreenPosition(new Vector2(0.2f, 0f));
             yield return new WaitForSeconds(3.0f);
 
-            mao.playMotion("Bounce");
+            mao.PlayMotion("Bounce");
             yield return new WaitForSeconds(6.0f);
 
             mao.SetExpression(5);
