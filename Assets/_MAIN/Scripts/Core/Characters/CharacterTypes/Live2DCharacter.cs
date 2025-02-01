@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Live2D.Cubism.Framework.Expression;
 using Live2D.Cubism.Rendering;
 using UnityEngine;
@@ -9,15 +8,21 @@ namespace Core.Characters
     public class Live2DCharacter : Character
     {
         private const int UNDEFINED_EXPRESSION = -1;
+        private const float DEFAULT_TRANSITION_SPEED = 3;
 
         /// <summary>
         /// BaseCharacter に Animator が存在する
         /// 一方 Live2D にはデフォルトで設定されている motionAnimator がありそちらを変わりに利用する
         /// </summary>
         private Animator live2DMotionAnimator;
-
         private CubismRenderController cubismRenderController;
         private CubismExpressionController cubismExpressionController;
+
+        public override bool isVisible
+        {
+            get => isRevealing || cubismRenderController.Opacity == 1;
+            set => cubismRenderController.Opacity = value ? 1 : 0;
+        }
 
         public Live2DCharacter(string name, CharacterConfig config, GameObject prefab, string rootCharacterFolder) : base(name, config, prefab, rootCharacterFolder)
         {
@@ -56,6 +61,20 @@ namespace Core.Characters
             }
 
             return UNDEFINED_EXPRESSION;
+        }
+
+        protected override IEnumerator ShowingOrHiding(bool isShow)
+        {
+            float targetAlpha = isShow ? 1 : 0;
+
+            while (cubismRenderController.Opacity != targetAlpha)
+            {
+                cubismRenderController.Opacity = Mathf.MoveTowards(cubismRenderController.Opacity, targetAlpha, Time.deltaTime * DEFAULT_TRANSITION_SPEED);
+                yield return null;
+            }
+
+            revealingCoroutine = null;
+            hidingCoroutine = null;
         }
     }
 }
