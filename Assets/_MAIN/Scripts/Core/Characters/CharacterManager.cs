@@ -176,6 +176,7 @@ namespace Core.Characters
             for (int i = 0; i < sortedCharacters.Count; i++)
             {
                 sortedCharacters[i].rootRectTransform.SetSiblingIndex(i);
+                sortedCharacters[i].CallbackOnSort(i);
             }
         }
 

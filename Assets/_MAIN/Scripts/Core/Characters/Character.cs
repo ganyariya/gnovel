@@ -315,6 +315,11 @@ namespace Core.Characters
         public void ApplyTextConfigOnScreen() => dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);
         public void ResetConfig() => config = CharacterManager.instance.GetCharacterConfig(name);
 
+        /// <summary>
+        /// 画面上でソートが行われたときに呼び出せるコールバックイベント
+        /// </summary>
+        public virtual void CallbackOnSort(int sortedIndex) { }
+
         public enum CharacterType
         {
             Text,

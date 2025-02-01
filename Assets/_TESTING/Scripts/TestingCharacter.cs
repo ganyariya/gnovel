@@ -30,22 +30,41 @@ namespace Testing
 
             var rice = CharacterManager.instance.CreateCharacter("rice") as Live2DCharacter;
             rice.SetScreenPosition(new Vector2(0.2f, 0f));
-            yield return new WaitForSeconds(3.0f);
 
-            mao.PlayMotion("Bounce");
-            yield return new WaitForSeconds(6.0f);
 
-            mao.SetExpression(5);
+            mao.isVisible = false;
+            rice.isVisible = false;
+
             yield return new WaitForSeconds(1.0f);
 
-            mao.SetExpression(2);
-            yield return new WaitForSeconds(1.0f);
+            yield return mao.Show();
+            yield return rice.Show();
+            yield return mao.Hide();
+            yield return mao.Show();
 
-            mao.SetExpression(4);
-            yield return new WaitForSeconds(1.0f);
+            yield return mao.ExecuteUnHighlighting(0.2f);
+            yield return mao.ExecuteHighlighting(0.2f);
+            yield return mao.Flip();
 
-            mao.SetExpression("shocked");
+            CharacterManager.instance.SortCharacters(new string[] { "mao", "rice", "koharu" });
+
             yield return new WaitForSeconds(1.0f);
+            CharacterManager.instance.SortCharacters(new string[] { "koharu", "rice", "mao" });
+
+            // mao.PlayMotion("Bounce");
+            // yield return new WaitForSeconds(6.0f);
+
+            // mao.SetExpression(5);
+            // yield return new WaitForSeconds(1.0f);
+
+            // mao.SetExpression(2);
+            // yield return new WaitForSeconds(1.0f);
+
+            // mao.SetExpression(4);
+            // yield return new WaitForSeconds(1.0f);
+
+            // mao.SetExpression("shocked");
+            // yield return new WaitForSeconds(1.0f);
         }
 
         IEnumerator Chap93TutorialTest()
