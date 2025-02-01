@@ -31,6 +31,7 @@ namespace Testing
             var rice = CharacterManager.instance.CreateCharacter("rice") as Live2DCharacter;
             rice.SetScreenPosition(new Vector2(0.2f, 0f));
 
+
             mao.isVisible = false;
             rice.isVisible = false;
 
@@ -38,24 +39,32 @@ namespace Testing
 
             yield return mao.Show();
             yield return rice.Show();
+            yield return mao.Hide();
+            yield return mao.Show();
 
-            yield return mao.ExecuteChangingColor(Color.red, 0.2f);
-            yield return mao.ExecuteChangingColor(Color.white, 0.2f);
+            yield return mao.ExecuteUnHighlighting(0.2f);
+            yield return mao.ExecuteHighlighting(0.2f);
+            yield return mao.Flip();
 
-            mao.PlayMotion("Bounce");
-            yield return new WaitForSeconds(6.0f);
+            CharacterManager.instance.SortCharacters(new string[] { "mao", "rice", "koharu" });
 
-            mao.SetExpression(5);
             yield return new WaitForSeconds(1.0f);
+            CharacterManager.instance.SortCharacters(new string[] { "koharu", "rice", "mao" });
 
-            mao.SetExpression(2);
-            yield return new WaitForSeconds(1.0f);
+            // mao.PlayMotion("Bounce");
+            // yield return new WaitForSeconds(6.0f);
 
-            mao.SetExpression(4);
-            yield return new WaitForSeconds(1.0f);
+            // mao.SetExpression(5);
+            // yield return new WaitForSeconds(1.0f);
 
-            mao.SetExpression("shocked");
-            yield return new WaitForSeconds(1.0f);
+            // mao.SetExpression(2);
+            // yield return new WaitForSeconds(1.0f);
+
+            // mao.SetExpression(4);
+            // yield return new WaitForSeconds(1.0f);
+
+            // mao.SetExpression("shocked");
+            // yield return new WaitForSeconds(1.0f);
         }
 
         IEnumerator Chap93TutorialTest()
