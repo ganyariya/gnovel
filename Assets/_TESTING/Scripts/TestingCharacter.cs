@@ -39,6 +39,9 @@ namespace Testing
             yield return mao.Show();
             yield return rice.Show();
 
+            yield return mao.ExecuteChangingColor(Color.red, 0.2f);
+            yield return mao.ExecuteChangingColor(Color.white, 0.2f);
+
             mao.PlayMotion("Bounce");
             yield return new WaitForSeconds(6.0f);
 

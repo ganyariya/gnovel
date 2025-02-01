@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Live2D.Cubism.Framework.Expression;
 using Live2D.Cubism.Rendering;
 using UnityEngine;
@@ -75,6 +76,37 @@ namespace Core.Characters
 
             revealingCoroutine = null;
             hidingCoroutine = null;
+        }
+
+        public override void SetColor(Color color)
+        {
+            base.SetColor(color);
+
+            foreach (var renderer in cubismRenderController.Renderers)
+            {
+                renderer.Color = displayColor;
+            }
+        }
+
+        protected override IEnumerator ChangingColor(Color color, float speed = 1)
+        {
+            yield return ChangingCubismRendererColor(cubismRenderController.Renderers, color, speed);
+        }
+
+        private IEnumerator ChangingCubismRendererColor(CubismRenderer[] cubismRenderers, Color color, float speed)
+        {
+            Color oldColor = cubismRenderers[0].Color;
+
+            float colorPercent = 0;
+            while (colorPercent < 1.0f)
+            {
+                colorPercent += DEFAULT_TRANSITION_SPEED * speed * Time.deltaTime;
+                var targetColor = Color.Lerp(oldColor, color, colorPercent);
+                foreach (var renderer in cubismRenderers) renderer.Color = targetColor;
+                yield return null;
+            }
+
+            yield return null;
         }
     }
 }
