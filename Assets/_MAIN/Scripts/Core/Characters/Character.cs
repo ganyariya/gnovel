@@ -320,6 +320,8 @@ namespace Core.Characters
         /// </summary>
         public virtual void CallbackOnSort(int sortedIndex) { }
 
+        public virtual void CastingExpression(int layer, string expression) { }
+
         public enum CharacterType
         {
             Text,
