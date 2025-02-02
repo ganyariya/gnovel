@@ -320,6 +320,11 @@ namespace Core.Characters
         /// </summary>
         public virtual void CallbackOnSort(int sortedIndex) { }
 
+        /// <summary>
+        /// 自身キャラのレイヤー $layer について $expression を表示する
+        /// 
+        /// 2D キャラの場合 $expression = 画像の名前になる
+        /// </summary>
         public virtual void CastingExpression(int layer, string expression) { }
 
         public enum CharacterType

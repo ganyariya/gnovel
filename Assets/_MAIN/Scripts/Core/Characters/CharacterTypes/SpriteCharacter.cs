@@ -180,8 +180,15 @@ namespace Core.Characters
 
         public override void CastingExpression(int layer, string expression)
         {
-            /// 3D 側で実装していると思うので実装しないとだめ
-            /// TODO: 実装する
+            var sprite = FetchSpriteFromResources(expression);
+
+            if (sprite == null)
+            {
+                Debug.LogWarning($"No sprite found in {imageAssetDirectory}, {expression}");
+                return;
+            }
+
+            ExecuteTransitionSprite(sprite, layer);
         }
     }
 }
