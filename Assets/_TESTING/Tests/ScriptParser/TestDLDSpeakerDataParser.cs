@@ -30,7 +30,8 @@ public class TestDLDSpeakerDataParser
                     "ganyariya",
                     "",
                     Vector2.zero,
-                    new List<(int layer, string expression)>()
+                    new List<(int layer, string expression)>(),
+                    false
                 )
             ),
             new(
@@ -39,7 +40,8 @@ public class TestDLDSpeakerDataParser
                     "ganyariya",
                     "???",
                     Vector2.zero,
-                    new List<(int layer, string expression)>()
+                    new List<(int layer, string expression)>(),
+                    false
                 )
             ),
             new(
@@ -48,7 +50,8 @@ public class TestDLDSpeakerDataParser
                     "ganyariya",
                     "???",
                     new Vector2(1, 0.8f),
-                    new List<(int layer, string expression)>()
+                    new List<(int layer, string expression)>(),
+                    false
                 )
             ),
             new(
@@ -57,7 +60,19 @@ public class TestDLDSpeakerDataParser
                     "ganyariya",
                     "???",
                     new Vector2(1, 0.8f),
-                    new List<(int layer, string expression)>{(0, "Happy"), (1, "Sad"),}
+                    new List<(int layer, string expression)>{(0, "Happy"), (1, "Sad"),},
+                    false
+                )
+            ),
+            // enter keyword のテスト
+            new(
+                "enter ganyariya [0:Happy,1:Sad] as ??? at 1:0.8",
+                new(
+                    "ganyariya",
+                    "???",
+                    new Vector2(1, 0.8f),
+                    new List<(int layer, string expression)>{(0, "Happy"), (1, "Sad"),},
+                    true
                 )
             ),
         };

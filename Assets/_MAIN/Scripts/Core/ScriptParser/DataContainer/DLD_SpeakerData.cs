@@ -26,6 +26,10 @@ namespace Core.ScriptParser
 
         public Vector2 castPosition;
         public List<(int layer, string expression)> CastExpressions { get; set; }
+        /// <summary>
+        /// キャラを画面に登場させるかどうか
+        /// </summary>
+        public bool isAppearanceCharacter = false;
 
         private const string NAME_CAST_ID = " as ";
         private const string POSITION_CAST_ID = " at ";
@@ -33,6 +37,11 @@ namespace Core.ScriptParser
         private const char POSITION_AXIS_DELIMITER = ':';
         private const char EXPRESSION_LAYER_JOINER = ',';
         private const char EXPRESSION_LAYER_DELIMITER = ':';
+        /// <summary>
+        /// テキストファイルからキャラを同時に表示するためのキーワード
+        /// </summary>
+        private const string ENTER_KEYWORD = "enter ";
+
         private readonly static Regex parsePattern = new Regex($@"{NAME_CAST_ID}|{POSITION_CAST_ID}|{EXPRESSION_CAST_ID.Insert(EXPRESSION_CAST_ID.Length - 1, @"\")}");
 
         public bool HasSpeaker => DisplayName != string.Empty;
@@ -47,16 +56,29 @@ namespace Core.ScriptParser
             Debug.Log(@$"DLD_SpeakerData Parsed [original={rawSpeaker}][name={name}][castName={castName}][castPosition={castPosition}][castExpressions={string.Join(',', CastExpressions.Select(x => $"{x.layer}:{x.expression}"))}]");
         }
 
-        public DLD_SpeakerData(string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions)
+        public DLD_SpeakerData(string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions, bool isAppearanceCharacter)
         {
             this.name = name;
             this.castName = castName;
             this.castPosition = castPosition;
             this.CastExpressions = castExpressions;
+            this.isAppearanceCharacter = isAppearanceCharacter;
         }
 
-        public static (string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions) ParseSpeakerData(string rawSpeaker)
+        private string PreProcessKeywords(string rawSpeaker)
         {
+            if (rawSpeaker.StartsWith(ENTER_KEYWORD))
+            {
+                rawSpeaker = rawSpeaker.Substring(ENTER_KEYWORD.Length);
+                isAppearanceCharacter = true;
+            }
+            return rawSpeaker;
+        }
+
+        public (string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions) ParseSpeakerData(string rawSpeaker)
+        {
+            rawSpeaker = PreProcessKeywords(rawSpeaker);
+
             MatchCollection matches = parsePattern.Matches(rawSpeaker);
             string name = "";
             string castName = "";

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Characters;
 using Core.CommandDB;
 using Core.ScriptParser;
 using UnityEngine;
@@ -87,6 +88,14 @@ namespace Core.DisplayDialogue
         {
             if (lineData.HasSpeaker)
             {
+                var character = CharacterManager.instance.GetCharacter(lineData.speakerData.name, false);
+
+                if (lineData.speakerData.isAppearanceCharacter)
+                {
+                    character ??= CharacterManager.instance.CreateCharacter(lineData.speakerData.name);
+                    character.Show();
+                }
+
                 // UI にキャラ名を表示する
                 dialogueSystem.DisplaySpeakerName(lineData.speakerData.DisplayName);
                 // UI のキャラ名にフォントとフォントカラー設定を反映する

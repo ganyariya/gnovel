@@ -2,7 +2,7 @@ print_1p(テストだよ)
 
 ganyariya as ??? "こんにちは！{wa 2}"
 
-ganyariya "(私は ganyariya といいます。)"
+enter ganyariya "(私は ganyariya といいます。)"
 
 ganyariya "私は ganyariya といいます。"
 
