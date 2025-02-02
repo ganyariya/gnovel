@@ -4,9 +4,10 @@ enter ganyariya as ??? at 1 "こんにちは！{wa 0.1}"
 
 enter ganyariya at 0 "(私は ganyariya といいます。)"
 
-ganyariya at 0.5 "私は ganyariya といいます。"
+enter raelin at 0.5 "私は raelin といいます"
 
-ganyariya "動いてみます。" move_character(left),move_character(right)
+raelin at 0.6 [1:A_Sad] "悲しいことがありました..."
+raelin [1:A_SoSmile] "でも楽しいこともあるのでがんばれます"
 
 
 "普段はバックエンドの処理を書いたり{wa 2}、競技プログラミングをしたりしています。"
