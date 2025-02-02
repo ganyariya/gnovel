@@ -85,7 +85,13 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator RunningSingleDialogue(DialogueLineData lineData)
         {
-            if (lineData.HasSpeaker) dialogueSystem.DisplaySpeakerName(lineData.speakerData.DisplayName);
+            if (lineData.HasSpeaker)
+            {
+                // UI にキャラ名を表示する
+                dialogueSystem.DisplaySpeakerName(lineData.speakerData.DisplayName);
+                // UI のキャラ名にフォントとフォントカラー設定を反映する
+                dialogueSystem.ApplySpeakerConfigToDialogueContainer(lineData.speakerData.name);
+            }
 
             foreach (var segment in lineData.dialogueData.segments)
             {
