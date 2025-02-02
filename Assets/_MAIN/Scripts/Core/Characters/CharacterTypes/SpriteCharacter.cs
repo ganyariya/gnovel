@@ -177,5 +177,11 @@ namespace Core.Characters
             }
             foreach (var c in coroutines) yield return c;
         }
+
+        public override void CastingExpression(int layer, string expression)
+        {
+            /// 3D 側で実装していると思うので実装しないとだめ
+            /// TODO: 実装する
+        }
     }
 }

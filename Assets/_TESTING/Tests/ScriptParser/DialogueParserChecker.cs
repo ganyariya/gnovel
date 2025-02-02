@@ -29,6 +29,7 @@ public class DialogueParserChecker
         Assert.That(actualSpeakerData.castPosition.x, Is.EqualTo(expectedSpeakerData.castPosition.x));
         Assert.That(actualSpeakerData.castPosition.y, Is.EqualTo(expectedSpeakerData.castPosition.y));
         Assert.That(actualSpeakerData.isAppearanceCharacter, Is.EqualTo(expectedSpeakerData.isAppearanceCharacter));
+        Assert.That(actualSpeakerData.isCastingPosition, Is.EqualTo(expectedSpeakerData.isCastingPosition));
 
         for (int i = 0; i < expectedSpeakerData.CastExpressions.Count; i++)
         {

@@ -30,6 +30,17 @@ namespace Core.ScriptParser
         /// キャラを画面に登場させるかどうか
         /// </summary>
         public bool isAppearanceCharacter = false;
+        /// <summary>
+        /// キャラの位置が指定されているか
+        /// </summary>
+        public bool isCastingPosition = false;
+        public bool isCastingExpressions => CastExpressions.Count > 0;
+
+        /// <summary>
+        /// 画面でキャラが必ず必要になるか？
+        /// キャラを登場させたり 位置を変更したり 表情を変更する場合は必要になる
+        /// </summary>
+        public bool needCharacterInstanceCreation => isAppearanceCharacter || isCastingPosition || isCastingExpressions;
 
         private const string NAME_CAST_ID = " as ";
         private const string POSITION_CAST_ID = " at ";
@@ -46,6 +57,8 @@ namespace Core.ScriptParser
 
         public bool HasSpeaker => DisplayName != string.Empty;
 
+        public bool isCastingName => castName != string.Empty;
+
         public DLD_SpeakerData(string rawSpeaker)
         {
             var parsed = ParseSpeakerData(rawSpeaker);
@@ -56,13 +69,14 @@ namespace Core.ScriptParser
             Debug.Log(@$"DLD_SpeakerData Parsed [original={rawSpeaker}][name={name}][castName={castName}][castPosition={castPosition}][castExpressions={string.Join(',', CastExpressions.Select(x => $"{x.layer}:{x.expression}"))}]");
         }
 
-        public DLD_SpeakerData(string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions, bool isAppearanceCharacter)
+        public DLD_SpeakerData(string name, string castName, Vector2 castPosition, List<(int layer, string expression)> castExpressions, bool isAppearanceCharacter, bool isCastingPosition)
         {
             this.name = name;
             this.castName = castName;
             this.castPosition = castPosition;
             this.CastExpressions = castExpressions;
             this.isAppearanceCharacter = isAppearanceCharacter;
+            this.isCastingPosition = isCastingPosition;
         }
 
         private string PreProcessKeywords(string rawSpeaker)
@@ -107,6 +121,8 @@ namespace Core.ScriptParser
                 }
                 if (match.Value == POSITION_CAST_ID)
                 {
+                    isCastingPosition = true;
+
                     startIndex = match.Index + POSITION_CAST_ID.Length;
                     endIndex = (i < matches.Count - 1) ? matches[i + 1].Index : rawSpeaker.Length;
                     string castPositionStr = rawSpeaker.Substring(startIndex, endIndex - startIndex);
@@ -124,7 +140,14 @@ namespace Core.ScriptParser
                     castExpressions = expressionStr.Split(EXPRESSION_LAYER_JOINER).Select(x =>
                     {
                         var parts = x.Trim().Split(EXPRESSION_LAYER_DELIMITER);
-                        return (int.Parse(parts[0]), parts[1]);
+                        if (parts.Length == 2)
+                        {
+                            return (int.Parse(parts[0]), parts[1]);
+                        }
+                        else
+                        {
+                            return (0, parts[0]);
+                        }
                     }).ToList();
                 }
             }

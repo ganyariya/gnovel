@@ -1,10 +1,10 @@
 print_1p(テストだよ)
 
-ganyariya as ??? "こんにちは！{wa 2}"
+enter ganyariya as ??? at 1 "こんにちは！{wa 0.1}"
 
-enter ganyariya "(私は ganyariya といいます。)"
+enter ganyariya at 0 "(私は ganyariya といいます。)"
 
-ganyariya "私は ganyariya といいます。"
+ganyariya at 0.5 "私は ganyariya といいます。"
 
 ganyariya "動いてみます。" move_character(left),move_character(right)
 

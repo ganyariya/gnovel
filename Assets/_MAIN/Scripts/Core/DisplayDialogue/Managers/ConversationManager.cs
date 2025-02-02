@@ -86,21 +86,7 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator RunningSingleDialogue(DialogueLineData lineData)
         {
-            if (lineData.HasSpeaker)
-            {
-                var character = CharacterManager.instance.GetCharacter(lineData.speakerData.name, false);
-
-                if (lineData.speakerData.isAppearanceCharacter)
-                {
-                    character ??= CharacterManager.instance.CreateCharacter(lineData.speakerData.name);
-                    character.Show();
-                }
-
-                // UI にキャラ名を表示する
-                dialogueSystem.DisplaySpeakerName(lineData.speakerData.DisplayName);
-                // UI のキャラ名にフォントとフォントカラー設定を反映する
-                dialogueSystem.ApplySpeakerConfigToDialogueContainer(lineData.speakerData.name);
-            }
+            if (lineData.HasSpeaker) HandleSpeakerLogic(lineData.speakerData);
 
             foreach (var segment in lineData.dialogueData.segments)
             {
@@ -111,6 +97,34 @@ namespace Core.DisplayDialogue
             // どうやら過去の自分がこの処理を別の場所に移したらしい
             // そのためコメントアウトされている
             // yield return WaitForUserAdvance();
+        }
+
+        private void HandleSpeakerLogic(DLD_SpeakerData speakerData)
+        {
+            var character = CharacterManager.instance.GetCharacter(speakerData.name, speakerData.needCharacterInstanceCreation);
+
+            if (speakerData.isAppearanceCharacter && !character.isVisible && !character.isRevealing)
+            {
+                character.Show();
+            }
+
+            // UI にキャラ名を表示する
+            dialogueSystem.DisplaySpeakerName(speakerData.DisplayName);
+            // UI のキャラ名にフォントとフォントカラー設定を反映する
+            dialogueSystem.ApplySpeakerConfigToDialogueContainer(speakerData.name);
+
+            if (speakerData.isCastingPosition)
+            {
+                character?.MoveToScreenPosition(speakerData.castPosition);
+            }
+
+            if (speakerData.isCastingExpressions)
+            {
+                foreach (var (layer, expression) in speakerData.CastExpressions)
+                {
+                    character.CastingExpression(layer, expression);
+                }
+            }
         }
 
         private IEnumerator RunningSingleDLDDialogueSegment(DLD_DialogueSegment segment)

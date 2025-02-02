@@ -31,6 +31,7 @@ public class TestDLDSpeakerDataParser
                     "",
                     Vector2.zero,
                     new List<(int layer, string expression)>(),
+                    false,
                     false
                 )
             ),
@@ -41,6 +42,7 @@ public class TestDLDSpeakerDataParser
                     "???",
                     Vector2.zero,
                     new List<(int layer, string expression)>(),
+                    false,
                     false
                 )
             ),
@@ -51,7 +53,8 @@ public class TestDLDSpeakerDataParser
                     "???",
                     new Vector2(1, 0.8f),
                     new List<(int layer, string expression)>(),
-                    false
+                    false,
+                    true
                 )
             ),
             new(
@@ -61,7 +64,8 @@ public class TestDLDSpeakerDataParser
                     "???",
                     new Vector2(1, 0.8f),
                     new List<(int layer, string expression)>{(0, "Happy"), (1, "Sad"),},
-                    false
+                    false,
+                    true
                 )
             ),
             // enter keyword のテスト
@@ -72,6 +76,7 @@ public class TestDLDSpeakerDataParser
                     "???",
                     new Vector2(1, 0.8f),
                     new List<(int layer, string expression)>{(0, "Happy"), (1, "Sad"),},
+                    true,
                     true
                 )
             ),
