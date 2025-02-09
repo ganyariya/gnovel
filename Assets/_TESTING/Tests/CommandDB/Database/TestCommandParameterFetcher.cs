@@ -66,6 +66,22 @@ namespace Tests.CommandDB.Database
             0,
             0
         )]
+        [TestCase(
+            "[float] マイナスを指定してもちゃんと取得できる",
+            new string[] { "-y", "-20" },
+            new string[] { "-y" },
+            true,
+            -20,
+            0
+        )]
+        [TestCase(
+            "最後のパラメータが key のみであった場合はスキップする",
+            new string[] { "-y", "-20", "-x" },
+            new string[] { "-x" },
+            false,
+            0,
+            0
+        )]
         public void TestTryGetValue<T>(
             string testCaseName,
             string[] inputParameters,

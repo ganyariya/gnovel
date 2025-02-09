@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Core.CommandDB
 {
@@ -12,20 +10,24 @@ namespace Core.CommandDB
 
         public CommandParameterFetcher(string[] parameters)
         {
+            static bool isFloat(string s) => float.TryParse(s, out _);
+
             for (int i = 0; i < parameters.Length; i++)
             {
-                if (parameters[i].StartsWith(PARAMETER_IDENTIFIER))
+                // -y -20 などに対応できるようにする
+                // ただし、現状 [`-10` で 10 を変数にする] はしないため, 起こらないはず
+                if (parameters[i].StartsWith(PARAMETER_IDENTIFIER) && !isFloat(parameters[i]))
                 {
+                    // 動画と実装を変えている
+                    // https://www.youtube.com/watch?v=z47NZQhTAh0&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=40
+
+                    // 次がないのであればスキップする
+                    if (i + 1 >= parameters.Length) continue;
+
                     string key = parameters[i];
-                    string value = "";
-
-                    if (i + 1 < parameters.Length && !parameters[i + 1].StartsWith(PARAMETER_IDENTIFIER))
-                    {
-                        value = parameters[i + 1];
-                        i++;
-                    }
-
+                    string value = parameters[i + 1];
                     this.parameters.Add(key, value);
+                    i++;
                 }
             }
         }
