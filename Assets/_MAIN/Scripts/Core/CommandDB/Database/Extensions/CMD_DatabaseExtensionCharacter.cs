@@ -13,8 +13,18 @@ namespace Core.CommandDB
     {
         new public static void Extend(CommandDatabase commandDatabase)
         {
-            commandDatabase.AddCommand("show", new Func<string[], IEnumerator>(ShowAll));
-            commandDatabase.AddCommand("hide", new Func<string[], IEnumerator>(HideAll));
+            commandDatabase.AddCommand("createCharacter", new Action<string[]>(CreateCharacter));
+            commandDatabase.AddCommand("showCharacters", new Func<string[], IEnumerator>(ShowAll));
+            commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
+        }
+
+        public static void CreateCharacter(string[] data)
+        {
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(new string[] { "-e", "-enabled" }, out bool enabled, defaultValue: false);
+
+            var characterName = data[0];
+            CharacterManager.instance.CreateCharacter(characterName, revealAfterCreation: enabled);
         }
 
         public static IEnumerator ShowAll(string[] data)

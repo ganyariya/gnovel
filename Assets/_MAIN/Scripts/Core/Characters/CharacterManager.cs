@@ -60,7 +60,7 @@ namespace Core.Characters
             return null;
         }
 
-        public Character CreateCharacter(string characterName)
+        public Character CreateCharacter(string characterName, bool revealAfterCreation = false)
         {
             if (characters.ContainsKey(characterName.ToLower()))
             {
@@ -72,6 +72,8 @@ namespace Core.Characters
             var character = CreateAppropriateCharacterFromInfo(characterInfo);
 
             characters.Add(characterInfo.name.ToLower(), character);
+
+            if (revealAfterCreation) character.Show();
 
             return character;
         }
