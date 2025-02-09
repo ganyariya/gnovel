@@ -11,6 +11,8 @@ namespace Core.ScriptParser
     /// </summary>
     public class Command
     {
+        private static readonly List<string> FORCE_WAIT_COMMANDS = new() { "wait" };
+
         /// <summary>
         /// コマンド名
         /// </summary>
@@ -32,6 +34,8 @@ namespace Core.ScriptParser
             this.arguments = arguments;
             this.waitForCompletion = waitForCompletion;
         }
+
+        public bool IsForceWaitCoroutine() => FORCE_WAIT_COMMANDS.Contains(name);
     }
 
     public class DLD_CommandData
@@ -40,6 +44,9 @@ namespace Core.ScriptParser
 
         private const char COMMANDS_SPLITTER_ID = ',';
         private const char ARGUMENTS_IDENTIFIER = '(';
+        /// <summary>
+        /// コマンドを実行するときに [wait] をつけると IEnumerator (Coroutine) の実行を待つ
+        /// </summary>
         private const string WAIT_COMMAND_ID = "[wait]";
 
         public bool HasCommands => commands.Count > 0;

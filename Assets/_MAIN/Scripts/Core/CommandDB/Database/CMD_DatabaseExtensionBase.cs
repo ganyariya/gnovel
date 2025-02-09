@@ -14,5 +14,7 @@ namespace Core.CommandDB
         public static void Extend(CommandDatabase commandDatabase) { }
 
         public static string GetCommandName() { return ""; }
+
+        public static CommandParameterFetcher CreateFetcher(string[] parameters) => new(parameters);
     }
 }

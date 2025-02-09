@@ -22,6 +22,8 @@ namespace Core.CommandDB
 
         public void AddCommand(string commandName, Delegate command)
         {
+            commandName = commandName.ToLower(); // 大文字と小文字を区別しない
+
             if (!HasCommand(commandName))
             {
                 commandDB.Add(commandName, command);
@@ -34,6 +36,8 @@ namespace Core.CommandDB
 
         public Delegate GetCommand(string commandName)
         {
+            commandName = commandName.ToLower();
+
             if (!HasCommand(commandName)) Debug.Log($"Already registered command {commandName}");
             return commandDB[commandName] ?? null;
         }
