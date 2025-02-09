@@ -19,13 +19,21 @@ namespace Core.CommandDB
 
         new public static void Extend(CommandDatabase commandDatabase)
         {
-            commandDatabase.AddCommand("createCharacter", new Action<string[]>(CreateCharacter));
+            commandDatabase.AddCommand("createCharacter", new Func<string[], IEnumerator>(CreateCharacter));
             commandDatabase.AddCommand("moveCharacter", new Func<string[], IEnumerator>(MoveCharacter));
             commandDatabase.AddCommand("showCharacters", new Func<string[], IEnumerator>(ShowAll));
             commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
         }
 
-        public static void CreateCharacter(string[] data)
+        /// <summary>
+        /// キャラ 1 体を登場させる
+        /// createCharacter(ganyariya -enabled true -immediate true)
+        /// - enabled
+        /// - immediate
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        public static IEnumerator CreateCharacter(string[] data)
         {
             var parameterFetcher = CreateFetcher(data);
             parameterFetcher.TryGetValue(PARAMS_ENABLED, out bool enabled, defaultValue: false);
@@ -34,12 +42,16 @@ namespace Core.CommandDB
             var characterName = data[0];
             var character = CharacterManager.instance.CreateCharacter(characterName);
 
-            if (!enabled) return;
+            if (!enabled) yield break;
 
             if (immediate) character.isVisible = true;
-            else character.Show();
+            else yield return character.Show();
         }
 
+        /// <summary>
+        /// キャラ 1 体を移動できる
+        /// moveCharacter(ganyariya -x 1.0 -y 0.5 -speed 0.5 -smooth true)
+        /// </summary>
         public static IEnumerator MoveCharacter(string[] data)
         {
             string characterName = data[0];
@@ -62,6 +74,10 @@ namespace Core.CommandDB
                 yield return character.MoveToScreenPosition(position, speed, smooth);
         }
 
+        /// <summary>
+        /// 複数のキャラを表示できる
+        /// showCharacters(ganyariya raelin -immediate true)
+        /// </summary>
         public static IEnumerator ShowAll(string[] data)
         {
             List<Character> characters = new();
@@ -90,6 +106,10 @@ namespace Core.CommandDB
             }
         }
 
+        /// <summary>
+        /// 複数のキャラを隠せる
+        /// hideCharacters(ganyariya raelin -immediate true)
+        /// </summary>
         public static IEnumerator HideAll(string[] data)
         {
             List<Character> characters = new();

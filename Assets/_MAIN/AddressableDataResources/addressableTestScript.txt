@@ -1,12 +1,16 @@
 wait(1)
 
-print_1p(テストだよ)
-
-createCharacter(raelin -enabled true)
-
+[wait]createCharacter(ganyariya -enabled true)
+[wait]moveCharacter(ganyariya -x 0.2 -spd 3 -smooth false)
 wait(1)
 
-[wait]moveCharacter(raelin -x 0.2 -spd 3 -smooth true)
+createCharacter(raelin -enabled true)
+[wait]moveCharacter(raelin -x 0.8 -spd 3 -smooth true)
+wait(1)
+
+hideCharacters(ganyariya raelin -immediate true)
+wait(1)
+[wait]showCharacters(ganyariya -immediate false)
 
 enter ganyariya as ??? at 1 "こんにちは！{wa 0.1}"
 
