@@ -183,7 +183,7 @@ namespace Core.DisplayDialogue
             List<Command> commands = lineData.commandData.commands;
             foreach (var command in commands)
             {
-                if (command.waitForCompletion) yield return CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                if (command.waitForCompletion || command.IsForceWaitCoroutine()) yield return CommandManager.instance.ExecuteCommand(command.name, command.arguments);
                 else CommandManager.instance.ExecuteCommand(command.name, command.arguments);
             }
             yield return null;

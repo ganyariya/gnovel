@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Characters;
-using UnityEngine;
-using UnityEngine.UIElements;
 
 
 namespace Core.CommandDB
 {
     public class CMD_DatabaseExtensionCharacter : CMD_DatabaseExtensionBase
     {
+        private static string[] IMMEDIATE_PARAMS => new string[] { "-i", "-immediate" };
+        private static string[] ENABLE_PARAMS => new string[] { "-e", "-enabled" };
+
         new public static void Extend(CommandDatabase commandDatabase)
         {
             commandDatabase.AddCommand("createCharacter", new Action<string[]>(CreateCharacter));
@@ -21,10 +22,16 @@ namespace Core.CommandDB
         public static void CreateCharacter(string[] data)
         {
             var parameterFetcher = CreateFetcher(data);
-            parameterFetcher.TryGetValue(new string[] { "-e", "-enabled" }, out bool enabled, defaultValue: false);
+            parameterFetcher.TryGetValue(ENABLE_PARAMS, out bool enabled, defaultValue: false);
+            parameterFetcher.TryGetValue(IMMEDIATE_PARAMS, out bool immediate, defaultValue: false);
 
             var characterName = data[0];
-            CharacterManager.instance.CreateCharacter(characterName, revealAfterCreation: enabled);
+            var character = CharacterManager.instance.CreateCharacter(characterName);
+
+            if (!enabled) return;
+
+            if (immediate) character.isVisible = true;
+            else character.Show();
         }
 
         public static IEnumerator ShowAll(string[] data)
@@ -40,7 +47,7 @@ namespace Core.CommandDB
             if (characters.Count == 0) yield break;
 
             var parameterFetcher = CreateFetcher(data);
-            parameterFetcher.TryGetValue(new string[] { "-i", "-immediate" }, out bool immediate, defaultValue: false);
+            parameterFetcher.TryGetValue(IMMEDIATE_PARAMS, out bool immediate, defaultValue: false);
 
             foreach (Character character in characters)
             {
@@ -68,7 +75,7 @@ namespace Core.CommandDB
             if (characters.Count == 0) yield break;
 
             var parameterFetcher = CreateFetcher(data);
-            parameterFetcher.TryGetValue(new string[] { "-i", "-immediate" }, out bool immediate, defaultValue: false);
+            parameterFetcher.TryGetValue(IMMEDIATE_PARAMS, out bool immediate, defaultValue: false);
 
             foreach (Character character in characters)
             {

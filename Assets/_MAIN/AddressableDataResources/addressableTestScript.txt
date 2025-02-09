@@ -1,6 +1,10 @@
+wait(3)
+
 print_1p(テストだよ)
 
 createCharacter(raelin -enabled true)
+
+wait(3)
 
 enter ganyariya as ??? at 1 "こんにちは！{wa 0.1}"
 

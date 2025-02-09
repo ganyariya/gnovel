@@ -1,18 +1,23 @@
+
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CMD_DatabaseExtensionGeneral : MonoBehaviour
+namespace Core.CommandDB
 {
-    // Start is called before the first frame update
-    void Start()
+    public class CMD_DatabaseExtensionGeneral : CMD_DatabaseExtensionBase
     {
-        
-    }
+        new public static void Extend(CommandDatabase commandDatabase)
+        {
+            commandDatabase.AddCommand("wait", new Func<string, IEnumerator>(Wait));
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private static IEnumerator Wait(string data)
+        {
+            if (float.TryParse(data, out float time))
+            {
+                yield return new WaitForSeconds(time);
+            }
+        }
     }
 }
