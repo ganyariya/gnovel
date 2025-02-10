@@ -11,6 +11,11 @@ namespace Core.CommandDB
     /// </summary>
     public abstract class CMD_DatabaseExtensionBase
     {
+        public const string EXTEND_FUNCTION_NAME = "Extend";
+
+        /// <summary>
+        /// Extend を継承して各コマンドを登録する
+        /// </summary>
         public static void Extend(CommandDatabase commandDatabase) { }
 
         public static string GetCommandName() { return ""; }
