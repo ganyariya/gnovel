@@ -75,13 +75,13 @@ namespace Core.Characters
             return UNDEFINED_EXPRESSION;
         }
 
-        protected override IEnumerator ShowingOrHiding(bool isShow)
+        protected override IEnumerator ShowingOrHiding(bool isShow, float speedMultiplier = 1f)
         {
             float targetAlpha = isShow ? 1 : 0;
 
             while (cubismRenderController.Opacity != targetAlpha)
             {
-                cubismRenderController.Opacity = Mathf.MoveTowards(cubismRenderController.Opacity, targetAlpha, Time.deltaTime * DEFAULT_TRANSITION_SPEED);
+                cubismRenderController.Opacity = Mathf.MoveTowards(cubismRenderController.Opacity, targetAlpha, Time.deltaTime * DEFAULT_TRANSITION_SPEED * speedMultiplier);
                 yield return null;
             }
 

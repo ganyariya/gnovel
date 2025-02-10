@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.ScriptParser;
+using Extensions;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Core.CommandDB
 {
@@ -15,8 +18,8 @@ namespace Core.CommandDB
     {
         public static CommandManager instance { get; private set; }
         private CommandDatabase commandDatabase;
-        private static Coroutine commandProcess = null;
-        private static bool IsRunningCommandProcess = commandProcess != null;
+        private List<CommandProcess> activeCommandProcesses = new();
+        private CommandProcess topCommandProcess => activeCommandProcesses.LastOrDefault();
 
         void Awake()
         {
@@ -48,7 +51,7 @@ namespace Core.CommandDB
         /// 外部から Command を呼び出す
         /// コマンドは Coroutine で実行される
         /// </summary>
-        public Coroutine ExecuteCommand(string commandName, params string[] args)
+        public CoroutineWrapper ExecuteCommand(string commandName, params string[] args)
         {
             Delegate command = commandDatabase.GetCommand(commandName);
             if (command == null) return null;
@@ -56,21 +59,52 @@ namespace Core.CommandDB
             return StartCommandProcess(command, commandName, args);
         }
 
-        private Coroutine StartCommandProcess(Delegate command, string commandName, params string[] args)
+        private CoroutineWrapper StartCommandProcess(Delegate command, string commandName, params string[] args)
         {
-            StopCurrentCommandProcess();
-            commandProcess = StartCoroutine(RunningCommandProcess(command, args));
-            return commandProcess;
+            var commandProcess = CommandProcess.Create(commandName, command, args);
+            activeCommandProcesses.Add(commandProcess);
+
+            // coroutine 生成の都合上 あとから commandProcess に coroutineWrapper を代入する
+            Coroutine coroutine = StartCoroutine(RunningCommandProcess(commandProcess, args));
+            CoroutineWrapper coroutineWrapper = new(this, coroutine);
+            commandProcess.SetCoroutineWrapper(coroutineWrapper);
+
+            return commandProcess.coroutineWrapper;
         }
 
-        private void StopCurrentCommandProcess()
+        public void StopCurrentCommandProcess()
         {
-            if (commandProcess != null) StopCoroutine(commandProcess);
-            commandProcess = null;
+            if (topCommandProcess != null) KillTargetCommandProcess(topCommandProcess);
         }
 
-        private IEnumerator RunningCommandProcess(Delegate command, string[] args)
+        public void StopAllCommandProcesses()
         {
+            // そのまま消すと `InvalidOperationException: Collection was modified` になるため 一旦 list にする
+            var list = activeCommandProcesses.ToList();
+            foreach (var c in list) KillTargetCommandProcess(c);
+            activeCommandProcesses.Clear();
+        }
+
+        /// <summary>
+        /// 指定した targetCommandProcess について
+        /// - コルーチン処理を停止させる
+        /// - コマンド終了時の終了イベント（キャラを強引に移動させる、など）
+        /// をおこなう
+        /// </summary>
+        public void KillTargetCommandProcess(CommandProcess targetCommandProcess)
+        {
+            activeCommandProcesses.Remove(targetCommandProcess);
+
+            if (targetCommandProcess.ShouldStopCoroutine()) targetCommandProcess.StopCoroutine();
+
+            // 仕上げとして 終了時の実行したい処理を実行する
+            targetCommandProcess.ExecuteTerminationEvent();
+        }
+
+        private IEnumerator RunningCommandProcess(CommandProcess commandProcess, string[] args)
+        {
+            var command = commandProcess.command;
+
             if (command is Action) command.DynamicInvoke();
             if (command is Action<string>) command.DynamicInvoke(args[0]);
             if (command is Action<string[]>) command.DynamicInvoke((object)args);
@@ -79,7 +113,21 @@ namespace Core.CommandDB
             if (command is Func<string, IEnumerator>) yield return ((Func<string, IEnumerator>)command)(args[0]);
             if (command is Func<string[], IEnumerator>) yield return ((Func<string[], IEnumerator>)command)(args);
 
-            commandProcess = null; // Command DONE
+            KillTargetCommandProcess(commandProcess);
+        }
+
+
+        /// <summary>
+        /// CommandProcess に 終了時に実行したい action を登録する
+        /// 
+        /// this.StartCommandProcess ですでにコマンドは activeCommandProcesses に登録済みのため問題ない
+        /// </summary>
+        public void RegisterTerminationEventToCurrentCommandProcess(UnityAction action)
+        {
+            CommandProcess process = topCommandProcess;
+            if (process == null) return;
+
+            process.RegisterTerminationAction(action);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Core.Characters;
 using Core.CommandDB;
 using Core.ScriptParser;
+using Extensions;
 using UnityEngine;
 
 namespace Core.DisplayDialogue
@@ -76,7 +77,13 @@ namespace Core.DisplayDialogue
                 if (lineData.HasCommands) yield return RunningSingleCommands(lineData);
 
                 // Dialogue がある場合のみ待つ
-                if (lineData.HasDialogue) yield return WaitForUserAdvance();
+                if (lineData.HasDialogue)
+                {
+                    // 会話がある場合は それまでに実行されていたコマンドをすべて停止させる
+                    // (会話がある場合を `ある区切り点(静止点) にしたいため`)
+                    CommandManager.instance.StopAllCommandProcesses();
+                    yield return WaitForUserAdvance();
+                }
             }
         }
 
@@ -183,7 +190,20 @@ namespace Core.DisplayDialogue
             List<Command> commands = lineData.commandData.commands;
             foreach (var command in commands)
             {
-                if (command.waitForCompletion || command.IsForceWaitCoroutine()) yield return CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                if (command.waitForCompletion || command.IsForceWaitCoroutine())
+                {
+                    CoroutineWrapper wrapper = CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                    while (!wrapper.IsDone)
+                    {
+                        if (userPromptNext)
+                        {
+                            CommandManager.instance.StopCurrentCommandProcess();
+                            userPromptNext = false;
+                        }
+                        // ユーザ入力もしくはコマンド実行が完了するまではループで待機する
+                        yield return null;
+                    }
+                }
                 else CommandManager.instance.ExecuteCommand(command.name, command.arguments);
             }
             yield return null;

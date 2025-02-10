@@ -69,9 +69,14 @@ namespace Core.CommandDB
             Vector2 position = new(x, y);
 
             if (immediate)
+            {
                 character.SetScreenPosition(position);
+            }
             else
+            {
+                CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() => { character.SetScreenPosition(position); });
                 yield return character.MoveToScreenPosition(position, speed, smooth);
+            }
         }
 
         /// <summary>
@@ -92,15 +97,20 @@ namespace Core.CommandDB
 
             var parameterFetcher = CreateFetcher(data);
             parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, defaultValue: false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, defaultValue: 1f);
 
             foreach (Character character in characters)
             {
                 if (immediate) character.isVisible = true;
-                else character.Show();
+                else character.Show(speed);
             }
 
             if (!immediate)
             {
+                CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() =>
+                {
+                    foreach (var character in characters) character.isVisible = true;
+                });
                 // キャラが登場仕切るまで待つ
                 while (characters.Any(x => x.isRevealing)) yield return null;
             }
@@ -124,15 +134,20 @@ namespace Core.CommandDB
 
             var parameterFetcher = CreateFetcher(data);
             parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, defaultValue: false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, defaultValue: 1f);
 
             foreach (Character character in characters)
             {
                 if (immediate) character.isVisible = false;
-                else character.Hide();
+                else character.Hide(speed);
             }
 
             if (!immediate)
             {
+                CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() =>
+                {
+                    foreach (var character in characters) character.isVisible = false;
+                });
                 // キャラが登場仕切るまで待つ
                 while (characters.Any(x => x.isHiding)) yield return null;
             }
