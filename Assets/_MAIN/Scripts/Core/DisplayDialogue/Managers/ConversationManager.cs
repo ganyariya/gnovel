@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Core.Characters;
 using Core.CommandDB;
 using Core.ScriptParser;
+using Extensions;
 using UnityEngine;
 
 namespace Core.DisplayDialogue
@@ -183,7 +184,20 @@ namespace Core.DisplayDialogue
             List<Command> commands = lineData.commandData.commands;
             foreach (var command in commands)
             {
-                if (command.waitForCompletion || command.IsForceWaitCoroutine()) yield return CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                if (command.waitForCompletion || command.IsForceWaitCoroutine())
+                {
+                    CoroutineWrapper wrapper = CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                    while (!wrapper.IsDone)
+                    {
+                        if (userPromptNext)
+                        {
+                            CommandManager.instance.StopCurrentCommandProcess();
+                            userPromptNext = false;
+                        }
+                        // ユーザ入力もしくはコマンド実行が完了するまではループで待機する
+                        yield return null;
+                    }
+                }
                 else CommandManager.instance.ExecuteCommand(command.name, command.arguments);
             }
             yield return null;

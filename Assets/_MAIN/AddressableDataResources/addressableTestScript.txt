@@ -1,4 +1,4 @@
-wait(1)
+wait(10)
 
 [wait]createCharacter(ganyariya -enabled true)
 [wait]moveCharacter(ganyariya -x 0.2 -spd 3 -smooth false)
