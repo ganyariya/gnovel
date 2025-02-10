@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.ScriptParser;
 using Extensions;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Core.CommandDB
 {
@@ -75,12 +77,27 @@ namespace Core.CommandDB
             if (topCommandProcess != null) KillTargetCommandProcess(topCommandProcess);
         }
 
+        public void StopAllCommandProcesses()
+        {
+            // そのまま消すと `InvalidOperationException: Collection was modified` になるため 一旦 list にする
+            var list = activeCommandProcesses.ToList();
+            foreach (var c in list) KillTargetCommandProcess(c);
+            activeCommandProcesses.Clear();
+        }
+
+        /// <summary>
+        /// 指定した targetCommandProcess について
+        /// - コルーチン処理を停止させる
+        /// - コマンド終了時の終了イベント（キャラを強引に移動させる、など）
+        /// をおこなう
+        /// </summary>
         public void KillTargetCommandProcess(CommandProcess targetCommandProcess)
         {
             activeCommandProcesses.Remove(targetCommandProcess);
 
             if (targetCommandProcess.ShouldStopCoroutine()) targetCommandProcess.StopCoroutine();
 
+            // 仕上げとして 終了時の実行したい処理を実行する
             targetCommandProcess.ExecuteTerminationEvent();
         }
 
@@ -97,6 +114,20 @@ namespace Core.CommandDB
             if (command is Func<string[], IEnumerator>) yield return ((Func<string[], IEnumerator>)command)(args);
 
             KillTargetCommandProcess(commandProcess);
+        }
+
+
+        /// <summary>
+        /// CommandProcess に 終了時に実行したい action を登録する
+        /// 
+        /// this.StartCommandProcess ですでにコマンドは activeCommandProcesses に登録済みのため問題ない
+        /// </summary>
+        public void RegisterTerminationEventToCurrentCommandProcess(UnityAction action)
+        {
+            CommandProcess process = topCommandProcess;
+            if (process == null) return;
+
+            process.RegisterTerminationAction(action);
         }
     }
 }

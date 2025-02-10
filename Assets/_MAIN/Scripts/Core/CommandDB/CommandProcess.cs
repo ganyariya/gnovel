@@ -23,7 +23,14 @@ namespace Core.CommandDB
         /// </summary>
         public CoroutineWrapper coroutineWrapper { get; private set; }
         public string[] args { get; private set; }
-        public UnityEvent onTerminateAction { get; private set; }
+        /// <summary>
+        /// コマンドの実行が終わったとき or コマンドを矯正停止したいときに 実行したい UnityAction を登録して実行する
+        /// 
+        /// ## なぜいるのか
+        /// クリックでコマンドを飛ばしたときに、もしキャラが移動するコマンドが実行されていたら途中で止まってしまう
+        /// そのためコマンドが飛ばされたときに、コマンドが終了したときに成り立っていてほしい状態を用意できるように UnityEvent を用意する
+        /// </summary>
+        public UnityEvent onTerminationEvent { get; private set; }
 
         public CommandProcess(
             Guid ID,
@@ -39,7 +46,7 @@ namespace Core.CommandDB
             this.command = command;
             this.coroutineWrapper = runningCoroutineWrapper;
             this.args = args;
-            this.onTerminateAction = onTerminateAction;
+            this.onTerminationEvent = onTerminateAction;
         }
 
         public static CommandProcess Create(
@@ -54,7 +61,7 @@ namespace Core.CommandDB
                 command,
                 null,
                 args,
-                null
+                new UnityEvent()
             );
         }
 
@@ -85,7 +92,12 @@ namespace Core.CommandDB
 
         public void ExecuteTerminationEvent()
         {
-            onTerminateAction?.Invoke();
+            onTerminationEvent?.Invoke();
+        }
+
+        public void RegisterTerminationAction(UnityAction action)
+        {
+            onTerminationEvent.AddListener(action);
         }
     }
 }

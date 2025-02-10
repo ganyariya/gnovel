@@ -130,19 +130,19 @@ namespace Core.Characters
             return dialogueSystem.Say(dialogues);
         }
 
-        public virtual Coroutine Show()
+        public virtual Coroutine Show(float speedMultiplier = 1f)
         {
             if (isRevealing) return revealingCoroutine;
             if (isHiding) characterManager.StopCoroutine(hidingCoroutine);
 
-            return revealingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(true));
+            return revealingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(true, speedMultiplier));
         }
-        public virtual Coroutine Hide()
+        public virtual Coroutine Hide(float speedMultiplier = 1f)
         {
             if (isHiding) return hidingCoroutine;
             if (isRevealing) characterManager.StopCoroutine(revealingCoroutine);
 
-            return hidingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(false));
+            return hidingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(false, speedMultiplier));
         }
 
         public virtual void SetScreenPosition(Vector2 screenPosition)
@@ -215,7 +215,7 @@ namespace Core.Characters
             return (targetMinAnchor, targetMaxAnchor);
         }
 
-        protected virtual IEnumerator ShowingOrHiding(bool isShow) => null;
+        protected virtual IEnumerator ShowingOrHiding(bool isShow, float speedMultiplier = 1f) => null;
 
         public void SetNameColor(Color color) => config.nameColor = color;
         public void SetDialogueColor(Color color) => config.dialogueColor = color;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -19,8 +20,8 @@ namespace Core.DisplayDialogue
         public IEnumerator Displaying()
         {
             int left = arch.PrevText.Length;
-            int right = left + 1;
             var textInfo = arch.TmProText.textInfo;
+            int right = Math.Min(left + 1, textInfo.characterCount);
             var alphas = new float[textInfo.characterCount];
 
             // called per frame
@@ -28,13 +29,20 @@ namespace Core.DisplayDialogue
             {
                 if (isForcedCompletePressed) break;
 
+                // テキスト情報が更新されている可能性があるので、毎フレーム更新
+                // https://claude.ai/chat/3182a54e-d7d3-4c94-9705-4e710ea13a4d
+
                 float fadeSpeed = (arch.HurryUp ? arch.AppearCharactersNumPerFrame * 5 : arch.AppearCharactersNumPerFrame) * arch.BaseSpeed * FADE_SPEED_MULTIPLIER;
                 for (int i = left; i < right; i++)
                 {
+                    if (i >= textInfo.characterCount) break; // 範囲チェックを追加する
+
                     var cInfo = textInfo.characterInfo[i];
                     if (!cInfo.isVisible) continue;
 
                     var vColors = textInfo.meshInfo[cInfo.materialReferenceIndex].colors32;
+                    // IndexOutOfRangeException: Index was outside the bounds of the array.
+                    // 上記が発生したため 範囲チェックを追加した
                     alphas[i] = Mathf.MoveTowards(alphas[i], 255, fadeSpeed);
 
                     for (int v = 0; v < 4; v++) vColors[cInfo.vertexIndex + v].a = (byte)alphas[i];

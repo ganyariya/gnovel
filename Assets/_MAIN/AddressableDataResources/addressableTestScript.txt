@@ -1,31 +1,28 @@
 wait(10)
 
 [wait]createCharacter(ganyariya -enabled true)
-[wait]moveCharacter(ganyariya -x 0.2 -spd 3 -smooth false)
+[wait]moveCharacter(ganyariya -x 0.2 -spd 0.1 -smooth true)
 wait(1)
 
 createCharacter(raelin -enabled true)
 [wait]moveCharacter(raelin -x 0.8 -spd 3 -smooth true)
 wait(1)
 
-hideCharacters(ganyariya raelin -immediate true)
+hideCharacters(ganyariya raelin -immediate false -speed 0.001)
+ganyariya "隠れるよ..."
 wait(1)
-[wait]showCharacters(ganyariya -immediate false)
 
-enter ganyariya as ??? at 1 "こんにちは！{wa 0.1}"
+[wait]showCharacters(ganyariya -immediate false -speed 0.1)
 
+enter ganyariya as ??? at 1 "こんにちは！"
 enter ganyariya at 0 "(私は ganyariya といいます。)"
-
 enter raelin at 0.5 "私は raelin といいます"
 
 raelin at 0.6 [1:A_Sad] "悲しいことがありました..."
 raelin [1:A_SoSmile] "でも楽しいこともあるのでがんばれます"
 
-
-"普段はバックエンドの処理を書いたり{wa 2}、競技プログラミングをしたりしています。"
+"普段はバックエンドの処理を書いたり、競技プログラミングをしたりしています。"
 
 "今回はノベルゲームのシステムを理解したい・自作したい、となって Tutorial を参考にがんばって Unity を触っています。{a}あとで xLua を組み合わせて面倒な構文解析を省きたいなあ..."
 
 "並行して Backend(go/gcp)+ FrontEnd(Next.js/vercel) で簡単なウェブアプリも作ろうかな...。時間をみつけてこつこつ進めていくぞ!"
-
-

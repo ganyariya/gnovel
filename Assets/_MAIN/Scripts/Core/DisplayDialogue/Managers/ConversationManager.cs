@@ -77,7 +77,13 @@ namespace Core.DisplayDialogue
                 if (lineData.HasCommands) yield return RunningSingleCommands(lineData);
 
                 // Dialogue がある場合のみ待つ
-                if (lineData.HasDialogue) yield return WaitForUserAdvance();
+                if (lineData.HasDialogue)
+                {
+                    // 会話がある場合は それまでに実行されていたコマンドをすべて停止させる
+                    // (会話がある場合を `ある区切り点(静止点) にしたいため`)
+                    CommandManager.instance.StopAllCommandProcesses();
+                    yield return WaitForUserAdvance();
+                }
             }
         }
 

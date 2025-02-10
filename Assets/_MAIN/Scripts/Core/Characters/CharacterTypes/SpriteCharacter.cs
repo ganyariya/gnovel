@@ -111,7 +111,7 @@ namespace Core.Characters
             return spriteLayers[layerIndex].ExecuteTransitionSprite(sprite, speed);
         }
 
-        protected override IEnumerator ShowingOrHiding(bool isShow)
+        protected override IEnumerator ShowingOrHiding(bool isShow, float speedMultiplier = 1f)
         {
             float targetAlpha = isShow ? 1.0f : 0.0f;
             CanvasGroup cg = rootCanvasGroup;
@@ -119,7 +119,7 @@ namespace Core.Characters
             // 目的の alpha になるまで Coroutine で alpha を変更する
             while (cg.alpha != targetAlpha)
             {
-                cg.alpha = Mathf.MoveTowards(cg.alpha, targetAlpha, 1.0f * Time.deltaTime);
+                cg.alpha = Mathf.MoveTowards(cg.alpha, targetAlpha, 1.0f * Time.deltaTime * speedMultiplier);
                 yield return null;
             }
 
