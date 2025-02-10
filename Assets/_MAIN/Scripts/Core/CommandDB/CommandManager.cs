@@ -41,7 +41,7 @@ namespace Core.CommandDB
 
             foreach (var extension in extensionTypes)
             {
-                MethodInfo extendMethod = extension.GetMethod("Extend");
+                MethodInfo extendMethod = extension.GetMethod(CMD_DatabaseExtensionBase.EXTEND_FUNCTION_NAME);
                 extendMethod.Invoke(null, new object[] { database });
             }
             return database;

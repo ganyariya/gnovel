@@ -190,23 +190,28 @@ namespace Core.DisplayDialogue
             List<Command> commands = lineData.commandData.commands;
             foreach (var command in commands)
             {
-                if (command.waitForCompletion || command.IsForceWaitCoroutine())
+                bool shouldWait = command.waitForCompletion || command.IsForceWaitCoroutine();
+                if (!shouldWait)
                 {
-                    CoroutineWrapper wrapper = CommandManager.instance.ExecuteCommand(command.name, command.arguments);
-                    while (!wrapper.IsDone)
-                    {
-                        if (userPromptNext)
-                        {
-                            CommandManager.instance.StopCurrentCommandProcess();
-                            userPromptNext = false;
-                        }
-                        // ユーザ入力もしくはコマンド実行が完了するまではループで待機する
-                        yield return null;
-                    }
+                    CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                    continue;
                 }
-                else CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+
+                CoroutineWrapper wrapper = CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                while (!wrapper.IsDone)
+                {
+                    // ユーザ入力もしくはコマンド実行が完了するまではループで待機する
+                    // ユーザ入力されると userPromptNext = true になる
+                    if (!userPromptNext)
+                    {
+                        yield return null;
+                        continue;
+                    }
+
+                    CommandManager.instance.StopCurrentCommandProcess(); // IsDone = true にする
+                    userPromptNext = false;
+                }
             }
-            yield return null;
         }
 
         private IEnumerator WaitForUserAdvance()
