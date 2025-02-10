@@ -23,6 +23,10 @@ namespace Core.CommandDB
             commandDatabase.AddCommand("moveCharacter", new Func<string[], IEnumerator>(MoveCharacter));
             commandDatabase.AddCommand("showCharacters", new Func<string[], IEnumerator>(ShowAll));
             commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
+
+            // register character baseDatabase
+            CommandDatabase baseDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_BASE);
+            baseDatabase.AddCommand("move", new Func<string[], IEnumerator>(MoveCharacter));
         }
 
         /// <summary>

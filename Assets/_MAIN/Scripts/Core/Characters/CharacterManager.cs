@@ -60,6 +60,8 @@ namespace Core.Characters
             return null;
         }
 
+        public bool HasCharacter(string characterName) => characters.ContainsKey(characterName.ToLower());
+
         public Character CreateCharacter(string characterName, bool revealAfterCreation = false)
         {
             if (characters.ContainsKey(characterName.ToLower()))

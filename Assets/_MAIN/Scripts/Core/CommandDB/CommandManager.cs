@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core.ScriptParser;
+using Core.Characters;
 using Extensions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,10 +16,22 @@ namespace Core.CommandDB
     /// </summary>
     public class CommandManager : MonoBehaviour
     {
+        private const char SUB_COMMAND_IDENTIFIER = '.';
+        public const string DATABASE_CHARACTER_BASE = "character";
+        public const string DATABASE_CHARACTER_SPRITE = "character_sprite";
+        public const string DATABASE_CHARACTER_LIVE2D = "character_live2d";
+
         public static CommandManager instance { get; private set; }
         private CommandDatabase commandDatabase;
+        /// <summary>
+        /// ganyariya.Move()
+        /// camera.Capture()
+        /// のように X.verb のような syntax でコマンドを登録する
+        /// </summary>
+        private Dictionary<string, CommandDatabase> subCommandDatabases = new();
         private List<CommandProcess> activeCommandProcesses = new();
         private CommandProcess topCommandProcess => activeCommandProcesses.LastOrDefault();
+
 
         void Awake()
         {
@@ -53,10 +65,84 @@ namespace Core.CommandDB
         /// </summary>
         public CoroutineWrapper ExecuteCommand(string commandName, params string[] args)
         {
+            if (commandName.Contains(SUB_COMMAND_IDENTIFIER)) return ExecuteSubCommand(commandName, args);
+
             Delegate command = commandDatabase.GetCommand(commandName);
             if (command == null) return null;
 
             return StartCommandProcess(command, commandName, args);
+        }
+
+        private CoroutineWrapper ExecuteSubCommand(string originalCommandName, string[] args)
+        {
+            string[] parts = originalCommandName.Split(SUB_COMMAND_IDENTIFIER); // super.ganyariya.Move
+            string databaseName = string.Join(SUB_COMMAND_IDENTIFIER, parts.Take(parts.Length - 1)); // super.ganyariya
+            string subCommandName = parts.Last(); // Move
+
+            // システムに対してのサブコマンドとして解釈して実行する
+            if (subCommandDatabases.ContainsKey(databaseName))
+            {
+                Delegate command = subCommandDatabases[databaseName].GetCommand(subCommandName);
+                if (command == null)
+                {
+                    Debug.LogError($"No command called '{subCommandName}' was found in subDatabase '{databaseName}'");
+                    return null;
+                }
+                return StartCommandProcess(command, originalCommandName, args);
+            }
+
+            // キャラに対してのサブコマンドであると解釈して実行する
+            string characterName = databaseName;
+            if (!CharacterManager.instance.HasCharacter(characterName))
+            {
+                Debug.LogError($"No sub database called '{databaseName} exists!' Command '{subCommandName}' could not be run.");
+                return null;
+            }
+
+            return ExecuteCharacterSubCommand(subCommandName, characterName, args);
+        }
+
+        private CoroutineWrapper ExecuteCharacterSubCommand(string commandName, string characterName, string[] args)
+        {
+            string[] convertToCharacterArgs(string[] args)
+            {
+                List<string> copy = new(args);
+                // ganyariya.Move(-x 10 -y 0) を CMD_DatabaseExtensionCharacter の moveCharacter で扱えるように
+                // moveCharacter(ganyariya -x 10 -y 0) のように解釈させる
+                copy.Insert(0, characterName);
+                return copy.ToArray();
+            }
+            args = convertToCharacterArgs(args);
+
+            Delegate command;
+
+            CommandDatabase db = subCommandDatabases[DATABASE_CHARACTER_BASE]; // TODO: key check いらない？
+            if (db.HasCommand(commandName))
+            {
+                command = db.GetCommand(commandName);
+                return StartCommandProcess(command, commandName, args);
+            }
+
+            CharacterConfig config = CharacterManager.instance.GetCharacterConfig(characterName);
+            switch (config.characterType)
+            {
+                case Character.CharacterType.Sprite:
+                case Character.CharacterType.SpriteSheet:
+                    db = subCommandDatabases[DATABASE_CHARACTER_SPRITE];
+                    break;
+                case Character.CharacterType.Live2D:
+                    db = subCommandDatabases[DATABASE_CHARACTER_LIVE2D];
+                    break;
+            }
+
+            command = db.GetCommand(commandName);
+            if (command != null)
+            {
+                return StartCommandProcess(command, commandName, args);
+            }
+
+            Debug.LogError($"Command Manager was unable to execute command '{commandName}' on character {characterName}");
+            return null;
         }
 
         private CoroutineWrapper StartCommandProcess(Delegate command, string commandName, params string[] args)
@@ -128,6 +214,21 @@ namespace Core.CommandDB
             if (process == null) return;
 
             process.RegisterTerminationAction(action);
+        }
+
+        public CommandDatabase CreateSubDatabase(string name)
+        {
+            name = name.ToLower();
+
+            if (subCommandDatabases.TryGetValue(name, out CommandDatabase db))
+            {
+                Debug.LogWarning($"A sub database by the name of {name} already exists!");
+                return db;
+            }
+
+            db = new CommandDatabase();
+            subCommandDatabases.Add(name, db);
+            return db;
         }
     }
 }
