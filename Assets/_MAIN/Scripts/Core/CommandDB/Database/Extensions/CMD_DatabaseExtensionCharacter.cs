@@ -5,7 +5,6 @@ using System.Linq;
 using Core.Characters;
 using Extensions;
 using UnityEngine;
-using UnityEngine.Events;
 
 
 namespace Core.CommandDB
@@ -20,7 +19,9 @@ namespace Core.CommandDB
         private static string[] PARAMS_YPOS => new string[] { "-y" };
         private static string[] PARAMS_PRIORITY => new string[] { "-priority" };
         private static string[] PARAMS_COLOR => new string[] { "-color" };
-        private static string[] PARAMS_ONLY => new string[] { "only" };
+        private static string[] PARAMS_ONLY => new string[] { "-only" };
+        private static string[] PARAMS_SPRITE => new string[] { "-sprite" };
+        private static string[] PARAMS_LAYER => new string[] { "-layer" };
 
         new public static void Extend(CommandDatabase commandDatabase)
         {
@@ -44,6 +45,9 @@ namespace Core.CommandDB
             baseDatabase.AddCommand("highlight", new Func<string[], IEnumerator>(HighlightCharacter));
             baseDatabase.AddCommand("unHighlight", new Func<string[], IEnumerator>(UnHighlightCharacter));
             baseDatabase.AddCommand("setPosition", new Action<string[]>(SetCharacterPosition));
+
+            CommandDatabase spriteDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_SPRITE);
+            baseDatabase.AddCommand("setSprite", new Func<string[], IEnumerator>(SetSprite));
         }
 
         /// <summary>
@@ -337,6 +341,38 @@ namespace Core.CommandDB
             parameterFetcher.TryGetValue(PARAMS_YPOS, out float y);
 
             character.SetScreenPosition(new Vector2(x, y));
+        }
+
+        private static IEnumerator SetSprite(string[] data)
+        {
+            string characterName = data[0];
+            if (CharacterManager.instance.GetCharacter(characterName) is not SpriteCharacter character) yield break;
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_SPRITE, out string spriteName);
+            parameterFetcher.TryGetValue(PARAMS_LAYER, out int layerIndex);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            // ralien.A_sad だけが null になる（A_SoSmile, A_Normal などはみつかる)
+            // 理由がわからない
+            var sprite = character.FetchSpriteFromResources(spriteName);
+            if (sprite == null) yield break;
+
+            void immediateAction()
+            {
+                character.SetSprite(sprite, layerIndex);
+            }
+
+            if (immediate)
+            {
+                immediateAction();
+                yield break;
+            }
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(immediateAction);
+            yield return character.ExecuteTransitionSprite(sprite, layerIndex, speed);
         }
     }
 }
