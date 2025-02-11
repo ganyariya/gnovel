@@ -4,9 +4,10 @@
 [wait]createCharacter(raelin -enabled true)
 [wait]moveCharacter(raelin -x 0.8 -spd 3 -smooth true)
 wait(1)
-sortCharacters(ganyariya raelin)
+[wait]ganyariya.setColor(-color red)
 wait(1)
-sortCharacters(raelin ganyariya)
+[wait]setCharacterColor(ganyariya -color green)
+wait(1)
 
 hideCharacters(ganyariya raelin -immediate false -speed 0.001)
 ganyariya "隠れるよ..."

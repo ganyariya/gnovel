@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Characters;
+using Extensions;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 namespace Core.CommandDB
@@ -17,6 +19,7 @@ namespace Core.CommandDB
         private static string[] PARAMS_XPOS => new string[] { "-x" };
         private static string[] PARAMS_YPOS => new string[] { "-y" };
         private static string[] PARAMS_PRIORITY => new string[] { "-priority" };
+        private static string[] PARAMS_COLOR => new string[] { "-color" };
 
         new public static void Extend(CommandDatabase commandDatabase)
         {
@@ -26,6 +29,7 @@ namespace Core.CommandDB
             commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
             commandDatabase.AddCommand("setCharacterPriority", new Action<string[]>(SetPriority));
             commandDatabase.AddCommand("sortCharacters", new Action<string[]>(SortCharacters));
+            commandDatabase.AddCommand("setCharacterColor", new Func<string[], IEnumerator>(SetCharacterColor));
 
             // register character baseDatabase
             CommandDatabase baseDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_BASE);
@@ -33,6 +37,7 @@ namespace Core.CommandDB
             baseDatabase.AddCommand("show", new Func<string[], IEnumerator>(ShowAll));
             baseDatabase.AddCommand("hide", new Func<string[], IEnumerator>(HideAll));
             baseDatabase.AddCommand("setPriority", new Action<string[]>(SetPriority));
+            baseDatabase.AddCommand("setColor", new Func<string[], IEnumerator>(SetCharacterColor));
         }
 
         /// <summary>
@@ -181,6 +186,34 @@ namespace Core.CommandDB
         public static void SortCharacters(string[] data)
         {
             CharacterManager.instance.SortCharacters(data);
+        }
+
+        private static IEnumerator SetCharacterColor(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_COLOR, out string colorText, "");
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            var color = ColorExtension.CreateColorFromString(colorText);
+
+            void immediateAction()
+            {
+                character.SetColor(color);
+            }
+
+            if (immediate)
+            {
+                immediateAction();
+                yield break;
+            }
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(immediateAction);
+            yield return character.ExecuteChangingColor(color, speed);
         }
     }
 }
