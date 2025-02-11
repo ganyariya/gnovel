@@ -1,12 +1,25 @@
-wait(10)
 
 [wait]createCharacter(ganyariya -enabled true)
+[wait]ganyariya.move(-x 0.8 -spd 0.5 -smooth false)
+ganyariya.move(-x 0.2 -spd 0.5 -smooth false)
+ganyariya "ゆっくり移動するよ"
+
+[wait]ganyariya.setPriority(-priority 10)
+ganyariya.setPriority(-priority 11)
 ganyariya "ゆっくり移動するよ" [wait]moveCharacter(ganyariya -x 0.2 -spd 1.0 -smooth true)
 wait(1)
 [wait]ganyariya.move(-x 0.8 -spd 0.5 -smooth false)
+[wait]ganyariya.hide(-immediate false)
+[wait]ganyariya.show(-immediate false)
+[wait]ganyariya.setPriority(-priority 10)
 
 createCharacter(raelin -enabled true)
 [wait]moveCharacter(raelin -x 0.8 -spd 3 -smooth true)
+ganyariya.setPriority(-priority 100)
+wait(1)
+raelin.setPriority(-priority 101)
+wait(1)
+ganyariya.setPriority(-priority 102)
 wait(1)
 
 hideCharacters(ganyariya raelin -immediate false -speed 0.001)

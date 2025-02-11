@@ -118,11 +118,11 @@ namespace Core.CommandDB
 
             if (subCommandDatabases.TryGetValue(DATABASE_CHARACTER_BASE, out CommandDatabase db))
             {
-            if (db.HasCommand(commandName))
-            {
-                command = db.GetCommand(commandName);
-                return StartCommandProcess(command, commandName, args);
-            }
+                if (db.HasCommand(commandName))
+                {
+                    command = db.GetCommand(commandName);
+                    return StartCommandProcess(command, commandName, args);
+                }
             }
 
             CharacterConfig config = CharacterManager.instance.GetCharacterConfig(characterName);
@@ -181,10 +181,10 @@ namespace Core.CommandDB
         /// </summary>
         public void KillTargetCommandProcess(CommandProcess targetCommandProcess)
         {
+            if (!targetCommandProcess.ShouldStopCoroutine()) return;
+
             activeCommandProcesses.Remove(targetCommandProcess);
-
-            if (targetCommandProcess.ShouldStopCoroutine()) targetCommandProcess.StopCoroutine();
-
+            targetCommandProcess.StopCoroutine();
             // 仕上げとして 終了時の実行したい処理を実行する
             targetCommandProcess.ExecuteTerminationEvent();
         }
@@ -193,9 +193,25 @@ namespace Core.CommandDB
         {
             var command = commandProcess.command;
 
-            if (command is Action) command.DynamicInvoke();
-            if (command is Action<string>) command.DynamicInvoke(args[0]);
-            if (command is Action<string[]>) command.DynamicInvoke((object)args);
+            if (
+                command is Action
+                || command is Action<string>
+                || command is Action<string[]>
+            )
+            {
+                if (command is Action) command.DynamicInvoke();
+                if (command is Action<string>) command.DynamicInvoke(args[0]);
+                if (command is Action<string[]>) command.DynamicInvoke((object)args);
+
+                /*
+                StartCommandProcess において coroutineWrapper をあとから CommandProcess に設定している
+                そのため、 yield return null をせずに, そのまま KillTargetCommandProcess を実行してしまうと
+                coroutineWrapper.isDone がずっと false になりゲームが進行不能になってしまう
+                そのため一回 yield return null を実行して、 StartCommandProcess に coroutineWrapper を設定してもらう
+                */
+                yield return null;
+            }
+
 
             if (command is Func<IEnumerator>) yield return ((Func<IEnumerator>)command)();
             if (command is Func<string, IEnumerator>) yield return ((Func<string, IEnumerator>)command)(args[0]);
