@@ -25,6 +25,7 @@ namespace Core.CommandDB
             commandDatabase.AddCommand("showCharacters", new Func<string[], IEnumerator>(ShowAll));
             commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
             commandDatabase.AddCommand("setCharacterPriority", new Action<string[]>(SetPriority));
+            commandDatabase.AddCommand("sortCharacters", new Action<string[]>(SortCharacters));
 
             // register character baseDatabase
             CommandDatabase baseDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_BASE);
@@ -175,6 +176,11 @@ namespace Core.CommandDB
             parameterFetcher.TryGetValue(PARAMS_PRIORITY, out int priority, 0);
 
             character.SetPriority(priority);
+        }
+
+        public static void SortCharacters(string[] data)
+        {
+            CharacterManager.instance.SortCharacters(data);
         }
     }
 }
