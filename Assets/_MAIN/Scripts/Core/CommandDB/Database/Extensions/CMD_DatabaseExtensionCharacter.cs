@@ -16,6 +16,7 @@ namespace Core.CommandDB
         private static string[] PARAMS_SMOOTH => new string[] { "-sm", "-smooth" };
         private static string[] PARAMS_XPOS => new string[] { "-x" };
         private static string[] PARAMS_YPOS => new string[] { "-y" };
+        private static string[] PARAMS_PRIORITY => new string[] { "-priority" };
 
         new public static void Extend(CommandDatabase commandDatabase)
         {
@@ -23,10 +24,14 @@ namespace Core.CommandDB
             commandDatabase.AddCommand("moveCharacter", new Func<string[], IEnumerator>(MoveCharacter));
             commandDatabase.AddCommand("showCharacters", new Func<string[], IEnumerator>(ShowAll));
             commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
+            commandDatabase.AddCommand("setCharacterPriority", new Action<string[]>(SetPriority));
 
             // register character baseDatabase
             CommandDatabase baseDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_BASE);
             baseDatabase.AddCommand("move", new Func<string[], IEnumerator>(MoveCharacter));
+            baseDatabase.AddCommand("show", new Func<string[], IEnumerator>(ShowAll));
+            baseDatabase.AddCommand("hide", new Func<string[], IEnumerator>(HideAll));
+            baseDatabase.AddCommand("setPriority", new Action<string[]>(SetPriority));
         }
 
         /// <summary>
@@ -155,6 +160,21 @@ namespace Core.CommandDB
                 // キャラが登場仕切るまで待つ
                 while (characters.Any(x => x.isHiding)) yield return null;
             }
+        }
+
+        public static void SetPriority(string[] data)
+        {
+            if (data.Length < 3) return;
+
+            string characterName = data[0];
+
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) return;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_PRIORITY, out int priority, 0);
+
+            character.SetPriority(priority);
         }
     }
 }

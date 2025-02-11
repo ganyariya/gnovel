@@ -116,11 +116,13 @@ namespace Core.CommandDB
 
             Delegate command;
 
-            CommandDatabase db = subCommandDatabases[DATABASE_CHARACTER_BASE]; // TODO: key check いらない？
+            if (subCommandDatabases.TryGetValue(DATABASE_CHARACTER_BASE, out CommandDatabase db))
+            {
             if (db.HasCommand(commandName))
             {
                 command = db.GetCommand(commandName);
                 return StartCommandProcess(command, commandName, args);
+            }
             }
 
             CharacterConfig config = CharacterManager.instance.GetCharacterConfig(characterName);
@@ -128,14 +130,14 @@ namespace Core.CommandDB
             {
                 case Character.CharacterType.Sprite:
                 case Character.CharacterType.SpriteSheet:
-                    db = subCommandDatabases[DATABASE_CHARACTER_SPRITE];
+                    subCommandDatabases.TryGetValue(DATABASE_CHARACTER_SPRITE, out db);
                     break;
                 case Character.CharacterType.Live2D:
-                    db = subCommandDatabases[DATABASE_CHARACTER_LIVE2D];
+                    subCommandDatabases.TryGetValue(DATABASE_CHARACTER_SPRITE, out db);
                     break;
             }
 
-            command = db.GetCommand(commandName);
+            command = db?.GetCommand(commandName) ?? null;
             if (command != null)
             {
                 return StartCommandProcess(command, commandName, args);
