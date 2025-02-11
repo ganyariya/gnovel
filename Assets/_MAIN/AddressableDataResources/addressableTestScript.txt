@@ -10,6 +10,13 @@ wait(1)
 wait(1)
 [wait]ganyariya.unHighlight()
 [wait]ganyariya.highlight()
+ganyariya.setPosition(-x 0)
+[wait] highlightCharacters(ganyariya)
+wait(1)
+[wait] highlightCharacters(raelin)
+wait(1)
+[wait] unHighlightCharacters(raelin)
+wait(1)
 
 hideCharacters(ganyariya raelin -immediate false -speed 0.001)
 ganyariya "隠れるよ..."
