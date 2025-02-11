@@ -6,19 +6,28 @@ namespace Core.CommandDB
     {
         private const char PARAMETER_IDENTIFIER = '-';
 
-        private Dictionary<string, string> parameters = new Dictionary<string, string>();
+        private Dictionary<string, string> parameters = new();
 
-        public CommandParameterFetcher(string[] parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startIndex">
+        /// ganyariya.SetColor(red) は SetColor(ganyariya red) とパースされるため最初が ganyariya になってしまう
+        /// そのため開始位置をずらせるように startIndex を指定できるようにする
+        /// ただし ganyariya の使い方においては startIndex を使うことはおそらくない（ganyariya.setColor(-c red) のように使うため）
+        /// https://www.youtube.com/watch?v=NSTk5DCiNKg&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=43
+        /// </param>
+        public CommandParameterFetcher(string[] parameters, int startIndex = 0)
         {
             static bool isFloat(string s) => float.TryParse(s, out _);
 
-            for (int i = 0; i < parameters.Length; i++)
+            for (int i = startIndex; i < parameters.Length; i++)
             {
                 // -y -20 などに対応できるようにする
                 // ただし、現状 [`-10` で 10 を変数にする] はしないため, 起こらないはず
                 if (parameters[i].StartsWith(PARAMETER_IDENTIFIER) && !isFloat(parameters[i]))
                 {
-                    // 動画と実装を変えている
+                    // 動画と実装と挙動を変えていることに注意
                     // https://www.youtube.com/watch?v=z47NZQhTAh0&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=40
 
                     // 次がないのであればスキップする

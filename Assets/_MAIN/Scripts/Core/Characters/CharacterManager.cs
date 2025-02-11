@@ -42,6 +42,8 @@ namespace Core.Characters
         /// </summary>
         private CharacterConfigSO characterConfigSO => DialogueSystemController.instance.dialogSystemConfig.characterConfigSO;
 
+        public List<Character> AllCharacters => characters.Values.ToList();
+
         private void Awake()
         {
             instance = this;

@@ -34,9 +34,9 @@ namespace Extensions
         /// </summary>
         public void Stop()
         {
-            // 実行中の Coroutine を停止させる
-            // もしキャラが動いていたら途中でとまる
-            behaviourIssuer.StopCoroutine(coroutine);
+            // 実行中の Coroutine を停止させる (もしキャラが動いていたら途中でとまる)
+            // IEnumerator でない場合は coroutine = null になるためスキップする
+            if (coroutine != null) behaviourIssuer.StopCoroutine(coroutine);
             // Coroutine が終了したことを伝える
             IsDone = true;
         }

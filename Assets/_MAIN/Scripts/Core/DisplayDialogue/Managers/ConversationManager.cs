@@ -198,6 +198,11 @@ namespace Core.DisplayDialogue
                 }
 
                 CoroutineWrapper wrapper = CommandManager.instance.ExecuteCommand(command.name, command.arguments);
+                if (wrapper == null) continue;
+
+                // CommandManager.RunningCommandProcess の KillTargetCommandProcess で終了すると
+                // wrapper.IsDone が false → true に変更されてループが勝手に終了する
+                // そのため `コマンドコルーチンが終了したら**自動で**次の行が始まる` が正しい挙動
                 while (!wrapper.IsDone)
                 {
                     // ユーザ入力もしくはコマンド実行が完了するまではループで待機する

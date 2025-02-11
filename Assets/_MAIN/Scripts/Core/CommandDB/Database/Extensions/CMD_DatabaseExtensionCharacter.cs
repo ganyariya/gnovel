@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Characters;
+using Extensions;
 using UnityEngine;
 
 
@@ -16,6 +17,11 @@ namespace Core.CommandDB
         private static string[] PARAMS_SMOOTH => new string[] { "-sm", "-smooth" };
         private static string[] PARAMS_XPOS => new string[] { "-x" };
         private static string[] PARAMS_YPOS => new string[] { "-y" };
+        private static string[] PARAMS_PRIORITY => new string[] { "-priority" };
+        private static string[] PARAMS_COLOR => new string[] { "-color" };
+        private static string[] PARAMS_ONLY => new string[] { "-only" };
+        private static string[] PARAMS_SPRITE => new string[] { "-sprite" };
+        private static string[] PARAMS_LAYER => new string[] { "-layer" };
 
         new public static void Extend(CommandDatabase commandDatabase)
         {
@@ -23,10 +29,25 @@ namespace Core.CommandDB
             commandDatabase.AddCommand("moveCharacter", new Func<string[], IEnumerator>(MoveCharacter));
             commandDatabase.AddCommand("showCharacters", new Func<string[], IEnumerator>(ShowAll));
             commandDatabase.AddCommand("hideCharacters", new Func<string[], IEnumerator>(HideAll));
+            commandDatabase.AddCommand("setCharacterPriority", new Action<string[]>(SetPriority));
+            commandDatabase.AddCommand("sortCharacters", new Action<string[]>(SortCharacters));
+            commandDatabase.AddCommand("setCharacterColor", new Func<string[], IEnumerator>(SetCharacterColor));
+            commandDatabase.AddCommand("highlightCharacters", new Func<string[], IEnumerator>(HighlightAll));
+            commandDatabase.AddCommand("unHighlightCharacters", new Func<string[], IEnumerator>(UnHighlightAll));
 
             // register character baseDatabase
             CommandDatabase baseDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_BASE);
             baseDatabase.AddCommand("move", new Func<string[], IEnumerator>(MoveCharacter));
+            baseDatabase.AddCommand("show", new Func<string[], IEnumerator>(ShowAll));
+            baseDatabase.AddCommand("hide", new Func<string[], IEnumerator>(HideAll));
+            baseDatabase.AddCommand("setPriority", new Action<string[]>(SetPriority));
+            baseDatabase.AddCommand("setColor", new Func<string[], IEnumerator>(SetCharacterColor));
+            baseDatabase.AddCommand("highlight", new Func<string[], IEnumerator>(HighlightCharacter));
+            baseDatabase.AddCommand("unHighlight", new Func<string[], IEnumerator>(UnHighlightCharacter));
+            baseDatabase.AddCommand("setPosition", new Action<string[]>(SetCharacterPosition));
+
+            CommandDatabase spriteDatabase = CommandManager.instance.CreateSubDatabase(CommandManager.DATABASE_CHARACTER_SPRITE);
+            baseDatabase.AddCommand("setSprite", new Func<string[], IEnumerator>(SetSprite));
         }
 
         /// <summary>
@@ -155,6 +176,203 @@ namespace Core.CommandDB
                 // キャラが登場仕切るまで待つ
                 while (characters.Any(x => x.isHiding)) yield return null;
             }
+        }
+
+        public static void SetPriority(string[] data)
+        {
+            if (data.Length < 3) return;
+
+            string characterName = data[0];
+
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) return;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_PRIORITY, out int priority, 0);
+
+            character.SetPriority(priority);
+        }
+
+        public static void SortCharacters(string[] data)
+        {
+            CharacterManager.instance.SortCharacters(data);
+        }
+
+        private static IEnumerator SetCharacterColor(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_COLOR, out string colorText, "");
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            var color = ColorExtension.CreateColorFromString(colorText);
+
+            void immediateAction()
+            {
+                character.SetColor(color);
+            }
+
+            if (immediate)
+            {
+                immediateAction();
+                yield break;
+            }
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(immediateAction);
+            yield return character.ExecuteChangingColor(color, speed);
+        }
+
+        private static IEnumerator HighlightCharacter(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() => { character.ExecuteHighlighting(speed, immediate: true); });
+            yield return character.ExecuteHighlighting(speed, immediate);
+        }
+
+        private static IEnumerator UnHighlightCharacter(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() => { character.ExecuteUnHighlighting(speed, immediate: true); });
+            yield return character.ExecuteUnHighlighting(speed, immediate);
+        }
+
+        private static IEnumerator HighlightAll(string[] data)
+        {
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate);
+            parameterFetcher.TryGetValue(PARAMS_ONLY, out bool only, true);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            List<Character> characters = new();
+            foreach (var name in data)
+            {
+                var character = CharacterManager.instance.GetCharacter(name, create: false);
+                if (character != null) characters.Add(character);
+            }
+            if (characters.Count == 0) yield break;
+
+            List<Character> unspecifiedCharacters = new();
+            foreach (var character in CharacterManager.instance.AllCharacters)
+            {
+                if (characters.Contains(character)) continue;
+                unspecifiedCharacters.Add(character);
+            }
+
+            List<Coroutine> coroutines = new();
+            foreach (var character in characters) coroutines.Add(character.ExecuteHighlighting(speed, immediate));
+            if (only) foreach (var character in unspecifiedCharacters) coroutines.Add(character.ExecuteUnHighlighting(speed, immediate));
+
+            if (!immediate)
+            {
+                CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() =>
+                {
+                    foreach (var character in characters) character.ExecuteHighlighting(speed, true);
+                    if (only) foreach (var character in unspecifiedCharacters) character.ExecuteUnHighlighting(speed, true);
+                });
+            }
+
+            foreach (var c in coroutines) yield return c;
+        }
+
+        private static IEnumerator UnHighlightAll(string[] data)
+        {
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate);
+            parameterFetcher.TryGetValue(PARAMS_ONLY, out bool only, true);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            List<Character> characters = new();
+            foreach (var name in data)
+            {
+                var character = CharacterManager.instance.GetCharacter(name, create: false);
+                if (character != null) characters.Add(character);
+            }
+            if (characters.Count == 0) yield break;
+
+            List<Character> unspecifiedCharacters = new();
+            foreach (var character in CharacterManager.instance.AllCharacters)
+            {
+                if (characters.Contains(character)) continue;
+                unspecifiedCharacters.Add(character);
+            }
+
+            List<Coroutine> coroutines = new();
+            foreach (var character in characters) coroutines.Add(character.ExecuteUnHighlighting(speed, immediate));
+            if (only) foreach (var character in unspecifiedCharacters) coroutines.Add(character.ExecuteHighlighting(speed, immediate));
+
+            if (!immediate)
+            {
+                CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() =>
+                {
+                    foreach (var character in characters) character.ExecuteUnHighlighting(speed, true);
+                    if (only) foreach (var character in unspecifiedCharacters) character.ExecuteHighlighting(speed, true);
+                });
+            }
+
+            foreach (var c in coroutines) yield return c;
+        }
+
+        private static void SetCharacterPosition(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) return;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_XPOS, out float x);
+            parameterFetcher.TryGetValue(PARAMS_YPOS, out float y);
+
+            character.SetScreenPosition(new Vector2(x, y));
+        }
+
+        private static IEnumerator SetSprite(string[] data)
+        {
+            string characterName = data[0];
+            if (CharacterManager.instance.GetCharacter(characterName) is not SpriteCharacter character) yield break;
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_SPRITE, out string spriteName);
+            parameterFetcher.TryGetValue(PARAMS_LAYER, out int layerIndex);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            // ralien.A_sad だけが null になる（A_SoSmile, A_Normal などはみつかる)
+            // 理由がわからない
+            var sprite = character.FetchSpriteFromResources(spriteName);
+            if (sprite == null) yield break;
+
+            void immediateAction()
+            {
+                character.SetSprite(sprite, layerIndex);
+            }
+
+            if (immediate)
+            {
+                immediateAction();
+                yield break;
+            }
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(immediateAction);
+            yield return character.ExecuteTransitionSprite(sprite, layerIndex, speed);
         }
     }
 }

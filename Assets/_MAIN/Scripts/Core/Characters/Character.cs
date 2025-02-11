@@ -238,23 +238,23 @@ namespace Core.Characters
             return changingColorCoroutine;
         }
 
-        public Coroutine ExecuteHighlighting(float speed = 1f)
+        public Coroutine ExecuteHighlighting(float speed = 1f, bool immediate = false)
         {
             if (isHighlighting) return highlightingCoroutine;
             if (isUnHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
 
             isHighlighted = true;
-            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(true, speed));
+            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(true, speed, immediate));
         }
-        public Coroutine ExecuteUnHighlighting(float speed = 1f)
+        public Coroutine ExecuteUnHighlighting(float speed = 1f, bool immediate = false)
         {
             if (isUnHighlighting) return highlightingCoroutine;
             if (isHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
 
             isHighlighted = false;
-            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed));
+            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed, immediate));
         }
-        protected virtual IEnumerator Highlighting(bool highlighted, float speed = 1f)
+        protected virtual IEnumerator Highlighting(bool highlighted, float speed = 1f, bool immediate = false)
         {
             yield return null;
         }
