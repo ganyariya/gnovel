@@ -7,7 +7,18 @@ namespace Core.ScriptParser
 {
     public class DialogueParser
     {
-        private static readonly Regex CommandsPattern = new Regex(@"[\w\[\]]+[^\s]\(", RegexOptions.Compiled);
+        /// <summary>
+        /// コマンドのパターンを見つける
+        /// [\w\[\].]+ = ([a-zA-Z0-9_-] or `[` or `]` or `.`) が 1 文字以上
+        /// \( = コマンドは `(` で始まるためそれを検知するため)
+        /// 
+        /// . を含むのは ganyariya.move() のパターンを検知するため
+        /// </summary>
+        /// 
+        /// private static readonly Regex CommandsPattern = new(@"[\w\[\].]+[^\s]\(", RegexOptions.Compiled);
+        /// removed: [^\s] = 謎　スペース以外を許容している
+        /// 元々は [^\s] もついていたが用途が思い出せないため取り外した
+        private static readonly Regex CommandsPattern = new(@"[\w\[\].]+\(", RegexOptions.Compiled);
 
         public static DialogueLineData Parse(string rawLine)
         {

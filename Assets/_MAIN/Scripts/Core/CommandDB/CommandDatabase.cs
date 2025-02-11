@@ -18,7 +18,7 @@ namespace Core.CommandDB
     {
         private readonly Dictionary<string, Delegate> commandDB = new Dictionary<string, Delegate>();
 
-        public bool HasCommand(string commandName) => commandDB.ContainsKey(commandName);
+        public bool HasCommand(string commandName) => commandDB.ContainsKey(commandName.ToLower());
 
         public void AddCommand(string commandName, Delegate command)
         {

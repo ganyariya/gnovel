@@ -1,8 +1,9 @@
 wait(10)
 
 [wait]createCharacter(ganyariya -enabled true)
-[wait]moveCharacter(ganyariya -x 0.2 -spd 0.1 -smooth true)
+ganyariya "ゆっくり移動するよ" [wait]moveCharacter(ganyariya -x 0.2 -spd 1.0 -smooth true)
 wait(1)
+[wait]ganyariya.move(-x 0.8 -spd 0.5 -smooth false)
 
 createCharacter(raelin -enabled true)
 [wait]moveCharacter(raelin -x 0.8 -spd 3 -smooth true)
