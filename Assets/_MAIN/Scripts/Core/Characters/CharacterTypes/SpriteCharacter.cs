@@ -155,15 +155,20 @@ namespace Core.Characters
             changingColorCoroutine = null;
         }
 
-        protected override IEnumerator Highlighting(bool highlighted, float speed = 1f)
+        protected override IEnumerator Highlighting(bool highlighted, float speed = 1f, bool immediate = false)
         {
             Color targetColor = displayColor;
 
             var coroutines = new List<Coroutine>();
 
-            foreach (var layer in spriteLayers) coroutines.Add(layer.ExecuteChangingColor(targetColor, speed));
+            foreach (var layer in spriteLayers)
+            {
+                if (immediate) layer.SetColor(targetColor);
+                else coroutines.Add(layer.ExecuteChangingColor(targetColor, speed));
+            }
             foreach (var c in coroutines) yield return c;
 
+            yield return null; // null を一旦返して親元のコルーチンを代入させる。その後 null を入れる。
             highlightingCoroutine = null;
         }
 

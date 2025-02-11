@@ -2,12 +2,14 @@
 [wait]createCharacter(ganyariya -enabled true)
 [wait]ganyariya.move(-x 0.8 -spd 0.5 -smooth false)
 [wait]createCharacter(raelin -enabled true)
-[wait]moveCharacter(raelin -x 0.8 -spd 3 -smooth true)
+[wait]moveCharacter(raelin -x 0.2 -spd 3 -smooth true)
 wait(1)
 [wait]ganyariya.setColor(-color red)
 wait(1)
-[wait]setCharacterColor(ganyariya -color green)
+[wait]setCharacterColor(ganyariya -color white)
 wait(1)
+[wait]ganyariya.unHighlight()
+[wait]ganyariya.highlight()
 
 hideCharacters(ganyariya raelin -immediate false -speed 0.001)
 ganyariya "隠れるよ..."

@@ -106,11 +106,13 @@ namespace Core.Characters
             changingColorCoroutine = null;
         }
 
-        protected override IEnumerator Highlighting(bool highlighted, float speed = 1)
+        protected override IEnumerator Highlighting(bool highlighted, float speed = 1, bool immediate = false)
         {
             Color targetColor = displayColor;
-            yield return ChangingColor(targetColor, speed);
+            if (immediate) SetColor(targetColor);
+            else yield return ChangingColor(targetColor, speed);
 
+            yield return null;
             highlightingCoroutine = null;
         }
 

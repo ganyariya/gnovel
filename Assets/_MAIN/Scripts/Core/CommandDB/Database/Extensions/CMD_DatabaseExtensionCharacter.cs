@@ -38,6 +38,8 @@ namespace Core.CommandDB
             baseDatabase.AddCommand("hide", new Func<string[], IEnumerator>(HideAll));
             baseDatabase.AddCommand("setPriority", new Action<string[]>(SetPriority));
             baseDatabase.AddCommand("setColor", new Func<string[], IEnumerator>(SetCharacterColor));
+            baseDatabase.AddCommand("highlight", new Func<string[], IEnumerator>(HighlightCharacter));
+            baseDatabase.AddCommand("unHighlight", new Func<string[], IEnumerator>(UnHighlightCharacter));
         }
 
         /// <summary>
@@ -214,6 +216,34 @@ namespace Core.CommandDB
 
             CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(immediateAction);
             yield return character.ExecuteChangingColor(color, speed);
+        }
+
+        private static IEnumerator HighlightCharacter(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() => { character.ExecuteHighlighting(speed, immediate: true); });
+            yield return character.ExecuteHighlighting(speed, immediate);
+        }
+
+        private static IEnumerator UnHighlightCharacter(string[] data)
+        {
+            string characterName = data[0];
+            Character character = CharacterManager.instance.GetCharacter(characterName);
+            if (character == null) yield break;
+
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1f);
+
+            CommandManager.instance.RegisterTerminationEventToCurrentCommandProcess(() => { character.ExecuteUnHighlighting(speed, immediate: true); });
+            yield return character.ExecuteUnHighlighting(speed, immediate);
         }
     }
 }
