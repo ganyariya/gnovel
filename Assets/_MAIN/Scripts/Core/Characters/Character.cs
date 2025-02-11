@@ -252,7 +252,7 @@ namespace Core.Characters
             if (isHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
 
             isHighlighted = false;
-            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed));
+            return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed, immediate));
         }
         protected virtual IEnumerator Highlighting(bool highlighted, float speed = 1f, bool immediate = false)
         {
