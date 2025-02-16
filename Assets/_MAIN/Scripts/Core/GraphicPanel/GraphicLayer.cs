@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace Core.GraphicPanel
 {
@@ -54,7 +55,24 @@ namespace Core.GraphicPanel
         public void SetTexture(Texture texture, float transitionSpeed = 1f, Texture blendingTexture = null, string filePath = "")
         {
             CreateGraphic(texture, transitionSpeed, filePath, blendingTexture: blendingTexture);
+        }
 
+        public void SetVideo(string filePath, float transitionSpeed = 1f, bool useAudio = true, Texture blendingTexture = null)
+        {
+            VideoClip clip = Resources.Load<VideoClip>(filePath);
+
+            if (clip == null)
+            {
+                Debug.LogError($"Could not load clip from '{filePath}'");
+                return;
+            }
+
+            SetVideo(clip, transitionSpeed, useAudio, blendingTexture, filePath);
+        }
+
+        public void SetVideo(VideoClip clip, float transitionSpeed = 1f, bool useAudio = true, Texture blendingTexture = null, string filePath = "")
+        {
+            CreateGraphic(clip, transitionSpeed, filePath, useAudio, blendingTexture);
         }
 
         /// <summary>
@@ -65,9 +83,9 @@ namespace Core.GraphicPanel
             GraphicObject graphicObject = null;
 
             if (graphicData is Texture)
-            {
                 graphicObject = new GraphicObject(this, filePath, graphicData as Texture);
-            }
+            if (graphicData is VideoClip)
+                graphicObject = new GraphicObject(this, filePath, graphicData as VideoClip, useAudio);
 
             currentGraphicObject = graphicObject;
             currentGraphicObject?.FadeIn(transitionSpeed, blendingTexture);

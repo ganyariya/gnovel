@@ -9,6 +9,10 @@ namespace Core.GraphicPanel
     public class GraphicObject
     {
         private const string NAME_FORMAT = "Graphic - [{0}]";
+
+        /// <summary>
+        /// BlendTexture を設定できる 画面遷移 Material
+        /// </summary>
         private const string TRANSITION_MATERIAL_PATH = "Materials/layerTransitionMaterial";
         private const string TRANSITION_MATERIAL_FIELD_COLOR = "_Color";
         private const string TRANSITION_MATERIAL_FIELD_MAIN_TEXTURE = "_MainTex";
@@ -16,23 +20,33 @@ namespace Core.GraphicPanel
         private const string TRANSITION_MATERIAL_FIELD_BLEND = "_Blend";
         private const string TRANSITION_MATERIAL_FIELD_ALPHA = "_Alpha";
 
-        private RawImage renderer = null;
-        private VideoPlayer videoPlayer = null;
-        private AudioSource audio = null;
+        /// <summary>
+        /// RawImage renderer を介して `動画 or 画像` を表示する
+        /// - 画像の場合は material.texture に texture を
+        /// - 動画の場合は material.texture に renderTexture (VideoPlayer が renderTexture に書き込む) を
+        /// 設定する
+        /// </summary>
+        private readonly RawImage renderer = null;
+        private readonly VideoPlayer videoPlayer = null;
+        private readonly AudioSource audio = null;
 
         private string graphicPath { get; set; }
-        private string originalTextureName { get; set; }
-        private string RendererName => string.Format(NAME_FORMAT, originalTextureName);
+        private string originalGraphicName { get; set; }
+        private string RendererName => string.Format(NAME_FORMAT, originalGraphicName);
 
         private Coroutine fadingInCoroutine = null;
         private Coroutine fadingOutCoroutine = null;
-        private bool isFadingIn => fadingInCoroutine != null;
-        private bool isFadingOut => fadingOutCoroutine != null;
+        private bool IsFadingIn => fadingInCoroutine != null;
+        private bool IsFadingOut => fadingOutCoroutine != null;
 
         public bool IsVideo => videoPlayer != null;
 
         private GraphicPanelManager manager => GraphicPanelManager.instance;
 
+        /// <summary>
+        /// 新しい RawImage GameObject を生成して
+        // Texture を RawImage に設定する
+        /// </summary>
         public GraphicObject(GraphicLayer graphicLayer, string graphicPath, Texture texture)
         {
             this.graphicPath = graphicPath;
@@ -41,15 +55,65 @@ namespace Core.GraphicPanel
             GameObject gameObject = new();
             gameObject.transform.SetParent(graphicLayer.transform);
             renderer = gameObject.AddComponent<RawImage>();
-            renderer.texture = texture;
+            renderer.texture = texture; // transition material を利用しているため, renderer.texture は設定してもしていなくても正常に表示される 
 
-            originalTextureName = texture.name;
+            originalGraphicName = texture.name;
             renderer.name = RendererName;
 
             InitGraphic(texture);
-
         }
 
+        /// <summary>
+        /// 新しい rawImage ゲームおジェクトを生成し
+        /// かつ 新しい RenderTexture コンポーネントを Attach したうえで
+        /// VideoClip の内容を RenderTexture に書き込むことで動画を表示する
+        /// </summary>
+        public GraphicObject(GraphicLayer graphicLayer, string graphicPath, VideoClip videoClip, bool useAudio)
+        {
+            this.graphicPath = graphicPath;
+
+            // GraphicLayer に新しい object を追加して RawImage に表示したいテクスチャを設定する
+            GameObject gameObject = new();
+            gameObject.transform.SetParent(graphicLayer.transform);
+            renderer = gameObject.AddComponent<RawImage>();
+
+            originalGraphicName = videoClip.name;
+            renderer.name = RendererName;
+
+            // RenderTexture に VideoClip の内容を書き込んでいく
+            RenderTexture renderTexture = new(Mathf.RoundToInt(videoClip.width), Mathf.RoundToInt(videoClip.height), 0);
+            renderer.texture = renderTexture; // transition material を利用しているため, renderer.texture は設定してもしていなくても正常に表示される 
+            InitGraphic(renderTexture);
+
+            videoPlayer = gameObject.AddComponent<VideoPlayer>();
+            audio = gameObject.AddComponent<AudioSource>();
+
+            videoPlayer.playOnAwake = true;
+            videoPlayer.isLooping = true;
+            videoPlayer.source = VideoSource.VideoClip;
+            videoPlayer.clip = videoClip;
+            // renderTexture に書き込んでいく
+            videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+            videoPlayer.targetTexture = renderTexture;
+
+            videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+            audio.volume = 0;
+            if (!useAudio) audio.mute = true;
+            videoPlayer.SetTargetAudioSource(0, audio); // audio に向かって音声を吐き出す
+
+            videoPlayer.frame = 0;
+            videoPlayer.Prepare();
+            videoPlayer.Play();
+
+            // なぜか音声が useAudio にかかわらず流れてしまうため enabled を調整することで適用する
+            videoPlayer.enabled = false;
+            videoPlayer.enabled = true;
+        }
+
+        /// <summary>
+        /// RawImage renderer の位置を初期化する
+        /// Renderer の material に texture を設定する
+        /// </summary>
         private void InitGraphic(Texture texture)
         {
             renderer.transform.localPosition = Vector3.zero;
@@ -79,14 +143,14 @@ namespace Core.GraphicPanel
 
         public Coroutine FadeIn(float speed, Texture blend = null)
         {
-            if (isFadingOut) manager.StopCoroutine(fadingOutCoroutine);
-            if (isFadingIn) return fadingInCoroutine;
+            if (IsFadingOut) manager.StopCoroutine(fadingOutCoroutine);
+            if (IsFadingIn) return fadingInCoroutine;
             return fadingInCoroutine = manager.StartCoroutine(Fading(true, 1, speed, blend));
         }
         public Coroutine FadeOut(float speed, Texture blend = null)
         {
-            if (isFadingIn) manager.StopCoroutine(fadingInCoroutine);
-            if (isFadingOut) return fadingOutCoroutine;
+            if (IsFadingIn) manager.StopCoroutine(fadingInCoroutine);
+            if (IsFadingOut) return fadingOutCoroutine;
             return fadingOutCoroutine = manager.StartCoroutine(Fading(false, 0, speed, blend));
         }
         private IEnumerator Fading(bool fadeIn, float target, float speed, Texture blendTexture)
@@ -110,6 +174,7 @@ namespace Core.GraphicPanel
             {
                 float opacity = Mathf.MoveTowards(material.GetFloat(opacityParameter), target, speed * Time.deltaTime);
                 material.SetFloat(opacityParameter, opacity);
+                if (IsVideo) audio.volume = opacity;
                 yield return null;
             }
 
