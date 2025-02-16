@@ -19,6 +19,8 @@ namespace Core.GraphicPanel
         public int depth { get; private set; } = 0;
         public Transform transform { get; private set; } = null;
 
+        public GraphicObject currentGraphicObject { get; private set; } = null;
+
         public string LayerName => string.Format(LAYER_NAME_FORMAT, depth);
 
         public GraphicLayer(int depth)
@@ -26,14 +28,49 @@ namespace Core.GraphicPanel
             this.depth = depth;
         }
 
-        public bool IsTargetLayer(int targetDepth)
-        {
-            return this.depth == targetDepth;
-        }
+        public bool IsTargetLayer(int targetDepth) => this.depth == targetDepth;
 
         public void SetTransform(Transform transform)
         {
             this.transform = transform;
+        }
+
+        public void SetTexture(string filePath, float transitionSpeed = 1f, Texture blendingTexture = null)
+        {
+            Texture texture = Resources.Load<Texture>(filePath);
+
+            if (texture == null)
+            {
+                Debug.LogError($"Could not load texture from '{filePath}'");
+                return;
+            }
+
+            SetTexture(texture, transitionSpeed, blendingTexture, filePath);
+        }
+
+        /// <summary>
+        /// 新しい GraphicObject を生成し 指定した texture を設定する (副作用を持つ)
+        /// </summary>
+        public void SetTexture(Texture texture, float transitionSpeed = 1f, Texture blendingTexture = null, string filePath = "")
+        {
+            CreateGraphic(texture, transitionSpeed, filePath, blendingTexture: blendingTexture);
+
+        }
+
+        /// <summary>
+        /// GraphicObject を生成して blendingTexture で FadeIn 表示させる
+        /// </summary>
+        private void CreateGraphic<T>(T graphicData, float transitionSpeed, string filePath, bool useAudio = true, Texture blendingTexture = null)
+        {
+            GraphicObject graphicObject = null;
+
+            if (graphicData is Texture)
+            {
+                graphicObject = new GraphicObject(this, filePath, graphicData as Texture);
+            }
+
+            currentGraphicObject = graphicObject;
+            currentGraphicObject?.FadeIn(transitionSpeed, blendingTexture);
         }
     }
 }

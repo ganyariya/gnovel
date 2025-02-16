@@ -9,12 +9,18 @@ namespace Testing
     {
         void Start()
         {
-            CreateBackGroundLayer();
+            StartCoroutine(CreateBackGroundLayer());
         }
 
-        private void CreateBackGroundLayer()
+        private IEnumerator CreateBackGroundLayer()
         {
-            GraphicPanelManager.instance.FetchPanel("background").CreateLayer(0);
+            GraphicPanel backGroundPanel = GraphicPanelManager.instance.FetchPanel("background");
+            GraphicLayer layer = backGroundPanel.CreateLayer(0);
+
+            yield return new WaitForSeconds(3);
+
+
+            layer.SetTexture("Graphics/BG Images/01_1");
         }
     }
 }
