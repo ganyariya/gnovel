@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: layerTransitionMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 383985c743c4836429035ec8b9784e81,
+  m_Shader: {fileID: -6465566751694194690, guid: f482b246045354bc8b0e6a617ec5181f,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -35,7 +35,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BlendTex:
-        m_Texture: {fileID: 2800000, guid: 5b71ac0196a997848b22401c48df2af9, type: 3}
+        m_Texture: {fileID: 2800000, guid: cd56ae0c161e24ef7a8b0168eda56ca5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -63,7 +63,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 4bf97be25ce18624eb447ebc9e50180d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
