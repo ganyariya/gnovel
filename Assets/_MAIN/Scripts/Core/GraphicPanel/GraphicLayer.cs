@@ -20,7 +20,8 @@ namespace Core.GraphicPanel
         public int depth { get; private set; } = 0;
         public Transform transform { get; private set; } = null;
 
-        public GraphicObject currentGraphicObject { get; private set; } = null;
+        public GraphicObject currentGraphicObject;
+        private List<GraphicObject> oldGraphicObjects = new();
 
         public string LayerName => string.Format(LAYER_NAME_FORMAT, depth);
 
@@ -86,9 +87,30 @@ namespace Core.GraphicPanel
                 graphicObject = new GraphicObject(this, filePath, graphicData as Texture);
             if (graphicData is VideoClip)
                 graphicObject = new GraphicObject(this, filePath, graphicData as VideoClip, useAudio);
+            
+            if (currentGraphicObject != null) oldGraphicObjects.Add(currentGraphicObject);
 
             currentGraphicObject = graphicObject;
             currentGraphicObject?.FadeIn(transitionSpeed, blendingTexture);
+        }
+
+        public void DestroyOldGraphics()
+        {
+            foreach (var g in oldGraphicObjects)
+            {
+                Object.Destroy(g.renderer.gameObject);
+            }
+            oldGraphicObjects.Clear();
+        }
+
+        public void Clear()
+        {
+            currentGraphicObject?.FadeOut();
+
+            foreach (var g in oldGraphicObjects)
+            {
+                g.FadeOut();
+            }
         }
     }
 }
