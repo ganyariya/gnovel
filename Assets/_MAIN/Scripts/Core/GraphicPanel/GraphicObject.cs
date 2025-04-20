@@ -26,9 +26,11 @@ namespace Core.GraphicPanel
         /// - 動画の場合は material.texture に renderTexture (VideoPlayer が renderTexture に書き込む) を
         /// 設定する
         /// </summary>
-        private readonly RawImage renderer = null;
+        public RawImage renderer = null;
         private readonly VideoPlayer videoPlayer = null;
         private readonly AudioSource audio = null;
+
+        private GraphicLayer layer;
 
         private string graphicPath { get; set; }
         private string originalGraphicName { get; set; }
@@ -50,9 +52,14 @@ namespace Core.GraphicPanel
         public GraphicObject(GraphicLayer graphicLayer, string graphicPath, Texture texture)
         {
             this.graphicPath = graphicPath;
+            this.layer = graphicLayer;
 
             // GraphicLayer に新しい object を追加して RawImage に表示したいテクスチャを設定する
             GameObject gameObject = new();
+            // 1-Background
+            //  Layer: 0
+            //    Graphic - [ImageName]
+            // のように 登録する
             gameObject.transform.SetParent(graphicLayer.transform);
             renderer = gameObject.AddComponent<RawImage>();
             renderer.texture = texture; // transition material を利用しているため, renderer.texture は設定してもしていなくても正常に表示される 
@@ -71,6 +78,7 @@ namespace Core.GraphicPanel
         public GraphicObject(GraphicLayer graphicLayer, string graphicPath, VideoClip videoClip, bool useAudio)
         {
             this.graphicPath = graphicPath;
+            this.layer = graphicLayer;
 
             // GraphicLayer に新しい object を追加して RawImage に表示したいテクスチャを設定する
             GameObject gameObject = new();
@@ -141,13 +149,13 @@ namespace Core.GraphicPanel
             return new Material(material);
         }
 
-        public Coroutine FadeIn(float speed, Texture blend = null)
+        public Coroutine FadeIn(float speed = 1f, Texture blend = null)
         {
             if (IsFadingOut) manager.StopCoroutine(fadingOutCoroutine);
             if (IsFadingIn) return fadingInCoroutine;
             return fadingInCoroutine = manager.StartCoroutine(Fading(true, 1, speed, blend));
         }
-        public Coroutine FadeOut(float speed, Texture blend = null)
+        public Coroutine FadeOut(float speed = 1f, Texture blend = null)
         {
             if (IsFadingIn) manager.StopCoroutine(fadingInCoroutine);
             if (IsFadingOut) return fadingOutCoroutine;
@@ -179,6 +187,23 @@ namespace Core.GraphicPanel
             }
 
             fadingInCoroutine = fadingOutCoroutine = null;
+
+            if (target == 0) Destroy();
+            else DestroyBacksideGraphics(); // 2 枚目の GraphicObject を追加するときに 1 枚目を消す
+        }
+
+        private void Destroy()
+        {
+            if (layer.currentGraphicObject != null && layer.currentGraphicObject.renderer == renderer)
+            {
+                layer.currentGraphicObject = null;
+            }    
+            Object.Destroy(renderer.gameObject);
+        }
+
+        private void DestroyBacksideGraphics()
+        {
+           layer.DestroyOldGraphics();
         }
     }
 }
