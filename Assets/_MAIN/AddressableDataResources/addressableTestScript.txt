@@ -3,6 +3,8 @@ wait(1)
 [wait]setLayerMedia(-panel background -m "Fantasy Landscape" -audio true -spd 0.4 -blend blur)
 setLayerMedia(-panel background -layer 1 -m SpaceshipInterior)
 
+[wait]clearLayerMedia(-panel background -layer 1 -blend blur)
+
 [wait]createCharacter(raelin -enabled true)
 
 raelin "dont insert space into wait and commend!!! if space inserted, then wait does not working."
@@ -10,6 +12,10 @@ raelin "dont insert space into wait and commend!!! if space inserted, then wait 
 [wait]SetLayerMedia(-panel cinematic -m "~/Graphics/Gallery/1")
 
 raelin "Oh, this is cinematic gallery!"
+
+[wait]ClearLayerMedia(-panel cinematic)
+
+raelin "cinematic gallery has been cleared!!!"
 
 [wait]createCharacter(ganyariya -enabled true)
 [wait]ganyariya.move(-x 0.8 -spd 0.5 -smooth false)

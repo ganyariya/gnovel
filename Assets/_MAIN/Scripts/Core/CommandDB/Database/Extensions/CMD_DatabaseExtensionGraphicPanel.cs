@@ -22,6 +22,39 @@ namespace Core.CommandDB
         new public static void Extend(CommandDatabase commandDatabase)
         {
             commandDatabase.AddCommand("setLayerMedia", new Func<string[], IEnumerator>(SetLayerMedia));
+            commandDatabase.AddCommand("clearLayerMedia", new Func<string[], IEnumerator>(ClearLayerMedia));
+        }
+
+        private static IEnumerator ClearLayerMedia(string[] data)
+        {
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAM_PANEL_NAME, out string panelName, "");
+            parameterFetcher.TryGetValue(PARAM_LAYER, out int layer, -1);
+            parameterFetcher.TryGetValue(PARAM_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAM_SPEED, out float transitionSpeed, 1);
+            parameterFetcher.TryGetValue(PARAM_BLEND_TEXTURE_NAME, out string blendTextureName, "");
+
+            var panel = GraphicPanelManager.instance.FetchPanel(panelName);
+            if (panel == null)
+            {
+                Debug.LogWarning($"Panel {panelName} not found");
+                yield break;
+            }
+
+            Texture blendTexture = null;
+            if (!immediate && blendTextureName != string.Empty)
+                blendTexture =
+                    Resources.Load<Texture>(UnityRuntimePathToolBox.ResourcesBlendTexturePath + blendTextureName);
+
+            if (layer == -1)
+            {
+                panel.Clear(transitionSpeed, blendTexture, immediate);
+            }
+            else
+            {
+                GraphicLayer graphicLayer = panel.GetLayer(layer, false);
+                graphicLayer?.Clear(transitionSpeed, blendTexture, immediate);
+            }
         }
 
         private static IEnumerator SetLayerMedia(string[] data)

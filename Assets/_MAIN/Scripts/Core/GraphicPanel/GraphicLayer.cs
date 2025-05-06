@@ -113,13 +113,18 @@ namespace Core.GraphicPanel
             oldGraphicObjects.Clear();
         }
 
-        public void Clear()
+        public void Clear(float transitionSpeed = 1f, Texture blendTexture = null, bool immediate = false)
         {
-            currentGraphicObject?.FadeOut();
+            if (currentGraphicObject != null)
+            {
+                if (!immediate) currentGraphicObject.FadeOut(transitionSpeed, blendTexture);
+                else currentGraphicObject.Destroy();
+            }
 
             foreach (var g in oldGraphicObjects)
             {
-                g.FadeOut();
+                if (!immediate) g.FadeOut(transitionSpeed, blendTexture);
+                else g.Destroy();
             }
         }
     }

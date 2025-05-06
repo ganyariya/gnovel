@@ -198,7 +198,7 @@ namespace Core.GraphicPanel
             else DestroyBacksideGraphics(); // 2 枚目の GraphicObject を追加するときに 1 枚目を消す
         }
 
-        private void Destroy()
+        public void Destroy()
         {
             if (layer.currentGraphicObject != null && layer.currentGraphicObject.renderer == renderer)
             {
