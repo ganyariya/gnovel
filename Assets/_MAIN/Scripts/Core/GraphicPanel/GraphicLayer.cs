@@ -37,61 +37,70 @@ namespace Core.GraphicPanel
             this.transform = transform;
         }
 
-        public void SetTexture(string filePath, float transitionSpeed = 1f, Texture blendingTexture = null)
+        public Coroutine SetTexture(string filePath, float transitionSpeed = 1f, Texture blendingTexture = null,
+            bool immediate = false)
         {
             Texture texture = Resources.Load<Texture>(filePath);
 
             if (texture == null)
             {
                 Debug.LogError($"Could not load texture from '{filePath}'");
-                return;
+                return null;
             }
 
-            SetTexture(texture, transitionSpeed, blendingTexture, filePath);
+            return SetTexture(texture, transitionSpeed, blendingTexture, filePath, immediate);
         }
 
         /// <summary>
         /// 新しい GraphicObject を生成し 指定した texture を設定する (副作用を持つ)
         /// </summary>
-        public void SetTexture(Texture texture, float transitionSpeed = 1f, Texture blendingTexture = null, string filePath = "")
+        public Coroutine SetTexture(Texture texture, float transitionSpeed = 1f, Texture blendingTexture = null,
+            string filePath = "", bool immediate = false)
         {
-            CreateGraphic(texture, transitionSpeed, filePath, blendingTexture: blendingTexture);
+            return CreateGraphic(texture, transitionSpeed, filePath, blendingTexture: blendingTexture,
+                immediate: immediate);
         }
 
-        public void SetVideo(string filePath, float transitionSpeed = 1f, bool useAudio = true, Texture blendingTexture = null)
+        public Coroutine SetVideo(string filePath, float transitionSpeed = 1f, bool useAudio = true,
+            Texture blendingTexture = null, bool immediate = false)
         {
             VideoClip clip = Resources.Load<VideoClip>(filePath);
 
             if (clip == null)
             {
                 Debug.LogError($"Could not load clip from '{filePath}'");
-                return;
+                return null;
             }
 
-            SetVideo(clip, transitionSpeed, useAudio, blendingTexture, filePath);
+            return SetVideo(clip, transitionSpeed, useAudio, blendingTexture, filePath, immediate);
         }
 
-        public void SetVideo(VideoClip clip, float transitionSpeed = 1f, bool useAudio = true, Texture blendingTexture = null, string filePath = "")
+        public Coroutine SetVideo(VideoClip clip, float transitionSpeed = 1f, bool useAudio = true,
+            Texture blendingTexture = null, string filePath = "", bool immediate = false)
         {
-            CreateGraphic(clip, transitionSpeed, filePath, useAudio, blendingTexture);
+            return CreateGraphic(clip, transitionSpeed, filePath, useAudio, blendingTexture, immediate);
         }
 
         /// <summary>
         /// GraphicObject を生成して blendingTexture で FadeIn 表示させる
         /// </summary>
-        private void CreateGraphic<T>(T graphicData, float transitionSpeed, string filePath, bool useAudio = true, Texture blendingTexture = null)
+        private Coroutine CreateGraphic<T>(T graphicData, float transitionSpeed, string filePath, bool useAudio = true,
+            Texture blendingTexture = null, bool immediate = false) where T : Object
         {
             GraphicObject graphicObject = null;
 
             if (graphicData is Texture)
-                graphicObject = new GraphicObject(this, filePath, graphicData as Texture);
+                graphicObject = new GraphicObject(this, filePath, graphicData as Texture, immediate);
             if (graphicData is VideoClip)
-                graphicObject = new GraphicObject(this, filePath, graphicData as VideoClip, useAudio);
-            
+                graphicObject = new GraphicObject(this, filePath, graphicData as VideoClip, useAudio, immediate);
+
             if (currentGraphicObject != null) oldGraphicObjects.Add(currentGraphicObject);
 
             currentGraphicObject = graphicObject;
-            currentGraphicObject?.FadeIn(transitionSpeed, blendingTexture);
+            if (!immediate) return currentGraphicObject?.FadeIn(transitionSpeed, blendingTexture);
+
+            DestroyOldGraphics();
+            return null;
         }
 
         public void DestroyOldGraphics()
@@ -100,6 +109,7 @@ namespace Core.GraphicPanel
             {
                 Object.Destroy(g.renderer.gameObject);
             }
+
             oldGraphicObjects.Clear();
         }
 

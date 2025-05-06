@@ -64440,7 +64440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1524720961
 Transform:
   m_ObjectHideFlags: 0
@@ -70397,6 +70397,10 @@ MonoBehaviour:
   graphicPanels:
   - panelName: background
     rootPanel: {fileID: 1839383800}
+  - panelName: Cinematic
+    rootPanel: {fileID: 1015295145}
+  - panelName: Foreground
+    rootPanel: {fileID: 344110573}
 --- !u!43 &1670961677
 Mesh:
   m_ObjectHideFlags: 0
@@ -72071,7 +72075,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1697825435
 Transform:
   m_ObjectHideFlags: 0
