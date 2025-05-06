@@ -20,5 +20,10 @@ namespace Core.ScriptIO
         /// Application.dataPath は unity editor の場合 Assets
         /// </summary>
         public static readonly string RootApplicationDataPath = $"{Application.dataPath}/GameData";
+
+        private static readonly string ResourcesGraphicsPath = "Graphics/";
+        public static readonly string ResourcesBackgroundImagePath = $"{ResourcesGraphicsPath}BG Images/";
+        public static readonly string ResourcesBackgroundVideoPath = $"{ResourcesGraphicsPath}BG Videos/";
+        public static readonly string ResourcesBlendTexturePath = $"{ResourcesGraphicsPath}Transition Effects/";
     }
 }
