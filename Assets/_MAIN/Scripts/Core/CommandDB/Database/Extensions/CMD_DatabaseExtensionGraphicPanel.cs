@@ -52,7 +52,7 @@ namespace Core.CommandDB
 
             if (graphic == null)
             {
-                Debug.LogError($"Could not find media file");
+                Debug.LogError($"Could not find media file: {mediaName}");
                 yield break;
             }
 
