@@ -21452,6 +21452,7 @@ Transform:
   - {fileID: 1854125104}
   - {fileID: 1956349312}
   - {fileID: 1670626309}
+  - {fileID: 1918498814}
   m_Father: {fileID: 1790344916}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -80907,6 +80908,56 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1918498813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1918498814}
+  - component: {fileID: 1918498815}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1918498814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918498813}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 521537258}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1918498815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918498813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d65cdcf7efbb421e879f12eda3f7632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicMixerGroup: {fileID: -4134639524656249262, guid: e6d39a74bd1a44eaeb403169288f37a6,
+    type: 2}
+  sfxMixerGroup: {fileID: 8667720653612006638, guid: e6d39a74bd1a44eaeb403169288f37a6,
+    type: 2}
+  voiceMixerGroup: {fileID: 4422337902719435934, guid: e6d39a74bd1a44eaeb403169288f37a6,
+    type: 2}
 --- !u!43 &1918681106
 Mesh:
   m_ObjectHideFlags: 0
@@ -91501,7 +91552,7 @@ PrefabInstance:
     - target: {fileID: 2010868938775582509, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -38
+      value: -38.000015
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d070cbccaee4c408f86ec5e8028eb5da, type: 3}
@@ -94945,7 +94996,7 @@ PrefabInstance:
     - target: {fileID: 521798981561781053, guid: af45c141581fa42aebc30c01097884b7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1.8602295
+      value: -1.8601685
       objectReference: {fileID: 0}
     - target: {fileID: 521798981561781053, guid: af45c141581fa42aebc30c01097884b7,
         type: 3}
