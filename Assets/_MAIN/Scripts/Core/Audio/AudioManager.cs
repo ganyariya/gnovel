@@ -77,6 +77,12 @@ public class AudioManager : MonoBehaviour
         return source;
     }
 
+    public AudioSource PlayVoice(string filePath, float volume = 1f, float pitch = 1f, bool loop = false) =>
+        PlaySoundEffect(filePath, voiceMixerGroup, volume, pitch, loop);
+
+    public AudioSource PlayVoice(AudioClip clip, float volume = 1f, float pitch = 1f, bool loop = false) =>
+        PlaySoundEffect(clip, voiceMixerGroup, volume, pitch, loop);
+
     public void StopSoundEffect(AudioClip clip) => StopSoundEffect(clip.name);
 
     public void StopSoundEffect(string soundName)

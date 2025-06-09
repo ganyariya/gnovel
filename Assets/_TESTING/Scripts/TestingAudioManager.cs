@@ -19,6 +19,7 @@ namespace Testing
             yield return new WaitForSeconds(0.5f);
 
             AudioManager.instance.PlaySoundEffect("Audio/SFX/thunder_01");
+            AudioManager.instance.PlayVoice("Audio/Voices/wakeup");
             ganyariya.CallTriggerAnimation("Hop");
             ganyariya.Say("\"Wao!\"");
 
