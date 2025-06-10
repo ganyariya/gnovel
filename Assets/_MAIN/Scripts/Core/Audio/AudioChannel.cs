@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioChannel : MonoBehaviour
+public class AudioChannel
 {
     private const string TRACK_CONTAINER_NAME_FORMAT = "Channel-[{0}]";
 
