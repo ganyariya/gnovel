@@ -16,6 +16,8 @@ public class AudioManager : MonoBehaviour
     public AudioMixerGroup sfxMixerGroup;
     public AudioMixerGroup voiceMixerGroup;
 
+    private Dictionary<int, AudioChannel> audioChannels = new();
+
     private Transform sfxRoot;
 
     private void Awake()
@@ -43,7 +45,7 @@ public class AudioManager : MonoBehaviour
         float pitch = 1f, bool loop = false)
     {
         // filePath: Audio/SFX/thunder
-        // name = thunder
+        // → name = thunder
         var clip = Resources.Load<AudioClip>(filePath);
         if (clip == null)
         {
@@ -95,5 +97,40 @@ public class AudioManager : MonoBehaviour
             if (source.clip.name.ToLower() != soundName) continue;
             Destroy(source.gameObject);
         }
+    }
+
+    /// <summary>
+    /// AudioChannel/AudioTrack を存在しない場合は作成し、かつそのまま音声を再生する
+    /// AudioManager GameObject の子としてこれらが登録されることに注意する
+    /// </summary>
+    public AudioTrack PlayTrack(string filePath, int channel = 0, bool loop = true, float startingVolume = 0f,
+        float volumeCap = 1f)
+    {
+        var clip = Resources.Load<AudioClip>(filePath);
+        if (clip == null)
+        {
+            Debug.LogError($"Could not load audio file '{filePath}'");
+            return null;
+        }
+
+        return PlayTrack(clip, channel, loop, startingVolume, volumeCap, filePath);
+    }
+
+    private AudioTrack PlayTrack(AudioClip clip, int channel = 0, bool loop = true, float startingVolume = 0f,
+        float volumeCap = 1f, string filePath = "")
+    {
+        var audioChannel = TryGetChannel(channel, true);
+        var track = audioChannel.PlayTrack(clip, loop, startingVolume, volumeCap, filePath,
+            AudioManager.instance.musicMixerGroup);
+        return track;
+    }
+
+    /// <summary>
+    /// channel がなかったら GameObject を作成する
+    /// </summary>
+    private AudioChannel TryGetChannel(int channel, bool createIfNotExist = false)
+    {
+        if (audioChannels.TryGetValue(channel, out var audioChannel)) return audioChannel;
+        return !createIfNotExist ? null : new AudioChannel(channel, transform);
     }
 }
