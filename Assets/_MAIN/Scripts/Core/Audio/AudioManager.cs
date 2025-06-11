@@ -131,6 +131,9 @@ public class AudioManager : MonoBehaviour
     private AudioChannel TryGetChannel(int channel, bool createIfNotExist = false)
     {
         if (audioChannels.TryGetValue(channel, out var audioChannel)) return audioChannel;
-        return !createIfNotExist ? null : new AudioChannel(channel, transform);
+        if (!createIfNotExist) return null;
+        audioChannel = new AudioChannel(channel, transform);
+        audioChannels.Add(channel, audioChannel);
+        return audioChannel;
     }
 }

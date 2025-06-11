@@ -23,9 +23,13 @@ namespace Testing
         {
             var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya", true);
             yield return ganyariya.Show();
-            AudioManager.instance.PlayTrack("Audio/Music/Calm", startingVolume: 0.1f);
+            AudioManager.instance.PlayTrack("Audio/Music/Calm", startingVolume: 0f, volumeCap: 0.2f);
             ganyariya.Say("\"Oh, bgm is good!!\"");
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(3f);
+
+            yield return ganyariya.Say("\"Let's change music.\"");
+            AudioManager.instance.PlayTrack("Audio/Music/obake_tokyo", startingVolume: 0f, volumeCap: 0.2f);
+            yield return ganyariya.Say("\"bgm is changed!!.\"");
 
             AudioManager.instance.PlaySoundEffect("Audio/SFX/thunder_01");
             AudioManager.instance.PlayVoice("Audio/Voices/wakeup");

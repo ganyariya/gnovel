@@ -4,15 +4,31 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 
+/// <summary>
+/// 1 つの Channel には複数の AudioTrack を設定できる
+/// ただし、メインで再生するのは ActiveTrack 1 つのみ
+/// それ以外のものは徐々に FadeOut されて volume = 0 になったら消す
+///
+/// よって Channel がメインで再生するのはたかだか 1 つであり、複数の場合は FadeIn/FadeOut して 1 曲に絞る
+/// </summary>
 public class AudioChannel
 {
     private const string TRACK_CONTAINER_NAME_FORMAT = "Channel-[{0}]";
+    private const float TRACK_TRANSITION_SPEED = 0.0001f;
 
     public int channelIndex { get; private set; }
 
     public Transform trackContainerTransform { get; private set; } = null;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    private AudioTrack activeTrack { get; set; } = null;
+
     private List<AudioTrack> tracks = new();
+
+    bool IsLevelingVolume => volumeLevelingCoroutine != null;
+    private Coroutine volumeLevelingCoroutine = null;
 
     public AudioChannel(int channelIndex, Transform parent)
     {
@@ -27,13 +43,22 @@ public class AudioChannel
         if (TryGetTrack(clip.name, out var foundedTrack))
         {
             if (!foundedTrack.IsPlaying) foundedTrack.Play();
+            ActivateTrack(foundedTrack);
             return foundedTrack;
         }
 
         var track = new AudioTrack(clip, loop, startingVolume, volumeCap, this, mixerGroup);
         track.Play();
-        tracks.Add(track); // 動画でやってなかったけどやる
+        ActivateTrack(track);
+
         return track;
+    }
+
+    private void ActivateTrack(AudioTrack track)
+    {
+        if (!tracks.Contains(track)) tracks.Add(track);
+        activeTrack = track;
+        StartVolumeLeveling();
     }
 
     /// <summary>
@@ -51,5 +76,38 @@ public class AudioChannel
 
         result = null;
         return false;
+    }
+
+    private void StartVolumeLeveling()
+    {
+        if (!IsLevelingVolume)
+        {
+            volumeLevelingCoroutine = AudioManager.instance.StartCoroutine(VolumeLeveling());
+        }
+    }
+
+    private IEnumerator VolumeLeveling()
+    {
+        while (tracks.Count > 1 || activeTrack.volume != activeTrack.volumeCap)
+        {
+            for (int i = tracks.Count - 1; i >= 0; i--)
+            {
+                var track = tracks[i];
+                var targetVolume = activeTrack == track ? track.volumeCap : 0;
+                track.volume = Mathf.MoveTowards(track.volume, targetVolume, TRACK_TRANSITION_SPEED);
+
+                if (track != activeTrack && track.volume == 0) DestroyTrack(track);
+            }
+
+            yield return null;
+        }
+
+        volumeLevelingCoroutine = null;
+    }
+
+    private void DestroyTrack(AudioTrack track)
+    {
+        if (tracks.Contains(track)) tracks.Remove(track);
+        track.Destroy();
     }
 }
