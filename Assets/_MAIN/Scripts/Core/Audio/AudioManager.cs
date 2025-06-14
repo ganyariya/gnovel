@@ -104,6 +104,7 @@ public class AudioManager : MonoBehaviour
     /// AudioManager GameObject の子としてこれらが登録されることに注意する
     /// </summary>
     public AudioTrack PlayTrack(string filePath, int channel = 0, bool loop = true, float startingVolume = 0f,
+        float pitch = 1f,
         float volumeCap = 1f)
     {
         var clip = Resources.Load<AudioClip>(filePath);
@@ -113,16 +114,23 @@ public class AudioManager : MonoBehaviour
             return null;
         }
 
-        return PlayTrack(clip, channel, loop, startingVolume, volumeCap, filePath);
+        return PlayTrack(clip, channel, loop, startingVolume, volumeCap, pitch, filePath);
     }
 
     private AudioTrack PlayTrack(AudioClip clip, int channel = 0, bool loop = true, float startingVolume = 0f,
-        float volumeCap = 1f, string filePath = "")
+        float volumeCap = 1f, float pitch = 1f, string filePath = "")
     {
         var audioChannel = TryGetChannel(channel, true);
-        var track = audioChannel.PlayTrack(clip, loop, startingVolume, volumeCap, filePath,
+        var track = audioChannel.PlayTrack(clip, loop, startingVolume, volumeCap, pitch, filePath,
             AudioManager.instance.musicMixerGroup);
         return track;
+    }
+
+    public void StopTrack(int channel)
+    {
+        var audioChannel = TryGetChannel(channel, false);
+        if (audioChannel == null) return;
+        audioChannel.StopTrack();
     }
 
     /// <summary>

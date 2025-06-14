@@ -37,7 +37,8 @@ public class AudioChannel
         trackContainerTransform.SetParent(parent);
     }
 
-    public AudioTrack PlayTrack(AudioClip clip, bool loop, float startingVolume, float volumeCap, string filePath,
+    public AudioTrack PlayTrack(AudioClip clip, bool loop, float startingVolume, float volumeCap, float pitch,
+        string filePath,
         AudioMixerGroup mixerGroup)
     {
         if (TryGetTrack(clip.name, out var foundedTrack))
@@ -47,11 +48,20 @@ public class AudioChannel
             return foundedTrack;
         }
 
-        var track = new AudioTrack(clip, loop, startingVolume, volumeCap, this, mixerGroup);
+        var track = new AudioTrack(clip, loop, startingVolume, volumeCap, pitch, this, mixerGroup);
         track.Play();
         ActivateTrack(track);
 
         return track;
+    }
+
+    public void StopTrack()
+    {
+        if (activeTrack == null) return;
+
+        // activeTrack を null にすることで tracks をすべて fadeOut させる
+        activeTrack = null;
+        StartVolumeLeveling();
     }
 
     private void ActivateTrack(AudioTrack track)
@@ -88,8 +98,19 @@ public class AudioChannel
 
     private IEnumerator VolumeLeveling()
     {
-        while (tracks.Count > 1 || activeTrack.volume != activeTrack.volumeCap)
+        while (true)
         {
+            if (tracks.Count == 0) break;
+
+            // activeTrack が何も設定されてないならすべて fadeOut させるべき
+            // 2 つ以上あるなら 1 つになるまで activeTrack 以外をすべて fadeOut させるべき
+            var shouldFadeoutInactiveTracks =
+                activeTrack == null || tracks.Count > 1;
+            // activeTrack が目標 cap に到達していないのであれば 調整するべき
+            var shouldBalanceActiveTrack = activeTrack != null && activeTrack.volume != activeTrack.volumeCap;
+
+            if (!shouldFadeoutInactiveTracks && !shouldBalanceActiveTrack) break;
+
             for (int i = tracks.Count - 1; i >= 0; i--)
             {
                 var track = tracks[i];

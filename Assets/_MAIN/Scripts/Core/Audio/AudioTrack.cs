@@ -37,7 +37,8 @@ public class AudioTrack
         set => source.volume = value;
     }
 
-    public AudioTrack(AudioClip clip, bool loop, float startingVolume, float volumeCap, AudioChannel channel,
+    public AudioTrack(AudioClip clip, bool loop, float startingVolume, float volumeCap, float pitch,
+        AudioChannel channel,
         AudioMixerGroup mixerGroup)
     {
         this.name = clip.name;
@@ -48,6 +49,7 @@ public class AudioTrack
         source.clip = clip;
         source.loop = loop;
         source.volume = startingVolume;
+        source.pitch = pitch;
         source.outputAudioMixerGroup = mixerGroup;
     }
 
