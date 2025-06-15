@@ -1,5 +1,18 @@
 wait(1)
 
+[wait]createCharacter(raelin -enabled true)
+playSfx(-n thunder_01)
+
+raelin "wao!! thunder!!!"
+stopSfx(thunder_01)
+raelin "oh, Stopped"
+
+playbgm(-bgm "Calm")
+raelin "bgm starts"
+
+stopbgm()
+raelin "oh, bgm is stopped"
+
 [wait]setLayerMedia(-panel background -m "Fantasy Landscape" -audio true -spd 0.4 -blend blur)
 setLayerMedia(-panel background -layer 1 -m SpaceshipInterior)
 
