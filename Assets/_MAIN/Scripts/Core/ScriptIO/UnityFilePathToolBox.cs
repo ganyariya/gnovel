@@ -29,9 +29,12 @@ namespace Core.ScriptIO
         public static readonly string ResourcesBlendTexturePath = $"{ResourcesGraphicsPath}Transition Effects/";
 
         private static readonly string ResourcesAudioPath = "Audio/";
+
         public static readonly string ResourcesSfxPath = $"{ResourcesAudioPath}SFX/";
-        public static readonly string ResourcesBgmPath = $"{ResourcesAudioPath}BGM/";
         public static readonly string ResourcesVoicePath = $"{ResourcesAudioPath}Voices/";
+
+        public static readonly string ResourcesAmbiencePath = $"{ResourcesAudioPath}Ambience/";
+        public static readonly string ResourcesBgmPath = $"{ResourcesAudioPath}Music/";
 
         public static string ResolveHomeDirectoryPath(string defaultPath, string resourceName)
         {

@@ -16,7 +16,7 @@ namespace Core.Audio
     public class AudioChannel
     {
         private const string TRACK_CONTAINER_NAME_FORMAT = "Channel-[{0}]";
-        private const float TRACK_TRANSITION_SPEED = 0.0001f;
+        private const float TRACK_TRANSITION_SPEED = 0.01f;
 
         public int channelIndex { get; private set; }
 
@@ -72,6 +72,13 @@ namespace Core.Audio
             if (!tracks.Contains(track)) tracks.Add(track);
             activeTrack = track;
             StartVolumeLeveling();
+        }
+
+        public void TryStopTrackByName(string trackName)
+        {
+            if (activeTrack == null) return;
+            if (activeTrack.name.ToLower() != trackName.ToLower()) return;
+            StopTrack();
         }
 
         /// <summary>

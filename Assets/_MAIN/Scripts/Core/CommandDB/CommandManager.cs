@@ -23,12 +23,14 @@ namespace Core.CommandDB
 
         public static CommandManager instance { get; private set; }
         private CommandDatabase commandDatabase;
+
         /// <summary>
         /// ganyariya.Move()
         /// camera.Capture()
         /// のように X.verb のような syntax でコマンドを登録する
         /// </summary>
         private Dictionary<string, CommandDatabase> subCommandDatabases = new();
+
         private List<CommandProcess> activeCommandProcesses = new();
         private CommandProcess topCommandProcess => activeCommandProcesses.LastOrDefault();
 
@@ -49,13 +51,15 @@ namespace Core.CommandDB
         CommandDatabase RegisterExtensions(CommandDatabase database)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            Type[] extensionTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(CMD_DatabaseExtensionBase))).ToArray();
+            Type[] extensionTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(CMD_DatabaseExtensionBase)))
+                .ToArray();
 
             foreach (var extension in extensionTypes)
             {
                 MethodInfo extendMethod = extension.GetMethod(CMD_DatabaseExtensionBase.EXTEND_FUNCTION_NAME);
                 extendMethod.Invoke(null, new object[] { database });
             }
+
             return database;
         }
 
@@ -88,6 +92,7 @@ namespace Core.CommandDB
                     Debug.LogError($"No command called '{subCommandName}' was found in subDatabase '{databaseName}'");
                     return null;
                 }
+
                 return StartCommandProcess(command, originalCommandName, args);
             }
 
@@ -95,7 +100,8 @@ namespace Core.CommandDB
             string characterName = databaseName;
             if (!CharacterManager.instance.HasCharacter(characterName))
             {
-                Debug.LogError($"No sub database called '{databaseName} exists!' Command '{subCommandName}' could not be run.");
+                Debug.LogError(
+                    $"No sub database called '{databaseName} exists!' Command '{subCommandName}' could not be run.");
                 return null;
             }
 
@@ -112,6 +118,7 @@ namespace Core.CommandDB
                 copy.Insert(0, characterName);
                 return copy.ToArray();
             }
+
             args = convertToCharacterArgs(args);
 
             Delegate command;
@@ -143,7 +150,8 @@ namespace Core.CommandDB
                 return StartCommandProcess(command, commandName, args);
             }
 
-            Debug.LogError($"Command Manager was unable to execute command '{commandName}' on character {characterName}");
+            Debug.LogError(
+                $"Command Manager was unable to execute command '{commandName}' on character {characterName}");
             return null;
         }
 
@@ -200,7 +208,8 @@ namespace Core.CommandDB
             )
             {
                 if (command is Action) command.DynamicInvoke();
-                if (command is Action<string>) command.DynamicInvoke(args[0]);
+                // stopBgm() という実行を許容するようにする
+                if (command is Action<string>) command.DynamicInvoke(args.Length == 0 ? string.Empty : args[0]);
                 if (command is Action<string[]>) command.DynamicInvoke((object)args);
 
                 /*
@@ -214,7 +223,8 @@ namespace Core.CommandDB
 
 
             if (command is Func<IEnumerator>) yield return ((Func<IEnumerator>)command)();
-            if (command is Func<string, IEnumerator>) yield return ((Func<string, IEnumerator>)command)(args[0]);
+            if (command is Func<string, IEnumerator>)
+                yield return ((Func<string, IEnumerator>)command)(args.Length == 0 ? string.Empty : args[0]);
             if (command is Func<string[], IEnumerator>) yield return ((Func<string[], IEnumerator>)command)(args);
 
             KillTargetCommandProcess(commandProcess);

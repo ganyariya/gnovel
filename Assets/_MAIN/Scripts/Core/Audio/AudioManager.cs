@@ -135,6 +135,13 @@ namespace Core.Audio
             audioChannel.StopTrack();
         }
 
+        public void StopTrack(string trackName)
+        {
+            trackName = trackName.ToLower();
+
+            foreach (var audioChannel in audioChannels.Values) audioChannel.TryStopTrackByName(trackName);
+        }
+
         /// <summary>
         /// channel がなかったら GameObject を作成する
         /// </summary>
