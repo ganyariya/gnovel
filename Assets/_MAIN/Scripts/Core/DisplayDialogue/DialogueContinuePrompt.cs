@@ -13,11 +13,12 @@ namespace Core.DisplayDialogue
         [SerializeField] private Animator animator;
         [SerializeField] private TextMeshProUGUI tmpro;
 
-        public bool IsShowing => animator.gameObject.activeSelf;
+        private bool IsShowing => animator.gameObject.activeSelf;
 
         private void Start()
         {
             rootTransform = GetComponent<RectTransform>();
+            rootTransform.transform.SetParent(tmpro.transform);
         }
 
         public void Show()
@@ -34,12 +35,10 @@ namespace Core.DisplayDialogue
             // tmpro.ForceMeshUpdate();
 
             animator.gameObject.SetActive(true);
-            rootTransform.transform.SetParent(tmpro.transform);
 
             TMP_CharacterInfo finalCharacter = tmpro.textInfo.characterInfo[tmpro.textInfo.characterCount - 1];
-            Vector3 targetPos = finalCharacter.bottomRight;
-            float characterWidth = finalCharacter.pointSize * 1.0f;
-            targetPos = new Vector3(targetPos.x + characterWidth, targetPos.y, 0);
+            Vector3 targetPos = new Vector3(finalCharacter.bottomRight.x + finalCharacter.pointSize,
+                finalCharacter.bottomRight.y, 0);
 
             // 親からの相対座標で横にずらす
             rootTransform.localPosition = targetPos;
