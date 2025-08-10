@@ -227,11 +227,11 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator WaitForUserAdvance()
         {
-            dialogueSystem.prompt.Show();
+            dialogueSystem.Prompt.Show();
 
             while (!userPromptNext) yield return null;
 
-            dialogueSystem.prompt.Hide();
+            dialogueSystem.Prompt.Hide();
             userPromptNext = false;
         }
     }

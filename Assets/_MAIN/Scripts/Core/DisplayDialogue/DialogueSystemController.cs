@@ -36,7 +36,8 @@ namespace Core.DisplayDialogue
 
         public bool IsRunningConversation => conversationManager.IsRunning;
 
-        public DialogueContinuePrompt prompt;
+        [SerializeField] private DialogueContinuePrompt _prompt;
+        public DialogueContinuePrompt Prompt => _prompt;
 
         /// <summary>
         /// ユーザからの入力を受け付けたときに発火する Event Sender

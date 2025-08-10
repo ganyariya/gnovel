@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Core.DisplayDialogue
 {
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
     public class DialogueContinuePrompt : MonoBehaviour
     {
         private RectTransform rootTransform;
