@@ -108,7 +108,8 @@ namespace Core.DisplayDialogue
 
         private void HandleSpeakerLogic(DLD_SpeakerData speakerData)
         {
-            var character = CharacterManager.instance.GetCharacter(speakerData.name, speakerData.needCharacterInstanceCreation);
+            var character =
+                CharacterManager.instance.GetCharacter(speakerData.name, speakerData.needCharacterInstanceCreation);
 
             if (speakerData.isAppearanceCharacter && !character.isVisible && !character.isRevealing)
             {
@@ -155,6 +156,7 @@ namespace Core.DisplayDialogue
                 default:
                     break;
             }
+
             yield return null;
         }
 
@@ -179,6 +181,7 @@ namespace Core.DisplayDialogue
                     else textArchitect.ForceComplete();
                     userPromptNext = false;
                 }
+
                 yield return null;
             }
         }
@@ -219,9 +222,16 @@ namespace Core.DisplayDialogue
             }
         }
 
+        /// <summary>
+        /// ユーザがクリックするまで待機する
+        /// </summary>
         private IEnumerator WaitForUserAdvance()
         {
+            dialogueSystem.Prompt.Show();
+
             while (!userPromptNext) yield return null;
+
+            dialogueSystem.Prompt.Hide();
             userPromptNext = false;
         }
     }
