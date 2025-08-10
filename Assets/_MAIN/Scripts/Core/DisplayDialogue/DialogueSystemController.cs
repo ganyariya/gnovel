@@ -21,25 +21,29 @@ namespace Core.DisplayDialogue
         /// 
         /// これによって MonoBehaviour でないクラスから会話システムの設定値を取得できる
         /// </summary>
-        [SerializeField]
-        private DialogueSystemConfigurationSO _dialogueSystemConfig;
+        [SerializeField] private DialogueSystemConfigurationSO _dialogueSystemConfig;
+
         public DialogueSystemConfigurationSO dialogSystemConfig => _dialogueSystemConfig;
 
         /// <summary>
         /// Unity Inspector から設定され textArchitect に dialogueUGUI を渡す
         /// </summary>
         public DialogueContainer dialogueContainer = new();
+
         private ConversationManager conversationManager;
         private DisplayTextArchitect displayTextArchitect;
         [SerializeField] private DisplayMethod displayMethod;
 
         public bool IsRunningConversation => conversationManager.IsRunning;
 
+        public DialogueContinuePrompt prompt;
+
         /// <summary>
         /// ユーザからの入力を受け付けたときに発火する Event Sender
         /// 他 Manager からの Subscribe を受け付けて、 Event を subscriber に対して Send する
         /// </summary>
         public event DialogueSystemEvent UserPromptNextEvent;
+
         public delegate void DialogueSystemEvent();
 
         private void Awake()
@@ -65,6 +69,7 @@ namespace Core.DisplayDialogue
             if (speaker.ToLower() == "hide" || speaker.ToLower() == "narrator") HideSpeakerName();
             else if (!string.IsNullOrWhiteSpace(speaker)) dialogueContainer.nameContainer.Show(speaker);
         }
+
         public void HideSpeakerName() => dialogueContainer.nameContainer.Hide();
 
         /// <summary>
