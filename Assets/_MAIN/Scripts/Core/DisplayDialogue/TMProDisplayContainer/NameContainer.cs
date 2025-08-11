@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Characters;
+using Core.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 
@@ -40,7 +41,8 @@ namespace Core.DisplayDialogue
             rootGameObject.SetActive(false);
         }
 
-        public void ApplyCharacterConfig(CharacterConfig characterConfig)
+        public void ApplyCharacterConfig(CharacterConfig characterConfig,
+            DialogueSystemConfigurationSO dialogueSystemConfig)
         {
             /*
             なぜか色を設定すると画面上から name が消えてしまう
@@ -49,6 +51,7 @@ namespace Core.DisplayDialogue
             */
             // nameText.color = characterConfig.nameColor;
             nameText.font = characterConfig.nameFont;
+            nameText.fontSize = characterConfig.nameFontSize * dialogueSystemConfig.dialogueFontScale;
         }
     }
 }
