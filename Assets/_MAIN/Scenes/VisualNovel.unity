@@ -64192,7 +64192,7 @@ MonoBehaviour:
       nameText: {fileID: 1763823394}
     dialogueText: {fileID: 696965131}
   displayMethod: 2
-  prompt: {fileID: 842642484}
+  _prompt: {fileID: 842642484}
 --- !u!1 &1523091358
 GameObject:
   m_ObjectHideFlags: 0

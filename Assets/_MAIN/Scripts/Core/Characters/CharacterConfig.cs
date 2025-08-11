@@ -25,6 +25,9 @@ namespace Core.Characters
         public TMP_FontAsset nameFont;
         public TMP_FontAsset dialogueFont;
 
+        public float nameFontSize;
+        public float dialogueFontSize;
+
         /// <summary>
         /// http://halcyonsystemblog.jp/blog-entry-792.html 
         /// 
@@ -40,7 +43,9 @@ namespace Core.Characters
                 nameColor = new Color(nameColor.r, nameColor.g, nameColor.b, nameColor.a),
                 dialogueColor = new Color(dialogueColor.r, dialogueColor.g, dialogueColor.b, dialogueColor.a),
                 nameFont = nameFont,
-                dialogueFont = dialogueFont
+                dialogueFont = dialogueFont,
+                nameFontSize = nameFontSize,
+                dialogueFontSize = dialogueFontSize,
             };
         }
 
@@ -60,6 +65,8 @@ namespace Core.Characters
                     dialogueColor = defaultColor,
                     nameFont = defaultFont,
                     dialogueFont = defaultFont,
+                    nameFontSize = DialogueSystemController.instance.dialogSystemConfig.defaultNameFontSize,
+                    dialogueFontSize = DialogueSystemController.instance.dialogSystemConfig.defaultDialogueFontSize,
                 };
             }
         }

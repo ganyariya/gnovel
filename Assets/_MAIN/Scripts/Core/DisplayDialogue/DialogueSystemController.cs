@@ -113,7 +113,7 @@ namespace Core.DisplayDialogue
 
         public void ApplySpeakerConfigToDialogueContainer(CharacterConfig config)
         {
-            dialogueContainer.ApplyCharacterConfig(config);
+            dialogueContainer.ApplyCharacterConfig(config, dialogSystemConfig);
         }
     }
 }

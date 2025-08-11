@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Core.Characters;
+using Core.ScriptableObjects;
 
 namespace Core.DisplayDialogue
 {
@@ -30,11 +31,13 @@ namespace Core.DisplayDialogue
         /// </summary>
         public TextMeshProUGUI dialogueText;
 
-        public void ApplyCharacterConfig(CharacterConfig characterConfig)
+        public void ApplyCharacterConfig(CharacterConfig characterConfig,
+            DialogueSystemConfigurationSO dialogueSystemConfig)
         {
-            nameContainer.ApplyCharacterConfig(characterConfig);
+            nameContainer.ApplyCharacterConfig(characterConfig, dialogueSystemConfig);
             dialogueText.color = characterConfig.dialogueColor;
             dialogueText.font = characterConfig.dialogueFont;
+            dialogueText.fontSize = characterConfig.dialogueFontSize * dialogueSystemConfig.dialogueFontScale;
         }
     }
 }
