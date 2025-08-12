@@ -95,6 +95,10 @@ namespace Core.DisplayDialogue
         {
             if (lineData.HasSpeaker) HandleSpeakerLogic(lineData.speakerData);
 
+            // 会話が始まるときにもし DialogueContainer が見えない状態だったら見えるようにする
+            // 会話が始まったら必ず会話ボックスを表示したいため
+            if (!dialogueSystem.dialogueContainer.isVisible) dialogueSystem.dialogueContainer.Show();
+
             foreach (var segment in lineData.dialogueData.segments)
             {
                 yield return RunningSingleDLDDialogueSegment(segment);
