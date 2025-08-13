@@ -64198,6 +64198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dialogueSystemConfig: {fileID: 11400000, guid: 393439262be634426ac46a99003840df,
     type: 2}
+  mainCanvasGroup: {fileID: 853146613}
   dialogueContainer:
     rootGameObject: {fileID: 1666638254}
     nameContainer:
@@ -91735,7 +91736,7 @@ PrefabInstance:
     - target: {fileID: 2010868938241201643, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 474
+      value: 473.99997
       objectReference: {fileID: 0}
     - target: {fileID: 2010868938241201643, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
@@ -95249,7 +95250,7 @@ PrefabInstance:
     - target: {fileID: 521798982096685563, guid: af45c141581fa42aebc30c01097884b7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -37.00007
+      value: -37.00006
       objectReference: {fileID: 0}
     - target: {fileID: 521798982096685563, guid: af45c141581fa42aebc30c01097884b7,
         type: 3}

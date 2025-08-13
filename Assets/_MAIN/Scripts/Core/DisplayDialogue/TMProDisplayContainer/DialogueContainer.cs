@@ -48,7 +48,7 @@ namespace Core.DisplayDialogue
         }
 
         public bool isVisible => canvasGroupController.isVisible;
-        public Coroutine Show() => canvasGroupController.Show();
-        public Coroutine Hide() => canvasGroupController.Hide();
+        public Coroutine Show(float speed = 1f, bool immediate = false) => canvasGroupController.Show(speed, immediate);
+        public Coroutine Hide(float speed = 1f, bool immediate = false) => canvasGroupController.Hide(speed, immediate);
     }
 }

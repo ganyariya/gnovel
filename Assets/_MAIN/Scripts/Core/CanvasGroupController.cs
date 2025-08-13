@@ -26,7 +26,7 @@ namespace Core
         private bool isFading => isShowing || isHiding;
         public bool isVisible => isShowing || canvasGroup.alpha > 0f;
 
-        public Coroutine Show()
+        public Coroutine Show(float speed = 1f, bool immediate = false)
         {
             if (isShowing) return null;
             if (isHiding)
@@ -35,10 +35,10 @@ namespace Core
                 hidingCoroutine = null;
             }
 
-            return showingCoroutine = owner.StartCoroutine(Fading(1f));
+            return showingCoroutine = owner.StartCoroutine(Fading(1f, speed, immediate));
         }
 
-        public Coroutine Hide()
+        public Coroutine Hide(float speed = 1f, bool immediate = false)
         {
             if (isHiding) return null;
             if (isShowing)
@@ -47,16 +47,18 @@ namespace Core
                 showingCoroutine = null;
             }
 
-            return hidingCoroutine = owner.StartCoroutine(Fading(0f));
+            return hidingCoroutine = owner.StartCoroutine(Fading(0f, speed, immediate));
         }
 
-        private IEnumerator Fading(float targetAlpha)
+        private IEnumerator Fading(float targetAlpha, float speed = 1f, bool immediate = false)
         {
             var cg = canvasGroup;
 
+            if (immediate) cg.alpha = targetAlpha;
+
             while (!Mathf.Approximately(cg.alpha, targetAlpha))
             {
-                cg.alpha = Mathf.MoveTowards(cg.alpha, targetAlpha, Time.deltaTime * DEFAULT_FADE_SPEED);
+                cg.alpha = Mathf.MoveTowards(cg.alpha, targetAlpha, Time.deltaTime * DEFAULT_FADE_SPEED * speed);
                 yield return null;
             }
 
