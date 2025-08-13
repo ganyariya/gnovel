@@ -7,7 +7,7 @@ raelin "wao!! thunder!!!"
 stopSfx(thunder_01)
 raelin "oh, Stopped"
 
-hideDBox()
+hideDBox(-speed 0.1)
 
 playbgm(-bgm "Calm")
 raelin "bgm starts"
@@ -20,11 +20,15 @@ showDBox()
 [wait]setLayerMedia(-panel background -m "Fantasy Landscape" -audio true -spd 0.4 -blend blur)
 setLayerMedia(-panel background -layer 1 -m SpaceshipInterior)
 
+hideUI()
+
 [wait]clearLayerMedia(-panel background -layer 1 -blend blur)
 
 [wait]createCharacter(raelin -enabled true)
 
 raelin "dont insert space into wait and commend!!! if space inserted, then wait does not working."
+
+showUI()
 
 [wait]SetLayerMedia(-panel cinematic -m "~/Graphics/Gallery/1")
 

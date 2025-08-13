@@ -7,11 +7,16 @@ namespace Core.CommandDB
 {
     public class CMD_DatabaseExtensionGeneral : CMD_DatabaseExtensionBase
     {
+        private static string[] PARAMS_IMMEDIATE => new string[] { "-i", "-immediate" };
+        private static string[] PARAMS_SPEED => new string[] { "-spd", "-speed" };
+
         new public static void Extend(CommandDatabase commandDatabase)
         {
             commandDatabase.AddCommand("wait", new Func<string, IEnumerator>(Wait));
-            commandDatabase.AddCommand("showDBox", new Func<IEnumerator>(ShowDialogBox));
-            commandDatabase.AddCommand("hideDBox", new Func<IEnumerator>(HideDialogBox));
+            commandDatabase.AddCommand("showDBox", new Func<string[], IEnumerator>(ShowDialogBox));
+            commandDatabase.AddCommand("hideDBox", new Func<string[], IEnumerator>(HideDialogBox));
+            commandDatabase.AddCommand("showUI", new Func<string[], IEnumerator>(ShowUI));
+            commandDatabase.AddCommand("hideUI", new Func<string[], IEnumerator>(HideUI));
         }
 
         private static IEnumerator Wait(string data)
@@ -22,14 +27,37 @@ namespace Core.CommandDB
             }
         }
 
-        private static IEnumerator ShowDialogBox()
+        private static IEnumerator ShowDialogBox(string[] data)
         {
-            yield return DialogueSystemController.instance.dialogueContainer.Show();
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1);
+            yield return DialogueSystemController.instance.dialogueContainer.Show(speed, immediate);
         }
 
-        private static IEnumerator HideDialogBox()
+        private static IEnumerator HideDialogBox(string[] data)
         {
-            yield return DialogueSystemController.instance.dialogueContainer.Hide();
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1);
+            yield return DialogueSystemController.instance.dialogueContainer.Hide(speed, immediate);
+        }
+
+        private static IEnumerator ShowUI(string[] data)
+        {
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1);
+
+            yield return DialogueSystemController.instance.Show(speed, immediate);
+        }
+
+        private static IEnumerator HideUI(string[] data)
+        {
+            var parameterFetcher = CreateFetcher(data);
+            parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
+            parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1);
+            yield return DialogueSystemController.instance.Hide(speed, immediate);
         }
     }
 }

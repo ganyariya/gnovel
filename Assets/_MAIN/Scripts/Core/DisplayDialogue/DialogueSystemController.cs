@@ -23,6 +23,8 @@ namespace Core.DisplayDialogue
         /// </summary>
         [SerializeField] private DialogueSystemConfigurationSO _dialogueSystemConfig;
 
+        [SerializeField] private CanvasGroup mainCanvasGroup;
+
         public DialogueSystemConfigurationSO dialogSystemConfig => _dialogueSystemConfig;
 
         /// <summary>
@@ -38,6 +40,7 @@ namespace Core.DisplayDialogue
 
         [SerializeField] private DialogueContinuePrompt _prompt;
         public DialogueContinuePrompt Prompt => _prompt;
+        private CanvasGroupController canvasGroupController;
 
         /// <summary>
         /// ユーザからの入力を受け付けたときに発火する Event Sender
@@ -63,6 +66,8 @@ namespace Core.DisplayDialogue
             displayTextArchitect = new(dialogueContainer.dialogueText, null);
             conversationManager = new(this, displayTextArchitect);
             displayTextArchitect.CurrentDisplayMethod = displayMethod;
+            dialogueContainer.Initialize(this);
+            canvasGroupController = new CanvasGroupController(this, mainCanvasGroup);
         }
 
         public void DisplaySpeakerName(string speaker = "")
@@ -96,6 +101,18 @@ namespace Core.DisplayDialogue
         {
             UserPromptNextEvent?.Invoke();
         }
+
+        public bool isVisible => canvasGroupController.isVisible;
+
+        /// <summary>
+        /// UI 全体を表示する
+        /// </summary>
+        public Coroutine Show(float speed, bool immediate) => canvasGroupController.Show(speed, immediate);
+
+        /// <summary>
+        /// UI 全体を非表示にする
+        /// </summary>
+        public Coroutine Hide(float speed, bool immediate) => canvasGroupController.Hide(speed, immediate);
 
         /// <summary>
         /// speakerCharacter の設定を DialogueContainer に適用することで
