@@ -8,6 +8,8 @@ namespace Core.GraphicPanel
 {
     public class GraphicObject
     {
+        private const string DEFAULT_UI_MATERIAL = "Default UI Material";
+
         private const string NAME_FORMAT = "Graphic - [{0}]";
 
         /// <summary>
@@ -167,9 +169,17 @@ namespace Core.GraphicPanel
             return fadingOutCoroutine = manager.StartCoroutine(Fading(false, 0, speed, blend));
         }
 
-        private IEnumerator Fading(bool fadeIn, float target, float speed, Texture blendTexture)
+        private IEnumerator Fading(bool fadeIn, float targetAlpha, float speed, Texture blendTexture)
         {
             var material = renderer.material;
+            if (material.name == DEFAULT_UI_MATERIAL)
+            {
+                // fadeIn で画像が表示されたときに CustomTransitionMaterial を削除してデフォルトマテリアルを使うようにした
+                // するとフェードアウトするときに CustomTransitionMaterial がないため fadeOut 効果がおこなえない
+                // そのため `Fading` がはじまったときに CustomMaterial が設定されていなかったら設定する
+                Texture tex = renderer.material.GetTexture(TRANSITION_MATERIAL_FIELD_MAIN_TEXTURE);
+                InitGraphic(tex, false);
+            }
 
             bool shouldBlend = blendTexture != null;
 
@@ -184,9 +194,10 @@ namespace Core.GraphicPanel
 
             string opacityParameter = shouldBlend ? TRANSITION_MATERIAL_FIELD_BLEND : TRANSITION_MATERIAL_FIELD_ALPHA;
 
-            while (material.GetFloat(opacityParameter) != target)
+            while (material.GetFloat(opacityParameter) != targetAlpha)
             {
-                float opacity = Mathf.MoveTowards(material.GetFloat(opacityParameter), target, speed * Time.deltaTime);
+                float opacity = Mathf.MoveTowards(material.GetFloat(opacityParameter), targetAlpha,
+                    speed * Time.deltaTime);
                 material.SetFloat(opacityParameter, opacity);
                 if (IsVideo) audio.volume = opacity;
                 yield return null;
@@ -194,8 +205,21 @@ namespace Core.GraphicPanel
 
             fadingInCoroutine = fadingOutCoroutine = null;
 
-            if (target == 0) Destroy();
-            else DestroyBacksideGraphics(); // 2 枚目の GraphicObject を追加するときに 1 枚目を消す
+            if (targetAlpha == 0) Destroy();
+            else
+            {
+                // Layer X に新しい画像の fadeIn (新たな画像の登場)が完了した
+                // そのため Layer X にある古い画像があればそれを消す
+                DestroyBacksideGraphics();
+
+                // 単純に renderer.material = null すると何も表示されなくなる
+                // FIELD_MAIN_TEXTURE に表示したいテクスチャが入っているのでそれを直接いれて逃がす
+                renderer.texture = renderer.material.GetTexture(TRANSITION_MATERIAL_FIELD_MAIN_TEXTURE);
+                // RawImage の Material を TransitionCustomMaterial から UI がそもそも使うデフォルト Material にする (null を入れる)
+                // → UI 全体をフェードアウトさせたいときに TransitionCustomMaterial (Custom Shader) だとフェードアウトできないため
+                // （画像だけフェードアウトできず、alpha = 0 のときに急に消えてしまう）
+                renderer.material = null;
+            }
         }
 
         public void Destroy()
