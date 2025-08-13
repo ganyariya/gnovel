@@ -23,6 +23,8 @@ namespace Core.DisplayDialogue
         /// </summary>
         [SerializeField] private DialogueSystemConfigurationSO _dialogueSystemConfig;
 
+        [SerializeField] private CanvasGroup mainCanvasGroup;
+
         public DialogueSystemConfigurationSO dialogSystemConfig => _dialogueSystemConfig;
 
         /// <summary>
@@ -63,6 +65,7 @@ namespace Core.DisplayDialogue
             displayTextArchitect = new(dialogueContainer.dialogueText, null);
             conversationManager = new(this, displayTextArchitect);
             displayTextArchitect.CurrentDisplayMethod = displayMethod;
+            dialogueContainer.Initialize(this);
         }
 
         public void DisplaySpeakerName(string speaker = "")
