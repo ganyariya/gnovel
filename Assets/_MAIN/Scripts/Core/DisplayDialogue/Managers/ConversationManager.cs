@@ -23,12 +23,15 @@ namespace Core.DisplayDialogue
         private Coroutine process;
         private bool userPromptNext = false;
 
+        private TagManager tagManager;
+
         public ConversationManager(DialogueSystemController dialogueSystem, DisplayTextArchitect textArchitect)
         {
             dialogueSystem.UserPromptNextEvent += UserPromptNextEventReceived; // イベントを subscribe する
             this.dialogueSystem = dialogueSystem;
             this.textArchitect = textArchitect;
             this.process = null;
+            tagManager = new TagManager();
         }
 
         /// <summary>
@@ -121,7 +124,10 @@ namespace Core.DisplayDialogue
             }
 
             // UI にキャラ名を表示する
-            dialogueSystem.DisplaySpeakerName(speakerData.DisplayName);
+            // (why) rawText を事前に tagManager.Inject してしまうと、 CharacterConfig `<mainChara>` ができなくなってしまう
+            // そのためわざわざ speakerName と dialogueSegment それぞれ直前に tagManager.Inject している
+            var uiSpeakerName = tagManager.Inject(speakerData.DisplayName);
+            dialogueSystem.DisplaySpeakerName(uiSpeakerName);
             // UI のキャラ名にフォントとフォントカラー設定を反映する
             dialogueSystem.ApplySpeakerConfigToDialogueContainer(speakerData.name);
 
@@ -170,6 +176,8 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator DisplayingSingleDialogueText(string dialogueText, bool append = true)
         {
+            dialogueText = tagManager.Inject(dialogueText);
+
             // TMProGUI が dialogue の表示を開始する（非同期で文字が画面に出力され始める）
             if (append) textArchitect.AppendDisplay(dialogueText);
             else textArchitect.Display(dialogueText);

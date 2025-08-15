@@ -7,6 +7,11 @@ raelin "wao!! thunder!!!"
 stopSfx(thunder_01)
 raelin "oh, Stopped"
 
+Narrator "hello, new character <mainChara>"
+<mainChara> "My name is <mainChara>.{c} What time is it?"
+Narrator "<time> is!"
+
+
 hideDBox(-speed 0.1)
 
 playbgm(-bgm "Calm")
