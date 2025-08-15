@@ -7,8 +7,8 @@ namespace Core.DisplayDialogue
 {
     public class TagManager
     {
-        private readonly Dictionary<string, Func<string>> tags = new Dictionary<string, Func<string>>();
-        private readonly Regex tagRegex = new Regex("<\\w+>");
+        private readonly Dictionary<string, Func<string>> tags = new();
+        private readonly Regex tagRegex = new("<\\w+>");
 
         public TagManager()
         {
