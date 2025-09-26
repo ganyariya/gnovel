@@ -77,6 +77,8 @@ namespace Core.CommandDB
             return StartCommandProcess(command, commandName, args);
         }
 
+        // originalCommandName = "ganyariya.move"
+        // args = -x 0.8 ...
         private CoroutineWrapper ExecuteSubCommand(string originalCommandName, string[] args)
         {
             string[] parts = originalCommandName.Split(SUB_COMMAND_IDENTIFIER); // super.ganyariya.Move
@@ -97,6 +99,8 @@ namespace Core.CommandDB
             }
 
             // キャラに対してのサブコマンドであると解釈して実行する
+            // characterName = databaseName = ganyariya のときに、もしキャラ設定がちゃんと登録されていれば
+            // move(ganyariya) として実行する
             string characterName = databaseName;
             if (!CharacterManager.instance.HasCharacter(characterName))
             {

@@ -14,10 +14,12 @@ namespace Core.Characters
         private Dictionary<string, Character> characters = new Dictionary<string, Character>();
 
         [SerializeField] private RectTransform _spriteCharacterPanel = null;
+
         /// <summary>
         /// Panel RectTransform 配下に sprite character をそれぞれ生成して配置する
         /// </summary>
         public RectTransform spriteCharacterPanel => _spriteCharacterPanel;
+
         [SerializeField] private RectTransform _live2DCharacterPanel = null;
         public RectTransform live2DCharacterPanel => _live2DCharacterPanel;
         [SerializeField] private RectTransform _model3DCharacterPanel = null;
@@ -34,13 +36,15 @@ namespace Core.Characters
         public string characterPrefabNameFormat => $"Character-[{CHARACTER_NAME_ID}]";
         public string characterPrefabPathFormat => $"{characterRootPathFormat}/{characterPrefabNameFormat}";
 
-        public string FormatCharacterPath(string path, string characterName) => path.Replace(CHARACTER_NAME_ID, characterName);
+        public string FormatCharacterPath(string path, string characterName) =>
+            path.Replace(CHARACTER_NAME_ID, characterName);
 
         /// <summary>
         /// DialogueSystemController のシングルトンを介して
         /// Unity 上で設定されたキャラクタの設定を取得する
         /// </summary>
-        private CharacterConfigSO characterConfigSO => DialogueSystemController.instance.dialogSystemConfig.characterConfigSO;
+        private CharacterConfigSO characterConfigSO =>
+            DialogueSystemController.instance.dialogSystemConfig.characterConfigSO;
 
         public List<Character> AllCharacters => characters.Values.ToList();
 
@@ -49,8 +53,17 @@ namespace Core.Characters
             instance = this;
         }
 
-        public CharacterConfig GetCharacterConfig(string characterName)
+        public CharacterConfig GetCharacterConfig(string characterName, bool getOriginal = false)
         {
+            if (!getOriginal)
+            {
+                // 事前に "Monk" などのエイリアス名で検索しておく
+                Character character = GetCharacter(characterName);
+                if (character != null) return character.config;
+            }
+
+            // CharacterConfigSO には "Monk" という alias 名はない ("Monk as Default" の Default で登録されている)
+            // よって、事前に GetCharacter != null で、 alias 名で検索することで Monk に対応しておく
             return characterConfigSO.FetchTargetCharacterConfig(characterName);
         }
 
@@ -75,6 +88,7 @@ namespace Core.Characters
             var characterInfo = GetCharacterInfo(characterName);
             var character = CreateAppropriateCharacterFromInfo(characterInfo);
 
+            // "monk as default" の場合 monk で登録する
             characters.Add(characterInfo.name.ToLower(), character);
 
             if (revealAfterCreation) character.Show();
@@ -86,7 +100,9 @@ namespace Core.Characters
         {
             CharacterInfo info = new CharacterInfo();
 
-            string[] splitNames = characterName.Split(CHARACTER_PREFAB_CAST_ID, System.StringSplitOptions.RemoveEmptyEntries);
+            // "Monk as Default" というエイリアス表記で `Monk` をキャラ名にする
+            string[] splitNames =
+                characterName.Split(CHARACTER_PREFAB_CAST_ID, System.StringSplitOptions.RemoveEmptyEntries);
             string name = splitNames[0];
             string prefabName = splitNames.Length > 1 ? splitNames[1] : splitNames[0];
 
@@ -133,14 +149,14 @@ namespace Core.Characters
         {
             List<Character> activeCharacters =
                 characters
-                .Values
-                .Where(c => c.rootRectTransform.gameObject.activeInHierarchy && c.isVisible)
-                .ToList();
+                    .Values
+                    .Where(c => c.rootRectTransform.gameObject.activeInHierarchy && c.isVisible)
+                    .ToList();
             List<Character> inactiveCharacters =
                 characters
-                .Values
-                .Except(activeCharacters)
-                .ToList();
+                    .Values
+                    .Except(activeCharacters)
+                    .ToList();
 
             activeCharacters.Sort((a, b) => a.priority.CompareTo(b.priority));
             List<Character> sortedCharacters = activeCharacters.Concat(inactiveCharacters).ToList();
@@ -157,14 +173,14 @@ namespace Core.Characters
         {
             List<Character> targetCharacters =
                 characterNames
-                .Select(x => GetCharacter(x))
-                .Where(c => c != null).ToList();
+                    .Select(x => GetCharacter(x))
+                    .Where(c => c != null).ToList();
             List<Character> remainCharacters =
                 characters
-                .Values
-                .Except(targetCharacters)
-                .OrderBy(c => c.priority)
-                .ToList();
+                    .Values
+                    .Except(targetCharacters)
+                    .OrderBy(c => c.priority)
+                    .ToList();
 
             int maxPriority = remainCharacters.Count > 0 ? remainCharacters.Max(c => c.priority) : 0;
             for (int i = 0; i < targetCharacters.Count; i++)
@@ -194,7 +210,6 @@ namespace Core.Characters
             public string name;
 
             /// <summary>
-
             /// 表示したい画像 prefab の名前
             /// </summary>
             public string prefabName;

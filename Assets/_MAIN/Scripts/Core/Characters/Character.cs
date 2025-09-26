@@ -10,6 +10,7 @@ namespace Core.Characters
     {
         public const bool INITIAL_ENABLE = false;
         private const float UN_HIGHLIGHTED_STRENGTH = 0.65f;
+
         /// <summary>
         /// 今回のゲームエンジンでは　左向きがデフォルト
         /// @todo
@@ -17,6 +18,7 @@ namespace Core.Characters
         /// （ただしできればゲーム全体で立ち絵で揃えたほうがいい）
         /// </summary>
         public const bool DEFAULT_ORIENTATION_LEFT = true;
+
         public const string ANIMATION_REFRESH_TRIGGER = "Refresh";
 
         public DialogueSystemController dialogueSystem => DialogueSystemController.instance;
@@ -29,6 +31,7 @@ namespace Core.Characters
         /// Character-[ganyariya] のように生成された prefab instance の rootRectTransform
         /// </summary>
         public RectTransform rootRectTransform;
+
         public CharacterConfig config;
         protected Animator animator;
         protected string rootCharacterFolder;
@@ -38,6 +41,7 @@ namespace Core.Characters
         /// ただし実際に色を適用するには Image の color を変更する必要がある
         /// </summary>
         public Color color { get; protected set; } = Color.white;
+
         /// <summary>
         /// color は Character が目指す DDD 的な色のことを指す
         /// 一方 displayColor は実際に画面に表示されている色のことを指す
@@ -45,7 +49,10 @@ namespace Core.Characters
         protected Color displayColor => isHighlighted ? highlightedColor : unHighlightedColor;
 
         protected Color highlightedColor => color;
-        protected Color unHighlightedColor => new Color(color.r * UN_HIGHLIGHTED_STRENGTH, color.g * UN_HIGHLIGHTED_STRENGTH, color.b * UN_HIGHLIGHTED_STRENGTH, color.a);
+
+        protected Color unHighlightedColor => new Color(color.r * UN_HIGHLIGHTED_STRENGTH,
+            color.g * UN_HIGHLIGHTED_STRENGTH, color.b * UN_HIGHLIGHTED_STRENGTH, color.a);
+
         public bool isHighlighted { get; protected set; } = true;
         protected bool facingLeft = DEFAULT_ORIENTATION_LEFT;
 
@@ -105,7 +112,8 @@ namespace Core.Characters
                 }
 
                 GameObject prefabInstance = Object.Instantiate(prefab, targetCharacterPanel);
-                prefabInstance.name = characterManager.FormatCharacterPath(characterManager.characterPrefabNameFormat, name);
+                prefabInstance.name =
+                    characterManager.FormatCharacterPath(characterManager.characterPrefabNameFormat, name);
                 prefabInstance.SetActive(true);
                 rootRectTransform = prefabInstance.GetComponent<RectTransform>();
                 animator = rootRectTransform.GetComponentInChildren<Animator>();
@@ -137,6 +145,7 @@ namespace Core.Characters
 
             return revealingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(true, speedMultiplier));
         }
+
         public virtual Coroutine Hide(float speedMultiplier = 1f)
         {
             if (isHiding) return hidingCoroutine;
@@ -246,6 +255,7 @@ namespace Core.Characters
             isHighlighted = true;
             return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(true, speed, immediate));
         }
+
         public Coroutine ExecuteUnHighlighting(float speed = 1f, bool immediate = false)
         {
             if (isUnHighlighting) return highlightingCoroutine;
@@ -254,6 +264,7 @@ namespace Core.Characters
             isHighlighted = false;
             return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed, immediate));
         }
+
         protected virtual IEnumerator Highlighting(bool highlighted, float speed = 1f, bool immediate = false)
         {
             yield return null;
@@ -272,18 +283,21 @@ namespace Core.Characters
             if (isFacingLeft) return FlipToRight(speed, immediate);
             else return FlipToLeft(speed, immediate);
         }
+
         public Coroutine FlipToLeft(float speed = 1f, bool immediate = false)
         {
             if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
             facingLeft = true;
             return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(true, speed, immediate));
         }
+
         public Coroutine FlipToRight(float speed = 1f, bool immediate = false)
         {
             if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
             facingLeft = false;
             return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(false, speed, immediate));
         }
+
         public virtual IEnumerator FlippingToDirection(bool facingLeft, float speed = 1f, bool immediate = false)
         {
             yield return null;
@@ -313,19 +327,23 @@ namespace Core.Characters
         }
 
         public void ApplyTextConfigOnScreen() => dialogueSystem.ApplySpeakerConfigToDialogueContainer(config);
-        public void ResetConfig() => config = CharacterManager.instance.GetCharacterConfig(name);
+        public void ResetConfig() => config = CharacterManager.instance.GetCharacterConfig(name, true);
 
         /// <summary>
         /// 画面上でソートが行われたときに呼び出せるコールバックイベント
         /// </summary>
-        public virtual void CallbackOnSort(int sortedIndex) { }
+        public virtual void CallbackOnSort(int sortedIndex)
+        {
+        }
 
         /// <summary>
         /// 自身キャラのレイヤー $layer について $expression を表示する
         /// 
         /// 2D キャラの場合 $expression = 画像の名前になる
         /// </summary>
-        public virtual void CastingExpression(int layer, string expression) { }
+        public virtual void CastingExpression(int layer, string expression)
+        {
+        }
 
         public enum CharacterType
         {
