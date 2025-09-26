@@ -5,6 +5,12 @@ using UnityEngine;
 
 namespace Core.DisplayDialogue
 {
+    /// <summary>
+    /// テキストスクリプトにおいて、動的に変更したい箇所がある
+    /// 例: 今日は <date> だね！
+    ///
+    /// このとき `<xxx>` というフォーマットでテキストスクリプトを書いておき、それを TagManager で動的に置換する
+    /// </summary>
     public class TagManager
     {
         private readonly Dictionary<string, Func<string>> tags = new();

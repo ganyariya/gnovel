@@ -49,7 +49,7 @@ namespace Core.CommandDB
             parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
             parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1);
 
-            yield return DialogueSystemController.instance.Show(speed, immediate);
+            yield return DialogueSystemController.instance.ShowUIAll(speed, immediate);
         }
 
         private static IEnumerator HideUI(string[] data)
@@ -57,7 +57,7 @@ namespace Core.CommandDB
             var parameterFetcher = CreateFetcher(data);
             parameterFetcher.TryGetValue(PARAMS_IMMEDIATE, out bool immediate, false);
             parameterFetcher.TryGetValue(PARAMS_SPEED, out float speed, 1);
-            yield return DialogueSystemController.instance.Hide(speed, immediate);
+            yield return DialogueSystemController.instance.HideUIAll(speed, immediate);
         }
     }
 }

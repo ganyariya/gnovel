@@ -182,9 +182,12 @@ namespace Core.DisplayDialogue
             if (append) textArchitect.AppendDisplay(dialogueText);
             else textArchitect.Display(dialogueText);
 
+            // 会話文字すべての表示が終わったら、この IEnumerator は終了する
+            // かわりに RunningConversation の WaitForUserAdvance() で会話文送りクリックを待っている
+            // よって、ここの yield return は「すべての文字が描画されるまで」を待機している
             while (textArchitect.IsDisplaying)
             {
-                // 表示中だが、ユーザが矯正実行を入力したら
+                // テキスト１文字ずつ描画している最中において、ユーザがクリックして強制表示にしたら
                 // - テキストをすべて表示する
                 // - testArchitect.IsDisplaying が false になる (表示コルーチンが null になるので)
                 if (userPromptNext)
@@ -200,7 +203,7 @@ namespace Core.DisplayDialogue
 
         private IEnumerator RunningSingleCommands(DialogueLineData lineData)
         {
-            Debug.Log("RuninngSingleCommands: " + lineData.commandData);
+            Debug.Log("RunningSingleCommands: " + lineData.commandData);
 
             List<Command> commands = lineData.commandData.commands;
             foreach (var command in commands)

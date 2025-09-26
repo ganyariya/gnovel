@@ -107,12 +107,12 @@ namespace Core.DisplayDialogue
         /// <summary>
         /// UI 全体を表示する
         /// </summary>
-        public Coroutine Show(float speed, bool immediate) => canvasGroupController.Show(speed, immediate);
+        public Coroutine ShowUIAll(float speed, bool immediate) => canvasGroupController.Show(speed, immediate);
 
         /// <summary>
         /// UI 全体を非表示にする
         /// </summary>
-        public Coroutine Hide(float speed, bool immediate) => canvasGroupController.Hide(speed, immediate);
+        public Coroutine HideUIAll(float speed, bool immediate) => canvasGroupController.Hide(speed, immediate);
 
         /// <summary>
         /// speakerCharacter の設定を DialogueContainer に適用することで
