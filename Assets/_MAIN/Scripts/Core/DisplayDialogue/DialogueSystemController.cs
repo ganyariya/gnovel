@@ -45,6 +45,8 @@ namespace Core.DisplayDialogue
         /// <summary>
         /// ユーザからの入力を受け付けたときに発火する Event Sender
         /// 他 Manager からの Subscribe を受け付けて、 Event を subscriber に対して Send する
+        ///
+        /// ConversationManager が購読している
         /// </summary>
         public event DialogueSystemEvent UserPromptNextEvent;
 
