@@ -54364,7 +54364,7 @@ GameObject:
   - component: {fileID: 1305612731}
   - component: {fileID: 1305612730}
   m_Layer: 0
-  m_Name: KeyboardInputManager
+  m_Name: PlayerInputManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54409,8 +54409,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: 0}
-  m_NotificationBehavior: 0
+  m_Actions: {fileID: -944628639613478452, guid: b4e0d13d222c4410aa8642227e39a199,
+    type: 3}
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -54421,10 +54422,14 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a3cc3557-3ab2-4844-a115-9e17d6808827
+    m_ActionName: General/Next[/Keyboard/space,/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: General
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!43 &1306432932
@@ -91767,7 +91772,7 @@ PrefabInstance:
     - target: {fileID: 2010868938241201643, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 473.99997
+      value: 473.99994
       objectReference: {fileID: 0}
     - target: {fileID: 2010868938241201643, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
@@ -91807,7 +91812,7 @@ PrefabInstance:
     - target: {fileID: 2010868938775582509, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -38.000015
+      value: -38.00003
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d070cbccaee4c408f86ec5e8028eb5da, type: 3}
@@ -95281,12 +95286,12 @@ PrefabInstance:
     - target: {fileID: 521798982096685563, guid: af45c141581fa42aebc30c01097884b7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -37.00007
+      value: -37.00006
       objectReference: {fileID: 0}
     - target: {fileID: 521798982096685563, guid: af45c141581fa42aebc30c01097884b7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -37.999985
+      value: -37.99997
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af45c141581fa42aebc30c01097884b7, type: 3}
