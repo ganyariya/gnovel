@@ -64198,6 +64198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1521253355}
   - component: {fileID: 1521253356}
+  - component: {fileID: 1521253357}
   m_Layer: 0
   m_Name: DialogueSystemController
   m_TagString: Untagged
@@ -64243,6 +64244,18 @@ MonoBehaviour:
     dialogueText: {fileID: 696965131}
   displayMethod: 2
   _prompt: {fileID: 842642484}
+--- !u!114 &1521253357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521253354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f9c1f3e691264ac3b9f44f176774cab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1523091358
 GameObject:
   m_ObjectHideFlags: 0
@@ -91812,7 +91825,7 @@ PrefabInstance:
     - target: {fileID: 2010868938775582509, guid: d070cbccaee4c408f86ec5e8028eb5da,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -38.00003
+      value: -38.000046
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d070cbccaee4c408f86ec5e8028eb5da, type: 3}

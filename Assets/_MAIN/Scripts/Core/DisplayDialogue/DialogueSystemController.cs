@@ -35,6 +35,7 @@ namespace Core.DisplayDialogue
         private ConversationManager conversationManager;
         private DisplayTextArchitect displayTextArchitect;
         [SerializeField] private DisplayMethod displayMethod;
+        private AutoReader autoReader;
 
         public bool IsRunningConversation => conversationManager.IsRunning;
 
@@ -67,6 +68,9 @@ namespace Core.DisplayDialogue
         {
             displayTextArchitect = new(dialogueContainer.dialogueText, null);
             conversationManager = new(this, displayTextArchitect);
+
+            if (TryGetComponent(out autoReader)) autoReader.Initialize(conversationManager);
+
             displayTextArchitect.CurrentDisplayMethod = displayMethod;
             dialogueContainer.Initialize(this);
             canvasGroupController = new CanvasGroupController(this, mainCanvasGroup);

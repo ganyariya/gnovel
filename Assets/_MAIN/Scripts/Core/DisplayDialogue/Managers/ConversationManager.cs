@@ -19,7 +19,7 @@ namespace Core.DisplayDialogue
         public bool IsRunning => process != null;
 
         private readonly DialogueSystemController dialogueSystem;
-        private readonly DisplayTextArchitect textArchitect;
+        public readonly DisplayTextArchitect textArchitect;
         private Coroutine process;
         private bool userPromptNext = false;
 
