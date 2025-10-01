@@ -8,38 +8,61 @@ namespace Core.DisplayDialogue
 {
     public class AutoReader : MonoBehaviour
     {
-        private const int DEFAULT_CHARACTERS_PER_SECOND = 18;
-        private const float READ_TIME_PADDING = 0.3f;
+        private const int DEFAULT_CHARACTERS_PER_SECOND = 10;
+        private const float READ_TIME_PADDING = 0.25f;
         private const float LOWER_BOUND_READ_TIME = 0.5f;
         private const float UPPER_BOUND_READ_TIME = 10.0f;
+        private const string AUTO_MODE_TEXT = "AutoMode";
+        private const string SKIP_MODE_TEXT = "SkipMode";
 
         private ConversationManager conversationManager;
         private DisplayTextArchitect textArchitect => conversationManager.textArchitect;
 
-        public bool skip { get; set; }
-        public float speed { get; private set; }
+        [SerializeField] private TextMeshProUGUI statusText;
+
+        public bool skip { get; set; } = false;
+        public float speed { get; private set; } = 1f;
 
         private Coroutine runningCoroutine;
-        private bool isRuning => runningCoroutine != null;
+        private bool isRunning => runningCoroutine != null;
 
         // DialogueSystemController から初期化する
         // TODO: 相互参照になっていてうーんという感じ
         public void Initialize(ConversationManager conversationManager)
         {
             this.conversationManager = conversationManager;
+
+            statusText.text = string.Empty;
         }
 
-        public void Enable()
+        public void Enable(string modeText)
         {
-            if (isRuning) return;
-            StartCoroutine(AutoRead());
+            if (isRunning) return;
+            runningCoroutine = StartCoroutine(AutoRead());
+            statusText.text = modeText;
         }
 
         public void Disable()
         {
-            if (!isRuning) return;
+            if (!isRunning) return;
             StopCoroutine(runningCoroutine);
             runningCoroutine = null;
+            statusText.text = string.Empty;
+        }
+
+        public void ToggleAuto()
+        {
+            // https://youtu.be/QIm0dH8fOxE?list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&t=1283
+            // 上記と異なりシンプルな Toggle にする
+            if (isRunning) Disable();
+            else Enable(AUTO_MODE_TEXT);
+        }
+
+        public void ToggleSkip()
+        {
+            skip = !skip;
+            if (skip) Enable(SKIP_MODE_TEXT);
+            else Disable();
         }
 
         public IEnumerator AutoRead()
@@ -60,11 +83,12 @@ namespace Core.DisplayDialogue
                 if (!skip)
                 {
                     // 文字が表示されはじめるまで待機する
-                    while (!textArchitect.IsDisplaying) yield return null;
+                    while (!textArchitect.IsDisplaying && !conversationManager.IsWaitingSegmentSignal)
+                        yield return null;
 
                     var startedTime = Time.time;
                     // 文字表示をおこなっている間は待機する
-                    while (textArchitect.IsDisplaying) yield return null;
+                    while (textArchitect.IsDisplaying || conversationManager.IsWaitingSegmentSignal) yield return null;
                     var elapsedTime = Time.time - startedTime;
 
                     var timeToRead = Mathf.Clamp(

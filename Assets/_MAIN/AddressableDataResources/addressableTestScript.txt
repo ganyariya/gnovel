@@ -8,7 +8,7 @@ stopSfx(thunder_01)
 raelin "oh, Stopped"
 
 Narrator "hello, new character <mainChara>"
-<mainChara> "My name is <mainChara>.{c} What time is it?"
+<mainChara> "My name is <mainChara>.{wa 5.0} What time is it?"
 Narrator "<time> is!"
 
 

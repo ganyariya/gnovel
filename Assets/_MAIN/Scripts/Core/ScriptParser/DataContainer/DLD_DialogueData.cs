@@ -10,8 +10,17 @@ namespace Core.ScriptParser
     /// W は WaitSeconds
     /// A は Append
     /// C は Clear
+    ///
+    /// Segment とは 1 Line の文章を {wa 0.5} などのセグメントシグナルにあわせて分割したもの
     /// </summary>
-    public enum StartSignal { NONE, C, A, WA, WC };
+    public enum StartSignal
+    {
+        NONE,
+        C,
+        A,
+        WA,
+        WC
+    };
 
     public class DLD_DialogueSegment
     {
@@ -20,12 +29,16 @@ namespace Core.ScriptParser
         /// Segment としてこのクラスで受け取り、そのまま画面に displayArchitect で出力する
         /// </summary>
         public string dialogue;
+
         public StartSignal startSignal;
         public float signalDelay;
 
         public bool IsAppendText => startSignal == StartSignal.A || startSignal == StartSignal.WA;
 
-        public DLD_DialogueSegment() { }
+        public DLD_DialogueSegment()
+        {
+        }
+
         public DLD_DialogueSegment(string dialogue, StartSignal startSignal, float signalDelay)
         {
             this.dialogue = dialogue;
@@ -84,7 +97,8 @@ namespace Core.ScriptParser
                 if (signalSplit.Length > 1) float.TryParse(signalSplit[1], out segment.signalDelay);
 
                 int nextIndex = i + 1 < matches.Count ? matches[i + 1].Index : rawDialogue.Length;
-                segment.dialogue = rawDialogue.Substring(lastIndex + match.Length, nextIndex - (lastIndex + match.Length));
+                segment.dialogue =
+                    rawDialogue.Substring(lastIndex + match.Length, nextIndex - (lastIndex + match.Length));
                 lastIndex = nextIndex;
 
                 segments.Add(segment);
@@ -94,4 +108,3 @@ namespace Core.ScriptParser
         }
     }
 }
-
