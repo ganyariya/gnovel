@@ -19,11 +19,14 @@ namespace Core.DisplayDialogue
         public bool IsRunning => process != null;
 
         private readonly DialogueSystemController dialogueSystem;
-        private readonly DisplayTextArchitect textArchitect;
+        public readonly DisplayTextArchitect textArchitect;
         private Coroutine process;
         private bool userPromptNext = false;
 
         private TagManager tagManager;
+        
+        // AutoReader で待機セグメントコマンドを考慮するため
+        public bool IsWaitingSegmentSignal { get; private set; } = false;
 
         public ConversationManager(DialogueSystemController dialogueSystem, DisplayTextArchitect textArchitect)
         {
@@ -148,7 +151,7 @@ namespace Core.DisplayDialogue
         private IEnumerator RunningSingleDLDDialogueSegment(DLD_DialogueSegment segment)
         {
             yield return WaitForDialogueSegmentTriggered(segment);
-            yield return DisplayingSingleDialogueText(segment.dialogue, segment.IsAppendText);
+            yield return DisplayingSingleSegmentDialogueText(segment.dialogue, segment.IsAppendText);
         }
 
         private IEnumerator WaitForDialogueSegmentTriggered(DLD_DialogueSegment segment)
@@ -161,20 +164,18 @@ namespace Core.DisplayDialogue
                     break;
                 case StartSignal.WA:
                 case StartSignal.WC:
+                    IsWaitingSegmentSignal = true;
                     yield return new WaitForSeconds(segment.signalDelay);
-                    break;
-                default:
+                    IsWaitingSegmentSignal = false;
                     break;
             }
-
-            yield return null;
         }
 
         /// <summary>
-        /// 画面に非同期に 1 行の生stringテキストを表示する
-        /// 表示中に userPrompt されたら加速させる
+        /// 画面に非同期に 1 行 (セグメントごと) の生stringテキストを表示する
+        /// 文字送り表示中に userPrompt されたら加速させて一気に表示する
         /// </summary>
-        private IEnumerator DisplayingSingleDialogueText(string dialogueText, bool append = true)
+        private IEnumerator DisplayingSingleSegmentDialogueText(string dialogueText, bool append = true)
         {
             dialogueText = tagManager.Inject(dialogueText);
 

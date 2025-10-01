@@ -35,6 +35,7 @@ namespace Core.DisplayDialogue
         private ConversationManager conversationManager;
         private DisplayTextArchitect displayTextArchitect;
         [SerializeField] private DisplayMethod displayMethod;
+        private AutoReader autoReader;
 
         public bool IsRunningConversation => conversationManager.IsRunning;
 
@@ -67,6 +68,9 @@ namespace Core.DisplayDialogue
         {
             displayTextArchitect = new(dialogueContainer.dialogueText, null);
             conversationManager = new(this, displayTextArchitect);
+
+            if (TryGetComponent(out autoReader)) autoReader.Initialize(conversationManager);
+
             displayTextArchitect.CurrentDisplayMethod = displayMethod;
             dialogueContainer.Initialize(this);
             canvasGroupController = new CanvasGroupController(this, mainCanvasGroup);
@@ -98,8 +102,18 @@ namespace Core.DisplayDialogue
 
         /// <summary>
         /// キー入力など 次に進める処理が行われたら Subscriber に対して イベントを send する
+        /// AutoRead 状態をキャンセルする
         /// </summary>
         public void OnUserPromptNextEvent()
+        {
+            UserPromptNextEvent?.Invoke();
+            if (autoReader?.IsRunning ?? false) autoReader.Disable();
+        }
+
+        /// <summary>
+        /// AutoReader などシステムプログラムから強制的に次に進ませるときに利用する
+        /// </summary>
+        public void OnSystemPromptNextEvent()
         {
             UserPromptNextEvent?.Invoke();
         }
