@@ -102,8 +102,18 @@ namespace Core.DisplayDialogue
 
         /// <summary>
         /// キー入力など 次に進める処理が行われたら Subscriber に対して イベントを send する
+        /// AutoRead 状態をキャンセルする
         /// </summary>
         public void OnUserPromptNextEvent()
+        {
+            UserPromptNextEvent?.Invoke();
+            if (autoReader?.IsRunning ?? false) autoReader.Disable();
+        }
+
+        /// <summary>
+        /// AutoReader などシステムプログラムから強制的に次に進ませるときに利用する
+        /// </summary>
+        public void OnSystemPromptNextEvent()
         {
             UserPromptNextEvent?.Invoke();
         }

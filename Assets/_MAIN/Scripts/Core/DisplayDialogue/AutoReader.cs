@@ -24,7 +24,7 @@ namespace Core.DisplayDialogue
         public float speed { get; private set; } = 1f;
 
         private Coroutine runningCoroutine;
-        private bool isRunning => runningCoroutine != null;
+        public bool IsRunning => runningCoroutine != null;
 
         // DialogueSystemController から初期化する
         // TODO: 相互参照になっていてうーんという感じ
@@ -37,14 +37,14 @@ namespace Core.DisplayDialogue
 
         public void Enable(string modeText)
         {
-            if (isRunning) return;
+            if (IsRunning) return;
             runningCoroutine = StartCoroutine(AutoRead());
             statusText.text = modeText;
         }
 
         public void Disable()
         {
-            if (!isRunning) return;
+            if (!IsRunning) return;
             StopCoroutine(runningCoroutine);
             runningCoroutine = null;
             statusText.text = string.Empty;
@@ -54,7 +54,7 @@ namespace Core.DisplayDialogue
         {
             // https://youtu.be/QIm0dH8fOxE?list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&t=1283
             // 上記と異なりシンプルな Toggle にする
-            if (isRunning) Disable();
+            if (IsRunning) Disable();
             else Enable(AUTO_MODE_TEXT);
         }
 
@@ -76,7 +76,7 @@ namespace Core.DisplayDialogue
 
             // 1 文がすべて表示されているなら AutoMode 開始ボタンにあわせて 次の文章を始める 
             if (!textArchitect.IsDisplaying && textArchitect.CurrentText != string.Empty)
-                DialogueSystemController.instance.OnUserPromptNextEvent();
+                DialogueSystemController.instance.OnSystemPromptNextEvent();
 
             while (conversationManager.IsRunning)
             {
@@ -112,7 +112,7 @@ namespace Core.DisplayDialogue
                 }
 
                 // 1 文の表示がおわり skip/auto 時間待機も終わったので、次に進める
-                DialogueSystemController.instance.OnUserPromptNextEvent();
+                DialogueSystemController.instance.OnSystemPromptNextEvent();
             }
 
             Disable();
