@@ -140,7 +140,7 @@ namespace Core.Characters
 
         public virtual Coroutine Show(float speedMultiplier = 1f)
         {
-            if (isRevealing) return revealingCoroutine;
+            if (isRevealing) characterManager.StopCoroutine(revealingCoroutine);
             if (isHiding) characterManager.StopCoroutine(hidingCoroutine);
 
             return revealingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(true, speedMultiplier));
@@ -148,7 +148,7 @@ namespace Core.Characters
 
         public virtual Coroutine Hide(float speedMultiplier = 1f)
         {
-            if (isHiding) return hidingCoroutine;
+            if (isHiding) characterManager.StopCoroutine(hidingCoroutine);
             if (isRevealing) characterManager.StopCoroutine(revealingCoroutine);
 
             return hidingCoroutine = characterManager.StartCoroutine(ShowingOrHiding(false, speedMultiplier));
@@ -249,8 +249,7 @@ namespace Core.Characters
 
         public Coroutine ExecuteHighlighting(float speed = 1f, bool immediate = false)
         {
-            if (isHighlighting) return highlightingCoroutine;
-            if (isUnHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
+            if (isHighlighting || isUnHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
 
             isHighlighted = true;
             return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(true, speed, immediate));
@@ -258,8 +257,7 @@ namespace Core.Characters
 
         public Coroutine ExecuteUnHighlighting(float speed = 1f, bool immediate = false)
         {
-            if (isUnHighlighting) return highlightingCoroutine;
-            if (isHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
+            if (isHighlighting || isUnHighlighting) characterManager.StopCoroutine(highlightingCoroutine);
 
             isHighlighted = false;
             return highlightingCoroutine = characterManager.StartCoroutine(Highlighting(false, speed, immediate));

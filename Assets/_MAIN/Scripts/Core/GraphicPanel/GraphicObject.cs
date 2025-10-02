@@ -210,7 +210,7 @@ namespace Core.GraphicPanel
             {
                 // Layer X に新しい画像の fadeIn (新たな画像の登場)が完了した
                 // そのため Layer X にある古い画像があればそれを消す
-                DestroyBacksideGraphics();
+                layer.DestroyOldGraphics();
 
                 // 単純に renderer.material = null すると何も表示されなくなる
                 // FIELD_MAIN_TEXTURE に表示したいテクスチャが入っているのでそれを直接いれて逃がす
@@ -224,17 +224,9 @@ namespace Core.GraphicPanel
 
         public void Destroy()
         {
-            if (layer.currentGraphicObject != null && layer.currentGraphicObject.renderer == renderer)
-            {
-                layer.currentGraphicObject = null;
-            }
+            layer.RemoveTargetGraphic(this);
 
             Object.Destroy(renderer.gameObject);
-        }
-
-        private void DestroyBacksideGraphics()
-        {
-            layer.DestroyOldGraphics();
         }
     }
 }
