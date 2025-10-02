@@ -117,7 +117,14 @@ namespace Core.Characters
         /// </summary>
         private Coroutine ExecuteLevelingAlpha()
         {
-            if (isLevelingAlpha) return levelingAlphaCoroutine;
+            // https://youtu.be/Lp1Za3cGz2o?list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&t=37o
+            // return levelingAlphaCoroutine してしまうと、同じコルーチンを複数の親関数から扱ってしまう問題が発生する
+            // これはエラーを引き起こしてしまう
+            // よって、対策としては
+            // 1. levelingAlphaCoroutine のような変数に格納せず、毎回あたらしいコルーチンとして扱う
+            //   or List<Coroutine> として管理してもよい
+            // 2. StopCoroutine する
+            if (isLevelingAlpha) characterManager.StopCoroutine(levelingAlphaCoroutine);
             levelingAlphaCoroutine = characterManager.StartCoroutine(LevelingAlpha());
             return levelingAlphaCoroutine;
         }
@@ -170,12 +177,11 @@ namespace Core.Characters
             float colorPercent = 0;
             while (colorPercent < 1.0f)
             {
-
                 colorPercent += DEFAULT_TRANSITION_SPEED * speed * Time.deltaTime;
 
                 var targetColor = Color.Lerp(oldColor, color, colorPercent);
                 renderer.color = targetColor;
-                
+
                 var oldImages = oldRenderCanvasGroups.Select((x) => x.GetComponent<Image>()).ToList();
                 foreach (var image in oldImages) image.color = targetColor;
 
