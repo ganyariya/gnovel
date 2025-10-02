@@ -36,6 +36,7 @@ namespace Core.Characters
         /// 画像の fade out を実現する
         /// </summary>
         private List<CanvasGroup> oldRenderCanvasGroups = new List<CanvasGroup>();
+
         private bool isFacingLeft = Character.DEFAULT_ORIENTATION_LEFT;
 
         private Coroutine transitionLayerCoroutine;
@@ -165,15 +166,19 @@ namespace Core.Characters
         private IEnumerator ChangingColor(Color color, float speed)
         {
             Color oldColor = renderer.color;
-            List<Image> oldImages = oldRenderCanvasGroups.Select((x) => x.GetComponent<Image>()).ToList();
 
             float colorPercent = 0;
             while (colorPercent < 1.0f)
             {
+
                 colorPercent += DEFAULT_TRANSITION_SPEED * speed * Time.deltaTime;
+
                 var targetColor = Color.Lerp(oldColor, color, colorPercent);
                 renderer.color = targetColor;
+                
+                var oldImages = oldRenderCanvasGroups.Select((x) => x.GetComponent<Image>()).ToList();
                 foreach (var image in oldImages) image.color = targetColor;
+
                 yield return null;
             }
 
@@ -199,12 +204,14 @@ namespace Core.Characters
             if (isFacingLeft) return FlipToRight(speed, immediate);
             else return FlipToLeft(speed, immediate);
         }
+
         public Coroutine FlipToLeft(float speed = 1f, bool immediate = false)
         {
             if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
             isFacingLeft = true;
             return flippingCoroutine = characterManager.StartCoroutine(FlippingToDirection(true, speed, immediate));
         }
+
         public Coroutine FlipToRight(float speed = 1f, bool immediate = false)
         {
             if (isFlipping) characterManager.StopCoroutine(flippingCoroutine);
@@ -236,4 +243,3 @@ namespace Core.Characters
         }
     }
 }
-

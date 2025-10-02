@@ -8,6 +8,8 @@ namespace Core.GraphicPanel
     /// <summary>
     /// 2-BackGround
     ///  - Layer: 0 (Image)
+    ///   - Graphic1 (Image)
+    ///   - Graphic
     ///  - Layer: 1 (Movie)
     ///  - Layer: 2 (Image)
     /// のように各パネルに複数のレイヤを配置する
@@ -103,13 +105,19 @@ namespace Core.GraphicPanel
             return null;
         }
 
+        public void RemoveTargetGraphic(GraphicObject graphicObject)
+        {
+            if (currentGraphicObject != null && currentGraphicObject.renderer == graphicObject.renderer)
+                currentGraphicObject = null;
+
+            // oldGraphicObjects から該当の GraphicObject を外しておかないと、DestroyOldGraphics() で二重削除してしまいぬるぽしてしまう
+            // https://www.youtube.com/watch?v=Lp1Za3cGz2o&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=62
+            if (oldGraphicObjects.Contains(graphicObject)) oldGraphicObjects.Remove(graphicObject);
+        }
+
         public void DestroyOldGraphics()
         {
-            foreach (var g in oldGraphicObjects)
-            {
-                Object.Destroy(g.renderer.gameObject);
-            }
-
+            foreach (var g in oldGraphicObjects) Object.Destroy(g.renderer.gameObject);
             oldGraphicObjects.Clear();
         }
 

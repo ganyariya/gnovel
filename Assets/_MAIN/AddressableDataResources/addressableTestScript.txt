@@ -8,7 +8,7 @@ stopSfx(thunder_01)
 raelin "oh, Stopped"
 
 Narrator "hello, new character <mainChara>"
-<mainChara> "My name is <mainChara>.{wa 5.0} What time is it?"
+<mainChara> "My name is <mainChara>.{wa 0.5} What time is it?"
 Narrator "<time> is!"
 
 
@@ -25,7 +25,6 @@ showDBox()
 [wait]setLayerMedia(-panel background -m "Fantasy Landscape" -audio true -spd 0.4 -blend blur)
 setLayerMedia(-panel background -layer 1 -m SpaceshipInterior)
 
-hideUI()
 
 [wait]clearLayerMedia(-panel background -layer 1 -blend blur)
 
