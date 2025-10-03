@@ -7,11 +7,11 @@ raelin "wao!! thunder!!!"
 stopSfx(thunder_01)
 raelin "oh, Stopped"
 
-raelin "what's your name? tell me!"
+raelin "what's your favorite food? tell me!"
 
-input "your name"
+input "your favorite food"
 
-raelin "thanks!"
+raelin "oh, <input>! I like it too!"
 
 Narrator "hello, new character <mainChara>"
 <mainChara> "My name is <mainChara>.{wa 0.5} What time is it?"

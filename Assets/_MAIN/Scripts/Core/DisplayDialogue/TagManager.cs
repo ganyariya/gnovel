@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Core.FeaturePanel;
 using UnityEngine;
 
 namespace Core.DisplayDialogue
@@ -30,6 +31,7 @@ namespace Core.DisplayDialogue
             tags["<time>"] = () => DateTime.Now.ToString("hh:mm tt");
             tags["<playerLevel>"] = () => "15";
             tags["<tempVal1>"] = () => "42";
+            tags["<input>"] = () => InputPanel.Instance.LastInputUserText;
         }
 
         /// <summary>
