@@ -20,7 +20,7 @@ namespace Core.LogicalLine
 
             var types = assembly
                 .GetTypes()
-                .Where(t => typeof(ILogicalLine).IsAssignableFrom(t) && !t.IsInterface)
+                .Where(t => typeof(ILogicalLine).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
                 .ToArray();
 
             foreach (var type in types)
