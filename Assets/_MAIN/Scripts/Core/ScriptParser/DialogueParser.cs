@@ -24,7 +24,7 @@ namespace Core.ScriptParser
         {
             var (speaker, dialogue, commands) = SplitRawLine(rawLine);
             Debug.Log($"{rawLine} {speaker} {dialogue} {commands}");
-            return new DialogueLineData(speaker, dialogue, commands);
+            return new DialogueLineData(rawLine, speaker, dialogue, commands);
         }
 
         /// <summary>
@@ -72,7 +72,8 @@ namespace Core.ScriptParser
                 if (dialogueEnd != -1)
                 {
                     speaker = rawLine.Substring(0, dialogueStart).Trim();
-                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
+                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1)
+                        .Replace("\\\"", "\"");
                     commands = rawLine.Substring(dialogueEnd + 1).Trim();
                 }
                 // speakerがあるかも? + "のないコマンドのみ
@@ -93,7 +94,8 @@ namespace Core.ScriptParser
                 else
                 {
                     speaker = rawLine.Substring(0, dialogueStart).Trim();
-                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
+                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1)
+                        .Replace("\\\"", "\"");
                 }
             }
             // ダイアログのみ
@@ -103,7 +105,8 @@ namespace Core.ScriptParser
                 else
                 {
                     speaker = rawLine.Substring(0, dialogueStart).Trim();
-                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1).Replace("\\\"", "\"");
+                    dialogue = rawLine.Substring(dialogueStart + 1, dialogueEnd - dialogueStart - 1)
+                        .Replace("\\\"", "\"");
                 }
             }
 

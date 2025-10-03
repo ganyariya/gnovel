@@ -9,6 +9,7 @@ namespace Core.ScriptParser
     /// </summary>
     public class DialogueLineData
     {
+        public string rawData { get; private set; }
 
         public readonly string originalSpeaker;
         public readonly string originalDialogue;
@@ -22,8 +23,9 @@ namespace Core.ScriptParser
         public bool HasDialogue => dialogueData != null;
         public bool HasCommands => commandData != null;
 
-        public DialogueLineData(string speaker, string dialogue, string commands)
+        public DialogueLineData(string rawData, string speaker, string dialogue, string commands)
         {
+            this.rawData = rawData;
             this.originalSpeaker = speaker;
             this.originalDialogue = dialogue;
             this.originalCommands = commands;
