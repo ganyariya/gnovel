@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Characters;
-using Core.LogicalLine;
+using Core.FeaturePanel;
 using UnityEngine;
 
 namespace Testing
@@ -28,6 +28,4 @@ namespace Testing
             yield return ganyariya.Say($"\"Oh! Hi! {name}\"");
         }
     }
-    
 }
-

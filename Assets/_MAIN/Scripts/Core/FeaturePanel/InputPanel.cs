@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-namespace Core.LogicalLine
+namespace Core.FeaturePanel
 {
     public class InputPanel : MonoBehaviour
     {
