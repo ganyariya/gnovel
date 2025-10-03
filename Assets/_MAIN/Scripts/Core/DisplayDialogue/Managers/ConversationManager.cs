@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Characters;
 using Core.CommandDB;
+using Core.LogicalLine;
 using Core.ScriptParser;
 using Extensions;
 using UnityEngine;
@@ -24,7 +25,8 @@ namespace Core.DisplayDialogue
         private bool userPromptNext = false;
 
         private TagManager tagManager;
-        
+        private LogicalLineExecutor logicalLineExecutor;
+
         // AutoReader で待機セグメントコマンドを考慮するため
         public bool IsWaitingSegmentSignal { get; private set; } = false;
 
@@ -35,6 +37,7 @@ namespace Core.DisplayDialogue
             this.textArchitect = textArchitect;
             this.process = null;
             tagManager = new TagManager();
+            logicalLineExecutor = new LogicalLineExecutor();
         }
 
         /// <summary>
@@ -78,6 +81,14 @@ namespace Core.DisplayDialogue
 
                 // 生 string をパースして DialogueLineData に変換する
                 DialogueLineData lineData = DialogueParser.Parse(rawText);
+
+                if (logicalLineExecutor.TryExecute(lineData, out var coroutine))
+                {
+                    // LogicalLine であった場合はユーザとのインタラクションを実行させる
+                    // インタラクションが終了したら次の Line 処理へ
+                    yield return coroutine;
+                    continue;
+                }
 
                 if (lineData.HasDialogue) yield return RunningSingleDialogue(lineData);
                 if (lineData.HasCommands) yield return RunningSingleCommands(lineData);

@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-namespace Core.LogicalLine
+namespace Core.FeaturePanel
 {
     public class InputPanel : MonoBehaviour
     {
@@ -14,12 +14,23 @@ namespace Core.LogicalLine
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private Button _acceptButton;
 
+        /// <summary>
+        /// singleton
+        /// LogicalLine LL_Input からアクセスするため
+        /// </summary>
+        public static InputPanel Instance;
+
         private CanvasGroupController _canvasGroupController;
 
         public string LastInputUserText { get; private set; } = string.Empty;
         public bool IsEnteringInput { get; private set; } = false;
 
-        public void Start()
+        private void Awake()
+        {
+            Instance = this;
+        }
+
+        private void Start()
         {
             _canvasGroupController = new CanvasGroupController(this, _canvasGroup);
             _canvasGroup.alpha = 0;

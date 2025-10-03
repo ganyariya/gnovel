@@ -53,14 +53,20 @@ namespace Core.ScriptParser
     /// </summary>
     public class DLD_DialogueData
     {
+        public string rawData { get; private set; }
+
         public List<DLD_DialogueSegment> segments;
         private readonly static Regex segmentIdentifierPattern = new Regex(@"\{[ca]\}|\{w[ca]\s+\d*\.?\d*\}");
 
         public DLD_DialogueData(string rawDialogue)
         {
+            rawData = rawDialogue;
             segments = SplitSegments(rawDialogue);
         }
 
+        /// <summary>
+        /// UnitTest コンストラクタ用
+        /// </summary>
         public DLD_DialogueData(List<DLD_DialogueSegment> segments)
         {
             this.segments = segments;
