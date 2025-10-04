@@ -8,6 +8,10 @@ namespace Core.FeaturePanel
 {
     public class ChoicePanel : MonoBehaviour
     {
+        private const int MINIMUM_BUTTON_WIDTH = 50;
+        private const int MAXIMUM_BUTTON_WIDTH = 1000;
+        private const int BUTTON_PADDING_WIDTH = 40;
+
         public static ChoicePanel Instance { get; private set; }
 
         [SerializeField] private CanvasGroup _canvasGroup;
@@ -53,6 +57,8 @@ namespace Core.FeaturePanel
 
         private void GenerateChoices(string[] choices)
         {
+            float maxWidth = 0;
+
             for (int i = 0; i < choices.Length; i++)
             {
                 ChoiceButton choiceButton;
@@ -78,6 +84,21 @@ namespace Core.FeaturePanel
                 // button がクリックされたらその index をもとに lastDecision を更新する
                 // i をそのまま渡すと Closure の問題で length - 1 の値になってしまうため注意する
                 choiceButton.button.onClick.AddListener(() => ChoiceAnswer(index));
+
+                float buttonWidth = Mathf.Clamp(
+                    // TextMeshPro の Text では該当のテキストを描画するために必要な Width を自動計算してくれる
+                    BUTTON_PADDING_WIDTH + choiceButton.text.preferredWidth + BUTTON_PADDING_WIDTH,
+                    MINIMUM_BUTTON_WIDTH,
+                    MAXIMUM_BUTTON_WIDTH
+                );
+                maxWidth = Mathf.Max(maxWidth, buttonWidth);
+            }
+
+            foreach (var choiceButton in _cachedChoiceButtons)
+            {
+                // layoutElement を操作することで AutoLayout 時における Button などの UI サイズを動的に変更できる
+                // Button の Image Type を Sliced にしているため、Button のサイズを変更したとしても正しく画像が適応される
+                choiceButton.layoutElement.preferredWidth = maxWidth;
             }
         }
 

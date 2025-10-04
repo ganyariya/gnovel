@@ -16,10 +16,10 @@ namespace Testing
         private IEnumerator Running()
         {
             var choicePanel = ChoicePanel.Instance;
-            
-            string[] choices = {"Choice 1", "Choice 2", "Choice 3"};
+
+            string[] choices = { "Choice 1", "Choice 2", "Choice 3", "HogeHogeHogeHogeHogeHoge" };
             choicePanel.Show("Question", choices);
             while (choicePanel.IsEnteringChoice) yield return null;
-        } 
+        }
     }
 }
