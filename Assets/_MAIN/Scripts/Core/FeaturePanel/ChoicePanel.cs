@@ -59,34 +59,49 @@ namespace Core.FeaturePanel
         {
             float maxWidth = 0;
 
-            for (int i = 0; i < choices.Length; i++)
+            var FetchButton = new Func<int, ChoiceButton>(i =>
             {
-                ChoiceButton choiceButton;
+                if (i < _cachedChoiceButtons.Count) return _cachedChoiceButtons[i];
 
-                if (i < _cachedChoiceButtons.Count) choiceButton = _cachedChoiceButtons[i];
-                else
+                var go = Instantiate(_buttonPrefab, _buttonLayoutGroup.transform);
+                var choiceButton = new ChoiceButton
                 {
-                    var gameObject = Instantiate(_buttonPrefab, _buttonLayoutGroup.transform);
-                    gameObject.SetActive(true);
+                    button = go.GetComponent<Button>(),
+                    text = go.GetComponentInChildren<TextMeshProUGUI>(),
+                    layoutElement = go.GetComponent<LayoutElement>()
+                };
+                _cachedChoiceButtons.Add(choiceButton);
+                return choiceButton;
+            });
 
-                    choiceButton = new ChoiceButton
-                    {
-                        button = gameObject.GetComponent<Button>(),
-                        text = gameObject.GetComponentInChildren<TextMeshProUGUI>(),
-                        layoutElement = gameObject.GetComponent<LayoutElement>()
-                    };
-                    _cachedChoiceButtons.Add(choiceButton);
-                }
+            for (var i = 0; i < choices.Length; i++)
+            {
+                var choiceButton = FetchButton(i);
 
-                var index = i;
+                // if (i < _cachedChoiceButtons.Count) choiceButton = _cachedChoiceButtons[i];
+                // else
+                // {
+                //     var gameObject = Instantiate(_buttonPrefab, _buttonLayoutGroup.transform);
+                //     gameObject.SetActive(true);
+                //
+                //     choiceButton = new ChoiceButton
+                //     {
+                //         button = gameObject.GetComponent<Button>(),
+                //         text = gameObject.GetComponentInChildren<TextMeshProUGUI>(),
+                //         layoutElement = gameObject.GetComponent<LayoutElement>()
+                //     };
+                //     _cachedChoiceButtons.Add(choiceButton);
+                // }
+
                 choiceButton.text.text = choices[i];
                 choiceButton.button.onClick.RemoveAllListeners();
                 // button がクリックされたらその index をもとに lastDecision を更新する
                 // i をそのまま渡すと Closure の問題で length - 1 の値になってしまうため注意する
+                var index = i;
                 choiceButton.button.onClick.AddListener(() => ChoiceAnswer(index));
 
-                float buttonWidth = Mathf.Clamp(
-                    // TextMeshPro の Text では該当のテキストを描画するために必要な Width を自動計算してくれる
+                var buttonWidth = Mathf.Clamp(
+                    // TextMeshPro は該当のテキストを描画するために必要な Width (preferredWidth) を自動計算してくれる
                     BUTTON_PADDING_WIDTH + choiceButton.text.preferredWidth + BUTTON_PADDING_WIDTH,
                     MINIMUM_BUTTON_WIDTH,
                     MAXIMUM_BUTTON_WIDTH
@@ -95,11 +110,12 @@ namespace Core.FeaturePanel
             }
 
             foreach (var choiceButton in _cachedChoiceButtons)
-            {
                 // layoutElement を操作することで AutoLayout 時における Button などの UI サイズを動的に変更できる
                 // Button の Image Type を Sliced にしているため、Button のサイズを変更したとしても正しく画像が適応される
                 choiceButton.layoutElement.preferredWidth = maxWidth;
-            }
+
+            for (var i = 0; i < _cachedChoiceButtons.Count; i++)
+                _cachedChoiceButtons[i].button.gameObject.SetActive(i < choices.Length);
         }
 
         private void ChoiceAnswer(int index)
@@ -112,6 +128,7 @@ namespace Core.FeaturePanel
         {
             _canvasGroupController.Hide();
             _canvasGroupController.ChangeInteractionBehaviour(false);
+            IsEnteringChoice = false;
         }
 
         /// <summary>
@@ -133,6 +150,7 @@ namespace Core.FeaturePanel
             }
 
             public void Answer(int index) => AnswerIndex = index;
+            public string GetAnswer() => Choices[AnswerIndex];
         }
 
         /// <summary>

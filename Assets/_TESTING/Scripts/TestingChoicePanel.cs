@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Characters;
 using Core.FeaturePanel;
 using UnityEngine;
 
@@ -15,11 +16,25 @@ namespace Testing
 
         private IEnumerator Running()
         {
+            var ganyariya = CharacterManager.instance.CreateCharacter("ganyariya") as SpriteCharacter;
+            ganyariya.Show();
+            yield return ganyariya.Say("\"Hello!, What's your favorite food?\"");
+
             var choicePanel = ChoicePanel.Instance;
 
-            string[] choices = { "Choice 1", "Choice 2", "Choice 3", "HogeHogeHogeHogeHogeHoge" };
-            choicePanel.Show("Question", choices);
+            string[] choices =
+            {
+                "apple",
+                "orange",
+                "fish",
+                "delicious delicious banana",
+                "supersupersupersupersupersupersupersuperlong"
+            };
+            choicePanel.Show("What is your favorite food?", choices);
             while (choicePanel.IsEnteringChoice) yield return null;
+
+            string answer = choicePanel.LastDecision.GetAnswer();
+            yield return ganyariya.Say($"\"Oh! I like {answer} too!\"");
         }
     }
 }
