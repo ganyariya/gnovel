@@ -16,9 +16,9 @@ namespace Core.FeaturePanel
         [SerializeField] private GameObject _buttonPrefab;
 
         private CanvasGroupController _canvasGroupController;
-        private List<ChoiceButton> _cachedChoiceButtons = new();
+        private readonly List<ChoiceButton> _cachedChoiceButtons = new();
 
-        public ChoiceDecision lastDecision { get; private set; }
+        public ChoiceDecision LastDecision { get; private set; }
         public bool IsEnteringChoice { get; private set; }
 
         public void Awake()
@@ -40,7 +40,7 @@ namespace Core.FeaturePanel
 
         public void Show(string question, string[] choices)
         {
-            lastDecision = new ChoiceDecision(question, choices);
+            LastDecision = new ChoiceDecision(question, choices);
 
             _canvasGroupController.Show();
             _canvasGroupController.ChangeInteractionBehaviour(true);
@@ -83,7 +83,7 @@ namespace Core.FeaturePanel
 
         private void ChoiceAnswer(int index)
         {
-            lastDecision.Answer(index);
+            LastDecision.Answer(index);
             Hide();
         }
 
@@ -93,25 +93,31 @@ namespace Core.FeaturePanel
             _canvasGroupController.ChangeInteractionBehaviour(false);
         }
 
-
+        /// <summary>
+        /// 前回選択した選択肢の結果を保存する
+        /// </summary>
         public class ChoiceDecision
         {
             private const int INITIAL_ANSWER_INDEX = -1;
 
-            public string question;
-            public string[] choices;
-            public int answerIndex;
+            public string Question;
+            public string[] Choices;
+            public int AnswerIndex;
 
             public ChoiceDecision(string question, string[] choices)
             {
-                this.question = question;
-                this.choices = choices;
-                answerIndex = INITIAL_ANSWER_INDEX;
+                this.Question = question;
+                this.Choices = choices;
+                AnswerIndex = INITIAL_ANSWER_INDEX;
             }
 
-            public void Answer(int index) => answerIndex = index;
+            public void Answer(int index) => AnswerIndex = index;
         }
 
+        /// <summary>
+        /// 生成された `選択肢ボタン GameObject` のコンポーネントリスト
+        /// 実装しやすくするためのヘルパークラス
+        /// </summary>
         private struct ChoiceButton
         {
             public Button button;
