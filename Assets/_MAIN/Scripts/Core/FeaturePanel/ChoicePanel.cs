@@ -56,23 +56,28 @@ namespace Core.FeaturePanel
             for (int i = 0; i < choices.Length; i++)
             {
                 ChoiceButton choiceButton;
-                if (i < _cachedChoiceButtons.Count)
-                {
-                    choiceButton = _cachedChoiceButtons[i];
-                }
+
+                if (i < _cachedChoiceButtons.Count) choiceButton = _cachedChoiceButtons[i];
                 else
                 {
-                    GameObject gameObject = Instantiate(_buttonPrefab, _buttonLayoutGroup.transform);
+                    var gameObject = Instantiate(_buttonPrefab, _buttonLayoutGroup.transform);
                     gameObject.SetActive(true);
 
-                    Button button = gameObject.GetComponent<Button>();
-                    TextMeshProUGUI textMeshProUGUI = gameObject.GetComponentInChildren<TextMeshProUGUI>();
-                    LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
                     choiceButton = new ChoiceButton
-                        { button = button, text = textMeshProUGUI, layoutElement = layoutElement };
-
+                    {
+                        button = gameObject.GetComponent<Button>(),
+                        text = gameObject.GetComponentInChildren<TextMeshProUGUI>(),
+                        layoutElement = gameObject.GetComponent<LayoutElement>()
+                    };
                     _cachedChoiceButtons.Add(choiceButton);
                 }
+
+                var index = i;
+                choiceButton.text.text = choices[i];
+                choiceButton.button.onClick.RemoveAllListeners();
+                // button がクリックされたらその index をもとに lastDecision を更新する
+                // i をそのまま渡すと Closure の問題で length - 1 の値になってしまうため注意する
+                choiceButton.button.onClick.AddListener(() => ChoiceAnswer(index));
             }
         }
 
