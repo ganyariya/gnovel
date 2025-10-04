@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace Core.FeaturePanel
 {
+    // https://www.youtube.com/watch?v=qshu7A0h1QY&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=67
     public class ChoicePanel : MonoBehaviour
     {
         private const int MINIMUM_BUTTON_WIDTH = 50;
@@ -77,21 +78,6 @@ namespace Core.FeaturePanel
             for (var i = 0; i < choices.Length; i++)
             {
                 var choiceButton = FetchButton(i);
-
-                // if (i < _cachedChoiceButtons.Count) choiceButton = _cachedChoiceButtons[i];
-                // else
-                // {
-                //     var gameObject = Instantiate(_buttonPrefab, _buttonLayoutGroup.transform);
-                //     gameObject.SetActive(true);
-                //
-                //     choiceButton = new ChoiceButton
-                //     {
-                //         button = gameObject.GetComponent<Button>(),
-                //         text = gameObject.GetComponentInChildren<TextMeshProUGUI>(),
-                //         layoutElement = gameObject.GetComponent<LayoutElement>()
-                //     };
-                //     _cachedChoiceButtons.Add(choiceButton);
-                // }
 
                 choiceButton.text.text = choices[i];
                 choiceButton.button.onClick.RemoveAllListeners();
