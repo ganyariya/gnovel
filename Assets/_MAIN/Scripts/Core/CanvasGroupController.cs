@@ -26,6 +26,12 @@ namespace Core
         private bool isFading => isShowing || isHiding;
         public bool isVisible => isShowing || canvasGroup.alpha > 0f;
 
+        public float Alpha
+        {
+            get => canvasGroup.alpha;
+            set => canvasGroup.alpha = value;
+        }
+
         public Coroutine Show(float speed = 1f, bool immediate = false)
         {
             if (isShowing) return null;
@@ -63,6 +69,22 @@ namespace Core
             }
 
             showingCoroutine = hidingCoroutine = null;
+        }
+
+        /// <summary>
+        /// https://docs.unity3d.com/ja/2018.4/Manual/class-CanvasGroup.html
+        /// CanvasGroup の状態を変更することで UI 要素にアクセスできるようにする
+        ///
+        /// alpha = 0 としても blockRaycasts = true のままだと、裏側にある UI メニューなどにアクセスできない
+        /// そのため InputPanel を非表示にするときは interactable と blockRaycasts を切る
+        ///
+        /// </summary>
+        /// - interactable = 自分自身がクリック可能になるか？
+        /// - blockRaycasts = 自分の「裏側」がクリック可能になるか？
+        public void ChangeInteractionBehaviour(bool interactable)
+        {
+            canvasGroup.interactable = interactable;
+            canvasGroup.blocksRaycasts = interactable;
         }
     }
 }

@@ -53,14 +53,14 @@ namespace Core.FeaturePanel
             _inputField.text = string.Empty;
             _titleText.text = title;
             _canvasGroupController.Show();
-            SetCanvasGroupStatus(true);
+            _canvasGroupController.ChangeInteractionBehaviour(true);
             IsEnteringInput = true;
         }
 
         public void Hide()
         {
             _canvasGroupController.Hide();
-            SetCanvasGroupStatus(false);
+            _canvasGroupController.ChangeInteractionBehaviour(false);
         }
 
         private void OnAccept()
@@ -73,22 +73,6 @@ namespace Core.FeaturePanel
         private void OnInputChanged(string _)
         {
             _acceptButton.gameObject.SetActive(HasValidInput());
-        }
-
-        /// <summary>
-        /// https://docs.unity3d.com/ja/2018.4/Manual/class-CanvasGroup.html
-        /// CanvasGroup の状態を変更することで UI 要素にアクセスできるようにする
-        ///
-        /// alpha = 0 としても blockRaycasts = true のままだと、裏側にある UI メニューなどにアクセスできない
-        /// そのため InputPanel を非表示にするときは interactable と blockRaycasts を切る
-        ///
-        /// </summary>
-        /// - interactable = 自分自身がクリック可能になるか？
-        /// - blockRaycasts = 自分の「裏側」がクリック可能になるか？
-        private void SetCanvasGroupStatus(bool active)
-        {
-            _canvasGroup.interactable = active;
-            _canvasGroup.blocksRaycasts = active;
         }
 
         private bool HasValidInput()
