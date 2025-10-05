@@ -87,18 +87,15 @@ namespace Core.DisplayDialogue
         /// <summary>
         /// 画面に speaker & dialogue を出力する
         /// </summary>
-        public Coroutine Say(string speaker, string dialogue)
-        {
-            return Say(new List<string>() { $"{speaker} \"{dialogue}\"" });
-        }
+        public Coroutine Say(string speaker, string dialogue) =>
+            Say(new List<string> { $"{speaker} \"{dialogue}\"" });
 
         /// <summary>
         /// ConversationManager に一連の会話を表示させる
         /// </summary>
-        public Coroutine Say(List<string> conversation)
-        {
-            return conversationManager.StartConversation(conversation);
-        }
+        public Coroutine Say(List<string> conversation) => Say(new Conversation(conversation));
+
+        public Coroutine Say(Conversation conversation) => conversationManager.StartConversation(conversation);
 
         /// <summary>
         /// キー入力など 次に進める処理が行われたら Subscriber に対して イベントを send する
@@ -117,8 +114,6 @@ namespace Core.DisplayDialogue
         {
             UserPromptNextEvent?.Invoke();
         }
-
-        public bool isVisible => canvasGroupController.isVisible;
 
         /// <summary>
         /// UI 全体を表示する

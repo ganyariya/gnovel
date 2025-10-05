@@ -26,6 +26,7 @@ namespace Core.DisplayDialogue
 
         private TagManager tagManager;
         private LogicalLineExecutor logicalLineExecutor;
+        private ConversationQueue _conversationQueue;
 
         // AutoReader で待機セグメントコマンドを考慮するため
         public bool IsWaitingSegmentSignal { get; private set; } = false;
@@ -38,6 +39,7 @@ namespace Core.DisplayDialogue
             this.process = null;
             tagManager = new TagManager();
             logicalLineExecutor = new LogicalLineExecutor();
+            _conversationQueue = new ConversationQueue();
         }
 
         /// <summary>
@@ -57,14 +59,14 @@ namespace Core.DisplayDialogue
         /// - textArchitect を介して会話を画面に出力
         /// する
         /// </summary>
-        public Coroutine StartConversation(List<string> conversation)
+        public Coroutine StartConversation(Conversation conversation)
         {
             StopConversation();
 
-            // Coroutine 自体は MonoBehavior を持つ dialogueSystem に移譲する
-            process = dialogueSystem.StartCoroutine(RunningConversation(conversation));
+            _conversationQueue.Enqueue(conversation);
 
-            return process;
+            // Coroutine 自体は MonoBehavior を持つ dialogueSystem に移譲する
+            return process = dialogueSystem.StartCoroutine(RunningConversation());
         }
 
         public void StopConversation()
@@ -73,20 +75,34 @@ namespace Core.DisplayDialogue
             process = null;
         }
 
-        private IEnumerator RunningConversation(List<string> conversation)
+        private IEnumerator RunningConversation()
         {
-            foreach (var rawText in conversation)
+            var proceed = new Action<Conversation>(c =>
             {
-                if (string.IsNullOrWhiteSpace(rawText)) continue;
+                c.Proceed();
+                _conversationQueue.DequeueIfReached();
+            });
+
+            while (!_conversationQueue.IsEmpty())
+            {
+                var conversation = _conversationQueue.Top;
+                var rawText = conversation.CurrentLine;
+
+                if (string.IsNullOrWhiteSpace(rawText))
+                {
+                    proceed(conversation);
+                    continue;
+                }
 
                 // 生 string をパースして DialogueLineData に変換する
-                DialogueLineData lineData = DialogueParser.Parse(rawText);
+                var lineData = DialogueParser.Parse(rawText);
 
                 if (logicalLineExecutor.TryExecute(lineData, out var coroutine))
                 {
-                    // LogicalLine であった場合はユーザとのインタラクションを実行させる
-                    // インタラクションが終了したら次の Line 処理へ
+                    // LogicalLine の場合はユーザ入力を待つ; 終了後は次の Line へ
                     yield return coroutine;
+                    
+                    proceed(conversation);
                     continue;
                 }
 
@@ -101,7 +117,11 @@ namespace Core.DisplayDialogue
                     CommandManager.instance.StopAllCommandProcesses();
                     yield return WaitForUserAdvance();
                 }
+
+                proceed(conversation);
             }
+
+            process = null;
         }
 
         /// <summary>
@@ -261,5 +281,8 @@ namespace Core.DisplayDialogue
             dialogueSystem.Prompt.Hide();
             userPromptNext = false;
         }
+
+        private void Enqueue(Conversation c) => _conversationQueue.Enqueue(c);
+        private void InterruptEnqueue(Conversation c) => _conversationQueue.InterruptEnqueue(c);
     }
 }
