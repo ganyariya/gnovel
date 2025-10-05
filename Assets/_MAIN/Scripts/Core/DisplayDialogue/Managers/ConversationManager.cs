@@ -282,7 +282,7 @@ namespace Core.DisplayDialogue
             userPromptNext = false;
         }
 
-        private void Enqueue(Conversation c) => _conversationQueue.Enqueue(c);
-        private void InterruptEnqueue(Conversation c) => _conversationQueue.InterruptEnqueue(c);
+        public void Enqueue(Conversation c) => _conversationQueue.Enqueue(c);
+        public void InterruptEnqueue(Conversation c) => _conversationQueue.InterruptEnqueue(c);
     }
 }

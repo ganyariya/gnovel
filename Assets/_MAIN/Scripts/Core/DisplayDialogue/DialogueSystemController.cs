@@ -125,6 +125,9 @@ namespace Core.DisplayDialogue
         /// </summary>
         public Coroutine HideUIAll(float speed, bool immediate) => canvasGroupController.Hide(speed, immediate);
 
+        public void EnqueueConversation(Conversation c) => conversationManager.Enqueue(c);
+        public void InterruptEnqueueConversation(Conversation c) => conversationManager.InterruptEnqueue(c);
+
         /// <summary>
         /// speakerCharacter の設定を DialogueContainer に適用することで
         /// - font
