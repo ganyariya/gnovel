@@ -27,5 +27,7 @@ namespace Core.DisplayDialogue
         public void Proceed() => Progress++;
         public string CurrentLine => _lines[Progress];
         public bool HasReachedEnd => Progress >= Count;
+        public void OverwriteProgress(int progress) => Progress = progress;
+        public string GetTargetLine(int index) => _lines[index];
     }
 }
