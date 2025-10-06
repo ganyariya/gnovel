@@ -30,6 +30,7 @@ namespace Core.DisplayDialogue
 
         // AutoReader で待機セグメントコマンドを考慮するため
         public bool IsWaitingSegmentSignal { get; private set; } = false;
+        public Conversation CurrentConversation => _conversationQueue.Top;
 
         public ConversationManager(DialogueSystemController dialogueSystem, DisplayTextArchitect textArchitect)
         {
@@ -85,7 +86,7 @@ namespace Core.DisplayDialogue
 
             while (!_conversationQueue.IsEmpty())
             {
-                var conversation = _conversationQueue.Top;
+                var conversation = CurrentConversation;
                 var rawText = conversation.CurrentLine;
 
                 if (string.IsNullOrWhiteSpace(rawText))

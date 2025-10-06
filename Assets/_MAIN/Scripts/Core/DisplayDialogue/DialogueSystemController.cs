@@ -32,16 +32,17 @@ namespace Core.DisplayDialogue
         /// </summary>
         public DialogueContainer dialogueContainer = new();
 
-        private ConversationManager conversationManager;
+        public ConversationManager ConversationManager { get; private set; }
         private DisplayTextArchitect displayTextArchitect;
         [SerializeField] private DisplayMethod displayMethod;
         private AutoReader autoReader;
 
-        public bool IsRunningConversation => conversationManager.IsRunning;
+        public bool IsRunningConversation => ConversationManager.IsRunning;
 
         [SerializeField] private DialogueContinuePrompt _prompt;
         public DialogueContinuePrompt Prompt => _prompt;
         private CanvasGroupController canvasGroupController;
+        public Conversation CurrentConversation => ConversationManager.CurrentConversation;
 
         /// <summary>
         /// ユーザからの入力を受け付けたときに発火する Event Sender
@@ -67,9 +68,9 @@ namespace Core.DisplayDialogue
         private void Initialize()
         {
             displayTextArchitect = new(dialogueContainer.dialogueText, null);
-            conversationManager = new(this, displayTextArchitect);
+            ConversationManager = new(this, displayTextArchitect);
 
-            if (TryGetComponent(out autoReader)) autoReader.Initialize(conversationManager);
+            if (TryGetComponent(out autoReader)) autoReader.Initialize(ConversationManager);
 
             displayTextArchitect.CurrentDisplayMethod = displayMethod;
             dialogueContainer.Initialize(this);
@@ -95,7 +96,7 @@ namespace Core.DisplayDialogue
         /// </summary>
         public Coroutine Say(List<string> conversation) => Say(new Conversation(conversation));
 
-        public Coroutine Say(Conversation conversation) => conversationManager.StartConversation(conversation);
+        public Coroutine Say(Conversation conversation) => ConversationManager.StartConversation(conversation);
 
         /// <summary>
         /// キー入力など 次に進める処理が行われたら Subscriber に対して イベントを send する
@@ -125,8 +126,8 @@ namespace Core.DisplayDialogue
         /// </summary>
         public Coroutine HideUIAll(float speed, bool immediate) => canvasGroupController.Hide(speed, immediate);
 
-        public void EnqueueConversation(Conversation c) => conversationManager.Enqueue(c);
-        public void InterruptEnqueueConversation(Conversation c) => conversationManager.InterruptEnqueue(c);
+        public void EnqueueConversation(Conversation c) => ConversationManager.Enqueue(c);
+        public void InterruptEnqueueConversation(Conversation c) => ConversationManager.InterruptEnqueue(c);
 
         /// <summary>
         /// speakerCharacter の設定を DialogueContainer に適用することで

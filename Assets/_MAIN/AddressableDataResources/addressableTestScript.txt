@@ -7,6 +7,28 @@ raelin "wao!! thunder!!!"
 stopSfx(thunder_01)
 raelin "oh, Stopped"
 
+choice "What pet do you like?"
+{
+  -Dog
+    raelin "oh, dog!"
+    "I love it!"
+  -Cat
+    raelin "oh, cat..."
+    "I don't like it..."
+    choice "Why do you like cat?"
+    {
+      -Cute
+        raelin "tashikani... cat is cute."
+      -Lie
+        raelin "oh, really you don't like cat."
+        "you should meet cute cat! you will like it!"
+    }
+    "cat question is end!"
+  -Rabbit
+    raelin "rabbit??"
+    "what's is?"
+}
+
 raelin "what's your favorite food? tell me!"
 
 input "your favorite food"
