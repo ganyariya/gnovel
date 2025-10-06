@@ -81,12 +81,25 @@ namespace Core.DisplayDialogue
             var proceed = new Action<Conversation>(c =>
             {
                 c.Proceed();
+
+                // LL_Choice によって、シナリオ X から選択されたシナリオ Y が差し込まれる
+                // ここで proceed 関数に c = X として渡されるが、キューの先頭は強引に差し込まれた Y になっている
+                // このとき queue.DequeueIfReached をしてしまうと、 c = X を見てほしいのに、差し込まれた Y がチェックされてしまう
+                // これによって https://www.youtube.com/watch?v=v14_phG4DR4 のバグが発生する
+                if (c != CurrentConversation) return;
+
                 _conversationQueue.DequeueIfReached();
             });
 
             while (!_conversationQueue.IsEmpty())
             {
                 var conversation = CurrentConversation;
+                if (conversation.HasReachedEnd)
+                {
+                    _conversationQueue.Dequeue(); // watch?v=v14_phG4DR4 のバグ対応
+                    continue;
+                }
+                
                 var rawText = conversation.CurrentLine;
 
                 if (string.IsNullOrWhiteSpace(rawText))
@@ -102,7 +115,10 @@ namespace Core.DisplayDialogue
                 {
                     // LogicalLine の場合はユーザ入力を待つ; 終了後は次の Line へ
                     yield return coroutine;
-                    
+
+                    // Conversation X で LL_Choice が実行されて、選択Y が選ばれると Conversation Y が割り込みでキューの先頭になる
+                    // ただ `conversation = CurrentConversation(X)` で X をキャプチャしているため, X が proceed されようとする
+                    // continue したら Conversation Y が開始される
                     proceed(conversation);
                     continue;
                 }

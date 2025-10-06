@@ -86,7 +86,7 @@ namespace Core.LogicalLine.Type
         {
             var encapsulationDepth = 0;
             List<Choice> choices = new();
-            
+
             var f = new Func<Choice>(() => choices[^1]);
             var t = new Action<string>(s => f().lines.Add(s));
 
@@ -95,22 +95,16 @@ namespace Core.LogicalLine.Type
                 if (IsEncapsulationStart(line))
                 {
                     encapsulationDepth++;
-                    if (encapsulationDepth > 1)
-                    {
-                        // 2 階層目以降の Choice は選択肢としてあつかわず、そのまま生データ `line` として追加する
-                        t(line);
-                        continue;
-                    }
+                    // 2 階層目以降の Choice は選択肢としてあつかわず、そのまま生データ `line` として追加する
+                    if (encapsulationDepth > 1) t(line);
+                    continue;
                 }
 
                 if (IsEncapsulationEnd(line))
                 {
                     encapsulationDepth--;
-                    if (encapsulationDepth > 0)
-                    {
-                        t(line);
-                        continue;
-                    }
+                    if (encapsulationDepth > 0) t(line);
+                    continue;
                 }
 
                 // 1 階層目の選択肢領域が始まった
@@ -121,7 +115,7 @@ namespace Core.LogicalLine.Type
                 }
 
                 if (choices.Count == 0) continue;
-                
+
                 t(line);
             }
 
