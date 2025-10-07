@@ -1,0 +1,32 @@
+createCharacter(ganyariya -enabled true)
+createCharacter(raelin -enabled true)
+
+raelin.Move(-x 0.25 -y 0.6)
+[wait]ganyariya.Move(-x 0.75 -y 0.6)
+
+raelin "Hello! This is the **Movement & Highlight** sample."
+ganyariya "You can move characters and highlight them using commands."
+
+"First, let's demonstrate movement. {a} Here we go!"
+
+[wait] ganyariya.Move(-x 0.85 -y 0.2)
+"You can move smoothly like this. [wait] ganyariya.Move(-x 0.85 -y 0.2)",
+
+ganyariya.Move(-x 0.75 -y 0.6 -i true)
+"You can also move instantly. ganyariya.Move(-x 0.75 -y 0.6 -i true)"
+
+ganyariya at 0.9:0.8 "You can also write coordinates directly in the Speaker column. Please refer to DLD_SpeakerDataParse for details on this notation. ganyariya at 0.9:0.8"
+
+ganyariya "Next, let's look at the highlight feature."
+
+ganyariya.highlight(),raelin.unhighlight()
+ganyariya "You can highlight a character using a command like **ganyariya.highlight()**."
+ganyariya.unhighlight(),raelin.highlight()
+raelin "If you want to always highlight a character when they speak, it's best to implement a dedicated command for that purpose."
+
+ganyariya.highlight()
+[wait]ganyariya.setColor(-color red)
+raelin "Whoa!! You can change the color too... that red looks gross..."
+
+[wait]setCharacterColor(ganyariya -color white)
+ganyariya "this sample is finished!"

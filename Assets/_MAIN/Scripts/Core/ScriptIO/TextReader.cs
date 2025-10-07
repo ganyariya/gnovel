@@ -62,7 +62,7 @@ namespace Core.ScriptIO
             return ReadTextAsset(textAsset, includeBlankLine);
         }
 
-        private static List<string> ReadTextAsset(TextAsset textAsset, bool includeBlankLine)
+        public static List<string> ReadTextAsset(TextAsset textAsset, bool includeBlankLine)
         {
             var lines = new List<string>();
 

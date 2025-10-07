@@ -1,0 +1,30 @@
+createCharacter(ganyariya -enabled true)
+
+ganyariya "Now, let's start the media sample."
+"Media includes **audio playback**, **background images**, and **background videos**."
+
+"Let's start with audio first!"
+
+playSfx(-n thunder_01)
+ganyariya "Whoa, that's thunder! Scary!"
+stopSfx(thunder_01)
+"Oh... it stopped. That surprised me."
+
+playBgm(-bgm "Calm")
+ganyariya "We can play **BGM** too. We have the **PlayBGM** and **PlayAmbience** commands, but I don't know the difference between them."
+"There's also a command called **PlayVoice**, so feel free to use that."
+stopbgm()
+
+"Next, let's move on to backgrounds. We'll start with images."
+
+[wait]SetLayerMedia(-panel cinematic -m "~/Graphics/Gallery/1")
+"I've set a background image on the **cinematic** panel. {a} You can specify any panel you like, such as **Background**. {a} Since the cinematic panel is in front of the Character panel, ganyariya disappears."
+
+[wait]ClearLayerMedia(-panel cinematic)
+"You can properly clear the media added to a panel later."
+
+setLayerMedia(-panel background -m "Fantasy Landscape" -audio true -spd 0.4 -blend blur)
+[wait]setLayerMedia(-panel background -layer 1 -m SpaceshipInterior)
+"You can also set a **video** as a background. You can set multiple media files on the same panel, allowing you to render them on separate layers."
+"In this case, the **Fantasy Landscape** video is set to layer 0 of the **background** panel, {a} and the spaceship image is layered on top of it as layer 1 on the same background panel."
+"**-blend blur** can change medias with transition."

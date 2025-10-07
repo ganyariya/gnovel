@@ -1,0 +1,32 @@
+createCharacter(ganyariya -enabled true)
+
+ganyariya "This is the **Logical Line** sample. {a} A Logical Line refers to the mechanism for interacting with the user."
+
+"First, let's look at input. What is your favorite fruit?"
+
+input "your favorite fruit"
+
+ganyariya "Wow! You like the fruit **<input>**. I like that one too."
+
+"Next, let's look at choices. Choices can be implemented using the speaker name **choice**."
+
+
+choice "Which pet do you like?"
+{
+  -Dog
+    "So, you like dogs. {wa 1.0} I'm not a big fan because they bark."
+  -Cat
+    "So, you like cats."
+    choice "Why do you like cats?"
+    {
+      -Cute
+        "That's right, cats are very cute."
+      -Lie
+        "That's mean. Do you actually dislike cats? {c} I thought we were the same..."
+    }
+    "cat question is end!"
+  -Rabbit
+    "Ah~ My heart goes *pyon pyon*~"
+}
+
+"That concludes the Logical Line sample."

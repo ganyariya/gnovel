@@ -1,111 +1,28 @@
-wait(1)
+createCharacter(ganyariya -enabled true)
+[wait]ganyariya.Move(-x 0.5 -y 0.6 -i true)
 
-[wait]createCharacter(raelin -enabled true)
-playSfx(-n thunder_01)
+ganyariya "Hello!{wa 0.1} My name is ganyariya.{c}I am server side engineer."
+ganyariya "This is a sample of a visual novel game engine."
+"Which sample would you like to see?"
+"(Animation can't still be used by command. so, please see TestingCharacter.cs"
 
-raelin "wao!! thunder!!!"
-stopSfx(thunder_01)
-raelin "oh, Stopped"
-
-choice "What pet do you like?"
+choice "Sample"
 {
-  -Dog
-    raelin "oh, dog!"
-    "I love it!"
-  -Cat
-    raelin "oh, cat..."
-    "I don't like it..."
-    choice "Why do you like cat?"
-    {
-      -Cute
-        raelin "tashikani... cat is cute."
-      -Lie
-        raelin "oh, really you don't like cat."
-        "you should meet cute cat! you will like it!"
-    }
-    "cat question is end!"
-  -Rabbit
-    raelin "rabbit??"
-    "what's is?"
+  -Movement & Highlight
+    "OK! Let's take a look at character movement and highlighting."
+     Load(-f sample_movement_and_highlight -enqueue true)
+  -File Media
+    "OK! Let's take a look at background images/videos and audio file playback."
+     Load(-f sample_file_media -enqueue true)
+  -User Interaction
+    "OK! Let's take a look at user interaction."
+    Load(-f sample_logic_line -enqueue true)
+  -Face
+    "OK! Let's take a look at face feature."
+    Load(-f sample_face -enqueue true)
 }
 
-raelin "what's your favorite food? tell me!"
+"Let's go to the sample!"
+ganyariya.Move(-x 1.5 -y 0.6 -speed 3), [wait]ganyariya.Hide()
 
-input "your favorite food"
-
-raelin "oh, <input>! I like it too!"
-
-Narrator "hello, new character <mainChara>"
-<mainChara> "My name is <mainChara>.{wa 0.5} What time is it?"
-Narrator "<time> is!"
-
-
-hideDBox(-speed 0.1)
-
-playbgm(-bgm "Calm")
-raelin "bgm starts"
-
-stopbgm()
-raelin "oh, bgm is stopped"
-
-showDBox()
-
-[wait]setLayerMedia(-panel background -m "Fantasy Landscape" -audio true -spd 0.4 -blend blur)
-setLayerMedia(-panel background -layer 1 -m SpaceshipInterior)
-
-
-[wait]clearLayerMedia(-panel background -layer 1 -blend blur)
-
-[wait]createCharacter(raelin -enabled true)
-
-raelin "dont insert space into wait and commend!!! if space inserted, then wait does not working."
-
-showUI()
-
-[wait]SetLayerMedia(-panel cinematic -m "~/Graphics/Gallery/1")
-
-raelin "Oh, this is cinematic gallery!"
-
-[wait]ClearLayerMedia(-panel cinematic)
-
-raelin "cinematic gallery has been cleared!!!"
-
-[wait]createCharacter(ganyariya -enabled true)
-[wait]ganyariya.move(-x 0.8 -spd 0.5 -smooth false)
-[wait]createCharacter(raelin -enabled true)
-[wait]moveCharacter(raelin -x 0.2 -spd 3 -smooth true)
-[wait]raelin.setSprite(-sprite A_SoSmile -layer 1)
 wait(1)
-[wait]ganyariya.setColor(-color red)
-[wait]raelin.setSprite(-sprite A_Normal -layer 1)
-wait(1)
-[wait]setCharacterColor(ganyariya -color white)
-wait(1)
-[wait]ganyariya.unHighlight()
-[wait]ganyariya.highlight()
-ganyariya.setPosition(-x 0)
-[wait] highlightCharacters(ganyariya)
-wait(1)
-[wait] highlightCharacters(raelin)
-wait(1)
-[wait] unHighlightCharacters(raelin)
-wait(1)
-
-hideCharacters(ganyariya raelin -immediate false -speed 0.001)
-ganyariya "隠れるよ..."
-wait(1)
-
-[wait]showCharacters(ganyariya -immediate false -speed 0.1)
-
-enter ganyariya as ??? at 1 "こんにちは！"
-enter ganyariya at 0 "(私は ganyariya といいます。)"
-enter raelin at 0.5 "私は raelin といいます"
-
-raelin at 0.6 [1:A_Sad] "悲しいことがありました..."
-raelin [1:A_SoSmile] "でも楽しいこともあるのでがんばれます"
-
-"普段はバックエンドの処理を書いたり、競技プログラミングをしたりしています。"
-
-"今回はノベルゲームのシステムを理解したい・自作したい、となって Tutorial を参考にがんばって Unity を触っています。{a}あとで xLua を組み合わせて面倒な構文解析を省きたいなあ..."
-
-"並行して Backend(go/gcp)+ FrontEnd(Next.js/vercel) で簡単なウェブアプリも作ろうかな...。時間をみつけてこつこつ進めていくぞ!"

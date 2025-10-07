@@ -19,5 +19,6 @@ namespace Core.DisplayDialogue
         public Conversation Dequeue() => _queue.Dequeue();
         public Conversation DequeueIfReached() => Top?.HasReachedEnd ?? false ? Dequeue() : null;
         public bool IsEmpty() => _queue.Count == 0;
+        public void Clear() => _queue.Clear();
     }
 }

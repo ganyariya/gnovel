@@ -1,0 +1,10 @@
+createCharacter(raelin -enabled true)
+
+raelin "As a prerequisite, raelin is a **SpriteSheet CharacterType**. {a} Other types include **Text**, **Sprite**, **Live2D**, and **3DModel** (currently unimplemented)."
+"Because raelin is a SpriteSheet, multiple facial expressions and body parts are combined into a single texture. We display the character by specifying portions of that texture."
+
+raelin [1:A_Sad] "You can change the expression or body image using **[Layer:ImageName]**. {c} Since the layer structure is different for each character, you need to check the layer composition of each character under the **2-Characters** panel before specifying it."
+raelin [1:A_SoSmile] "It's tedious, but we just have to power through it."
+raelin "We might also consider implementing commands or presets to make changing these easier."
+
+"It's a lot of work having to create the **GameObject** layer structure and prefab for each character... I forgot how to do it. I think it was in **Episode 8**."
