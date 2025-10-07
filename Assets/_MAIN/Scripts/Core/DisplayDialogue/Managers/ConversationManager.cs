@@ -54,16 +54,15 @@ namespace Core.DisplayDialogue
 
         /// <summary>
         /// DialogueSystemController から呼び出される
-        /// 
-        /// rawText を split して
-        /// - DialogueLineData に変換
-        /// - textArchitect を介して会話を画面に出力
-        /// する
+        ///
+        /// 新たな Conversation を実行する
+        /// 既存キューの Conversation がリセットされることに注意する
         /// </summary>
         public Coroutine StartConversation(Conversation conversation)
         {
             StopConversation();
 
+            _conversationQueue.Clear();
             _conversationQueue.Enqueue(conversation);
 
             // Coroutine 自体は MonoBehavior を持つ dialogueSystem に移譲する
@@ -76,6 +75,9 @@ namespace Core.DisplayDialogue
             process = null;
         }
 
+        /// <summary>
+        /// queue.top の Conversation の CurrentLine を毎回取得して、パースしシナリオ処理を実行する
+        /// </summary>
         private IEnumerator RunningConversation()
         {
             var proceed = new Action<Conversation>(c =>
@@ -99,7 +101,7 @@ namespace Core.DisplayDialogue
                     _conversationQueue.Dequeue(); // watch?v=v14_phG4DR4 のバグ対応
                     continue;
                 }
-                
+
                 var rawText = conversation.CurrentLine;
 
                 if (string.IsNullOrWhiteSpace(rawText))
