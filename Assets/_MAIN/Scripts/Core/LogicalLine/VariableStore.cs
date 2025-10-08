@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Core.LogicalLine
@@ -85,6 +86,13 @@ namespace Core.LogicalLine
             return true;
         }
 
+        public void Clear()
+        {
+            _databases.Clear();
+        }
+
+        public int DatabaseCount => _databases.Count;
+
         public void PrintAllDatabases()
         {
             foreach (var entry in _databases) Debug.Log($"Database: {entry.Key}");
@@ -119,8 +127,14 @@ namespace Core.LogicalLine
 
             public void DebugPrint()
             {
-                Debug.Log($"databaseName: {Name}");
-                foreach (var entry in _variables) Debug.Log($"key: {entry.Key}, value: {entry.Value.Get()}");
+                StringBuilder builder = new();
+
+                builder.AppendLine($"Database: <color=#F38544>{Name}</color>");
+                foreach (var entry in _variables)
+                {
+                    builder.AppendLine($"\t[{entry.Key}: {entry.Value.Get()}]");
+                }
+                Debug.Log(builder.ToString());
             }
         }
 
