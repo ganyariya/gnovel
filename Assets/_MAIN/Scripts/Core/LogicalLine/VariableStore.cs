@@ -92,6 +92,15 @@ namespace Core.LogicalLine
             _databases[DEFAULT_DATABASE] = new Database(DEFAULT_DATABASE);
         }
 
+        public void DeleteDatabase(string name) => _databases.Remove(name);
+
+        public void DeleteVariable(string name)
+        {
+            var (databaseName, variableName) = VariableInfo.CreateVariableInfo(name).GetTuple();
+            var database = GetDatabase(databaseName);
+            database.DeleteVariable(variableName);
+        }
+
         public int DatabaseCount => _databases.Count;
 
         public void PrintAllDatabases()
@@ -125,6 +134,8 @@ namespace Core.LogicalLine
             private AbstractVariable GetVariable(string key) => _variables[key];
             public T GetVariableValue<T>(string key) => (T)GetVariable(key).Get();
             public void SetVariableValue<T>(string key, T value) => GetVariable(key).Set(value);
+            public void DeleteVariable(string key) => _variables.Remove(key);
+            public void Clear() => _variables.Clear();
 
             public void DebugPrint()
             {

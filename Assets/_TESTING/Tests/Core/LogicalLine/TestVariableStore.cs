@@ -211,5 +211,64 @@ namespace Tests.Core.LogicalLine
             Assert.That(store.TryGetVariable<bool>("extFlag", out var bb2), Is.True);
             Assert.That(bb2, Is.False);
         }
+
+        [Test]
+        public void DeleteVariable_RemovesFromDefaultAndPreventsGetSet()
+        {
+            var store = new VariableStore();
+            Assert.That(store.CreateVariable("x", 10), Is.True);
+            Assert.That(store.TryGetVariable<int>("x", out var before), Is.True);
+            Assert.That(before, Is.EqualTo(10));
+
+            store.DeleteVariable("x");
+
+            Assert.That(store.TryGetVariable<int>("x", out var after), Is.False);
+            Assert.That(after, Is.EqualTo(0));
+            Assert.That(store.TrySetValue("x", 99), Is.False);
+
+            Assert.That(store.CreateVariable("x", 1), Is.True);
+            Assert.That(store.TryGetVariable<int>("x", out var recreated), Is.True);
+            Assert.That(recreated, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void DeleteVariable_WithDatabasePrefix_Isolated()
+        {
+            var store = new VariableStore();
+            Assert.That(store.CreateVariable("db1.a", 100), Is.True);
+            Assert.That(store.CreateVariable("a", 200), Is.True);
+
+            store.DeleteVariable("db1.a");
+
+            Assert.That(store.TryGetVariable<int>("db1.a", out var v1), Is.False);
+            Assert.That(store.TryGetVariable<int>("a", out var v2), Is.True);
+            Assert.That(v2, Is.EqualTo(200));
+        }
+
+        [Test]
+        public void DeleteDatabase_RemovesDatabaseAndVariables()
+        {
+            var store = new VariableStore();
+            Assert.That(store.DatabaseCount, Is.EqualTo(1));
+            Assert.That(store.CreateVariable("db2.v", 5), Is.True);
+            Assert.That(store.DatabaseCount, Is.EqualTo(2));
+
+            store.DeleteDatabase("db2");
+
+            Assert.That(store.DatabaseCount, Is.EqualTo(1));
+
+            Assert.That(store.TryGetVariable<int>("db2.v", out var missing), Is.False);
+            Assert.That(missing, Is.EqualTo(0));
+            Assert.That(store.DatabaseCount, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void DeleteDatabase_NonExisting_NoThrowOrChange()
+        {
+            var store = new VariableStore();
+            Assert.That(store.DatabaseCount, Is.EqualTo(1));
+            store.DeleteDatabase("nope");
+            Assert.That(store.DatabaseCount, Is.EqualTo(1));
+        }
     }
 }
