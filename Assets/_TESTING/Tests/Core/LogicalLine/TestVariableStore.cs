@@ -125,7 +125,91 @@ namespace Tests.Core.LogicalLine
             Assert.That(store.DatabaseCount, Is.EqualTo(3));
 
             store.Clear();
-            Assert.That(store.DatabaseCount, Is.EqualTo(0));
+            Assert.That(store.DatabaseCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CreateGetSet_String()
+        {
+            var store = new VariableStore();
+            Assert.That(store.CreateVariable("s", "hello"), Is.True);
+            Assert.That(store.TryGetVariable<string>("s", out var v1), Is.True);
+            Assert.That(v1, Is.EqualTo("hello"));
+            Assert.That(store.TrySetValue("s", "world"), Is.True);
+            Assert.That(store.TryGetVariable<string>("s", out var v2), Is.True);
+            Assert.That(v2, Is.EqualTo("world"));
+        }
+
+        [Test]
+        public void CreateGetSet_Bool()
+        {
+            var store = new VariableStore();
+            Assert.That(store.CreateVariable("flag", false), Is.True);
+            Assert.That(store.TryGetVariable<bool>("flag", out var b1), Is.True);
+            Assert.That(b1, Is.False);
+            Assert.That(store.TrySetValue("flag", true), Is.True);
+            Assert.That(store.TryGetVariable<bool>("flag", out var b2), Is.True);
+            Assert.That(b2, Is.True);
+        }
+
+        [Test]
+        public void ExternalVariable_Int_Capture_ReflectsChanges()
+        {
+            var store = new VariableStore();
+
+            // external = 10 をキャプチャする
+            var external = 10;
+            Assert.That(store.CreateVariable("extInt", 0, () => external, v => external = v), Is.True);
+            Assert.That(store.TryGetVariable<int>("extInt", out var g1), Is.True);
+            Assert.That(g1, Is.EqualTo(10));
+
+            // 20 に書き換える
+            external = 20;
+            Assert.That(store.TryGetVariable<int>("extInt", out var g2), Is.True);
+            // () => external という関数のため、実行時の値である `20` が入る
+            Assert.That(g2, Is.EqualTo(20));
+
+            // store 経由で exInt を 30 にする
+            Assert.That(store.TrySetValue("extInt", 30), Is.True);
+            // このとき、 external 変数自体も書き換えられている
+            Assert.That(external, Is.EqualTo(30));
+            Assert.That(store.TryGetVariable<int>("extInt", out var g3), Is.True);
+            Assert.That(g3, Is.EqualTo(30));
+        }
+
+        private class Box
+        {
+            public int V;
+        }
+
+        [Test]
+        public void ExternalVariable_ObjectField_Capture_ReflectsChanges()
+        {
+            var store = new VariableStore();
+            var box = new Box { V = 1 };
+            Assert.That(store.CreateVariable("boxV", 0, () => box.V, v => box.V = v), Is.True);
+            Assert.That(store.TryGetVariable<int>("boxV", out var v1), Is.True);
+            Assert.That(v1, Is.EqualTo(1));
+            Assert.That(store.TrySetValue("boxV", 5), Is.True);
+            Assert.That(box.V, Is.EqualTo(5));
+            box.V = 9;
+            Assert.That(store.TryGetVariable<int>("boxV", out var v2), Is.True);
+            Assert.That(v2, Is.EqualTo(9));
+        }
+
+        [Test]
+        public void ExternalVariable_Bool_Capture_ReflectsChanges()
+        {
+            var store = new VariableStore();
+            var flag2 = false;
+            Assert.That(store.CreateVariable("extFlag", false, () => flag2, v => flag2 = v), Is.True);
+            Assert.That(store.TryGetVariable<bool>("extFlag", out var bb1), Is.True);
+            Assert.That(bb1, Is.False);
+            Assert.That(store.TrySetValue("extFlag", true), Is.True);
+            Assert.That(flag2, Is.True);
+            flag2 = false;
+            Assert.That(store.TryGetVariable<bool>("extFlag", out var bb2), Is.True);
+            Assert.That(bb2, Is.False);
         }
     }
 }

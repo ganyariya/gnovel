@@ -89,6 +89,7 @@ namespace Core.LogicalLine
         public void Clear()
         {
             _databases.Clear();
+            _databases[DEFAULT_DATABASE] = new Database(DEFAULT_DATABASE);
         }
 
         public int DatabaseCount => _databases.Count;
@@ -134,6 +135,7 @@ namespace Core.LogicalLine
                 {
                     builder.AppendLine($"\t[{entry.Key}: {entry.Value.Get()}]");
                 }
+
                 Debug.Log(builder.ToString());
             }
         }
