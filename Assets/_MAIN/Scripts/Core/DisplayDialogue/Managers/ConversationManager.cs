@@ -113,7 +113,7 @@ namespace Core.DisplayDialogue
                 // 生 string をパースして DialogueLineData に変換する
                 var lineData = DialogueParser.Parse(rawText);
 
-                if (logicalLineExecutor.TryExecute(lineData, out var coroutine))
+                if (logicalLineExecutor.TryExecute(lineData, dialogueSystem, out var coroutine))
                 {
                     // LogicalLine の場合はユーザ入力を待つ; 終了後は次の Line へ
                     yield return coroutine;

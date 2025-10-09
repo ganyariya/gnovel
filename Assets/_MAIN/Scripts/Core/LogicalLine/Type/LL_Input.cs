@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Core.DisplayDialogue;
 using Core.FeaturePanel;
 using Core.ScriptParser;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Core.LogicalLine.Type
             return lineData.HasSpeaker && lineData.speakerData.name.ToLower() == keyword;
         }
 
-        public IEnumerator Execute(DialogueLineData lineData)
+        public IEnumerator Execute(DialogueLineData lineData, DialogueSystemController dialogueSystemController)
         {
             // singleton から取得する
             var inputPanel = InputPanel.Instance;
