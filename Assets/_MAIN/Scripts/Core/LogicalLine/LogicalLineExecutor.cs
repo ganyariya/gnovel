@@ -35,11 +35,11 @@ namespace Core.LogicalLine
         ///
         /// TryExecute を呼び出した側で coroutine を yield して待機してもらう
         /// </summary>
-        public bool TryExecute(DialogueLineData lineData, out Coroutine coroutine)
+        public bool TryExecute(DialogueLineData lineData, DialogueSystemController dialogueSystemController, out Coroutine coroutine)
         {
             foreach (var logicalLine in _logicalLines.Where(logicalLine => logicalLine.Match(lineData)))
             {
-                coroutine = DialogueSystemController.StartCoroutine(logicalLine.Execute(lineData));
+                coroutine = DialogueSystemController.StartCoroutine(logicalLine.Execute(lineData, dialogueSystemController));
                 return true;
             }
 
