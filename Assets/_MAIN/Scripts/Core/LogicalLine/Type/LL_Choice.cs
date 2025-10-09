@@ -24,7 +24,7 @@ namespace Core.LogicalLine.Type
         public IEnumerator Execute(DialogueLineData lineData, DialogueSystemController dialogueSystemController)
         {
             var conversation = dialogueSystemController.CurrentConversation;
-            var encapsulationData = Encapsulator.Encapsulate(conversation, lineData);
+            var encapsulationData = Encapsulator.Encapsulate(conversation, conversation.Progress, true);
             var choices = ParseChoices(encapsulationData);
 
             var panel = ChoicePanel.Instance;
