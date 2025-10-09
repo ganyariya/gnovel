@@ -24,7 +24,7 @@ namespace Core.DisplayDialogue
         private Coroutine process;
         private bool userPromptNext = false;
 
-        private TagManager tagManager;
+        private readonly TagManager _tagManager;
         private LogicalLineExecutor logicalLineExecutor;
         private ConversationQueue _conversationQueue;
 
@@ -37,8 +37,8 @@ namespace Core.DisplayDialogue
             dialogueSystem.UserPromptNextEvent += UserPromptNextEventReceived; // イベントを subscribe する
             this.dialogueSystem = dialogueSystem;
             this.textArchitect = textArchitect;
-            this.process = null;
-            tagManager = new TagManager();
+            process = null;
+            _tagManager = TagManager.Instance;
             logicalLineExecutor = new LogicalLineExecutor();
             _conversationQueue = new ConversationQueue();
         }
@@ -179,7 +179,7 @@ namespace Core.DisplayDialogue
             // UI にキャラ名を表示する
             // (why) rawText を事前に tagManager.Inject してしまうと、 CharacterConfig `<mainChara>` ができなくなってしまう
             // そのためわざわざ speakerName と dialogueSegment それぞれ直前に tagManager.Inject している
-            var uiSpeakerName = tagManager.Inject(speakerData.DisplayName);
+            var uiSpeakerName = _tagManager.Inject(speakerData.DisplayName);
             dialogueSystem.DisplaySpeakerName(uiSpeakerName);
             // UI のキャラ名にフォントとフォントカラー設定を反映する
             dialogueSystem.ApplySpeakerConfigToDialogueContainer(speakerData.name);
@@ -227,7 +227,7 @@ namespace Core.DisplayDialogue
         /// </summary>
         private IEnumerator DisplayingSingleSegmentDialogueText(string dialogueText, bool append = true)
         {
-            dialogueText = tagManager.Inject(dialogueText);
+            dialogueText = _tagManager.Inject(dialogueText);
 
             // TMProGUI が dialogue の表示を開始する（非同期で文字が画面に出力され始める）
             if (append) textArchitect.AppendDisplay(dialogueText);

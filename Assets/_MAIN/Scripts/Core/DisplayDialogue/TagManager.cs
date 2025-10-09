@@ -12,26 +12,27 @@ namespace Core.DisplayDialogue
     ///
     /// このとき `<xxx>` というフォーマットでテキストスクリプトを書いておき、それを TagManager で動的に置換する
     /// </summary>
-    public class TagManager
+    public sealed class TagManager
     {
-        private readonly Dictionary<string, Func<string>> tags = new();
-        private readonly Regex tagRegex = new("<\\w+>");
+        private static readonly Lazy<TagManager> _lazy = new Lazy<TagManager>(() => new TagManager());
+        public static TagManager Instance => _lazy.Value;
 
-        public TagManager()
-        {
-            InitializeTags();
-        }
+        private readonly Dictionary<string, Func<string>> _tags;
+        private readonly Regex _tagRegex = new("<\\w+>");
 
-        private void InitializeTags()
+        /// <summary>
+        /// https://www.youtube.com/watch?v=3uipcCWxRgQ&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=73
+        /// 動画だとすべての変数とメソッドを static にしているが、ユニットテストなどを考慮してシングルトンにする
+        /// </summary>
+        private TagManager()
         {
-            /**
-             * TODO:  スクリプトや設定ファイルから設定できるようにする
-             */
-            tags["<mainChara>"] = () => "Avira";
-            tags["<time>"] = () => DateTime.Now.ToString("hh:mm tt");
-            tags["<playerLevel>"] = () => "15";
-            tags["<tempVal1>"] = () => "42";
-            tags["<input>"] = () => InputPanel.Instance.LastInputUserText;
+            _tags = new Dictionary<string, Func<string>>
+            {
+                { "<mainChara>", () => "Avira" },
+                { "<time>", () => DateTime.Now.ToString("hh:mm tt") },
+                { "<playerLevel>", () => "15" },
+                { "<input>", () => InputPanel.Instance.LastInputUserText },
+            };
         }
 
         /// <summary>
@@ -40,14 +41,14 @@ namespace Core.DisplayDialogue
         /// </summary>
         public string Inject(string text)
         {
-            if (!tagRegex.IsMatch(text))
+            if (string.IsNullOrEmpty(text) || !_tagRegex.IsMatch(text))
             {
                 return text;
             }
 
-            foreach (Match match in tagRegex.Matches(text))
+            foreach (Match match in _tagRegex.Matches(text))
             {
-                if (tags.TryGetValue(match.Value, out var tagFunc))
+                if (_tags.TryGetValue(match.Value, out var tagFunc))
                 {
                     text = text.Replace(match.Value, tagFunc());
                 }
