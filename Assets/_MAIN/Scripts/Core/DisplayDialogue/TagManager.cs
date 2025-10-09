@@ -12,18 +12,19 @@ namespace Core.DisplayDialogue
     ///
     /// このとき `<xxx>` というフォーマットでテキストスクリプトを書いておき、それを TagManager で動的に置換する
     /// </summary>
-    public class TagManager
+    public sealed class TagManager
     {
-        private readonly Dictionary<string, Func<string>> _tags = new();
+        private static readonly Lazy<TagManager> _lazy = new Lazy<TagManager>(() => new TagManager());
+        public static TagManager Instance => _lazy.Value;
+
+        private readonly Dictionary<string, Func<string>> _tags;
         private readonly Regex _tagRegex = new("<\\w+>");
 
         /// <summary>
         /// https://www.youtube.com/watch?v=3uipcCWxRgQ&list=PLGSox0FgA5B58Ki4t4VqAPDycEpmkBd0i&index=73
         /// 動画だとすべての変数とメソッドを static にしているが、ユニットテストなどを考慮してシングルトンにする
         /// </summary>
-        public static TagManager Instance { get; private set; }
-
-        public TagManager()
+        private TagManager()
         {
             _tags = new Dictionary<string, Func<string>>
             {
@@ -32,8 +33,6 @@ namespace Core.DisplayDialogue
                 { "<playerLevel>", () => "15" },
                 { "<input>", () => InputPanel.Instance.LastInputUserText },
             };
-
-            Instance ??= this;
         }
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace Core.DisplayDialogue
         /// </summary>
         public string Inject(string text)
         {
-            if (!_tagRegex.IsMatch(text))
+            if (string.IsNullOrEmpty(text) || !_tagRegex.IsMatch(text))
             {
                 return text;
             }

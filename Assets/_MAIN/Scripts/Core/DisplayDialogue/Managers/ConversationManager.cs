@@ -37,8 +37,8 @@ namespace Core.DisplayDialogue
             dialogueSystem.UserPromptNextEvent += UserPromptNextEventReceived; // イベントを subscribe する
             this.dialogueSystem = dialogueSystem;
             this.textArchitect = textArchitect;
-            this.process = null;
-            _tagManager = new TagManager();
+            process = null;
+            _tagManager = TagManager.Instance;
             logicalLineExecutor = new LogicalLineExecutor();
             _conversationQueue = new ConversationQueue();
         }
