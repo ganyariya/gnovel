@@ -229,9 +229,9 @@ namespace Core.LogicalLine
                     value = value[1..];
                 }
 
-                if (value.StartsWith('$')) // if variable
+                if (value.StartsWith(VariableStore.VARIABLE_IDENTIFIER)) // if variable
                 {
-                    var variableName = value.TrimStart('$');
+                    var variableName = value.TrimStart(VariableStore.VARIABLE_IDENTIFIER);
                     if (!VariableStore.Instance.HasVariable(variableName))
                         throw new ArgumentException($"Variable {variableName} is not defined.");
 
@@ -241,9 +241,12 @@ namespace Core.LogicalLine
                     return variableValue;
                 }
 
-                // 文字列
+                // 文字列の場合 $moneyTxt = "money is $money; <mainChara>" のように変数やタグを評価しないといけない
                 if (value.StartsWith('\"') && value.EndsWith('\"'))
+                {
+                    value = TagManager.Instance.Inject(value, true, true);
                     return value.Trim('"');
+                }
 
                 // int, float, bool
                 if (int.TryParse(value, out var intValue)) return intValue;

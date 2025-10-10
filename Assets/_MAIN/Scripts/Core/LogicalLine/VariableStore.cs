@@ -10,6 +10,17 @@ namespace Core.LogicalLine
         private const string DEFAULT_DATABASE = "default";
         private const char DATABASE_VARIABLE_SPLITTER = '.';
 
+        /**
+         * 変数識別子
+         * $variableName
+         * !$variableName
+         *
+         * $databaseName.variableName にも対応している
+         */
+        public static readonly string REGEX_VARIABLE_PATTERN = @"[!]?\$[a-zA-Z0-9_.]+";
+
+        public const char VARIABLE_IDENTIFIER = '$';
+
         public static VariableStore Instance { get; private set; }
 
         private readonly Dictionary<string, Database> _databases;
