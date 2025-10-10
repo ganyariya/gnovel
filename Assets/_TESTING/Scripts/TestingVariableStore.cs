@@ -9,7 +9,7 @@ namespace Testing
     {
         public void Start()
         {
-            VariableStore store = new VariableStore();
+            var store = VariableStore.Instance;
             store.CreateDatabase("db1");
             store.CreateDatabase("db2");
             store.PrintAllDatabases();

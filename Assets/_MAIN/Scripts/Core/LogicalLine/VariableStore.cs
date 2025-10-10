@@ -21,15 +21,15 @@ namespace Core.LogicalLine
 
         public const char VARIABLE_IDENTIFIER = '$';
 
-        public static VariableStore Instance { get; private set; }
+        private static readonly Lazy<VariableStore> _lazy = new Lazy<VariableStore>(() => new VariableStore());
+        public static VariableStore Instance => _lazy.Value;
 
         private readonly Dictionary<string, Database> _databases;
         private Database DefaultDatabase => _databases[DEFAULT_DATABASE];
 
-        public VariableStore()
+        private VariableStore()
         {
             _databases = new Dictionary<string, Database> { [DEFAULT_DATABASE] = new(DEFAULT_DATABASE) };
-            Instance ??= this;
         }
 
         private bool HasKey(string name) => _databases.ContainsKey(name);

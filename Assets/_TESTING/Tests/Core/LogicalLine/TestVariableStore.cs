@@ -9,12 +9,13 @@ namespace Tests.Core.LogicalLine
         [SetUp]
         public void SetUp()
         {
+            VariableStore.Instance.Clear();
         }
 
         [Test]
         public void CreateDatabase_BehavesAsExpected()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.DatabaseCount, Is.EqualTo(1));
 
             Assert.That(store.CreateDatabase("db1"), Is.True);
@@ -27,7 +28,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void GetDatabase_DefaultAndAutoCreate()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
 
             var dEmpty = store.GetDatabase("");
             var dDefault = store.GetDatabase("default");
@@ -45,7 +46,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void CreateVariable_ThenGetAndSet()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
 
             Assert.That(store.TryGetVariableValue<int>("money", out var missingValue), Is.False);
             Assert.That(missingValue, Is.EqualTo(0));
@@ -64,7 +65,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void CreateVariable_Duplicate_ReturnsFalse()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.CreateVariable("x", 1), Is.True);
             Assert.That(store.CreateVariable("x", 999), Is.False);
 
@@ -75,7 +76,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void DotNotation_TargetsExpectedDatabase()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
 
             Assert.That(store.CreateVariable("db1.var1", 1), Is.True);
             Assert.That(store.CreateVariable("var1", 2), Is.True);
@@ -95,7 +96,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void Variable_WithCustomGetterSetter_LinksExternalValue()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             var external = 5;
 
             // Link the variable to external via custom getter/setter
@@ -117,7 +118,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void Clear_RemovesAllDatabases()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.DatabaseCount, Is.EqualTo(1));
 
             store.CreateDatabase("a");
@@ -131,7 +132,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void CreateGetSet_String()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.CreateVariable("s", "hello"), Is.True);
             Assert.That(store.TryGetVariableValue<string>("s", out var v1), Is.True);
             Assert.That(v1, Is.EqualTo("hello"));
@@ -143,7 +144,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void CreateGetSet_Bool()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.CreateVariable("flag", false), Is.True);
             Assert.That(store.TryGetVariableValue<bool>("flag", out var b1), Is.True);
             Assert.That(b1, Is.False);
@@ -155,7 +156,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void ExternalVariable_Int_Capture_ReflectsChanges()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
 
             // external = 10 をキャプチャする
             var external = 10;
@@ -185,7 +186,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void ExternalVariable_ObjectField_Capture_ReflectsChanges()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             var box = new Box { V = 1 };
             Assert.That(store.CreateVariable("boxV", 0, () => box.V, v => box.V = v), Is.True);
             Assert.That(store.TryGetVariableValue<int>("boxV", out var v1), Is.True);
@@ -200,7 +201,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void ExternalVariable_Bool_Capture_ReflectsChanges()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             var flag2 = false;
             Assert.That(store.CreateVariable("extFlag", false, () => flag2, v => flag2 = v), Is.True);
             Assert.That(store.TryGetVariableValue<bool>("extFlag", out var bb1), Is.True);
@@ -215,7 +216,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void DeleteVariable_RemovesFromDefaultAndPreventsGetSet()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.CreateVariable("x", 10), Is.True);
             Assert.That(store.TryGetVariableValue<int>("x", out var before), Is.True);
             Assert.That(before, Is.EqualTo(10));
@@ -234,7 +235,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void DeleteVariable_WithDatabasePrefix_Isolated()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.CreateVariable("db1.a", 100), Is.True);
             Assert.That(store.CreateVariable("a", 200), Is.True);
 
@@ -248,7 +249,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void DeleteDatabase_RemovesDatabaseAndVariables()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.DatabaseCount, Is.EqualTo(1));
             Assert.That(store.CreateVariable("db2.v", 5), Is.True);
             Assert.That(store.DatabaseCount, Is.EqualTo(2));
@@ -265,7 +266,7 @@ namespace Tests.Core.LogicalLine
         [Test]
         public void DeleteDatabase_NonExisting_NoThrowOrChange()
         {
-            var store = new VariableStore();
+            var store = VariableStore.Instance;
             Assert.That(store.DatabaseCount, Is.EqualTo(1));
             store.DeleteDatabase("nope");
             Assert.That(store.DatabaseCount, Is.EqualTo(1));
