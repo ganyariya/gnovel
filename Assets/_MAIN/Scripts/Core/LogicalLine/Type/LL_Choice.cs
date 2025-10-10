@@ -6,6 +6,7 @@ using Core.DisplayDialogue;
 using Core.FeaturePanel;
 using Core.ScriptParser;
 using UnityEngine;
+using static Core.LogicalLine.LogicalLineUtils;
 
 namespace Core.LogicalLine.Type
 {
