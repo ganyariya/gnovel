@@ -20,6 +20,9 @@ choice "Sample"
   -Face
     "OK! Let's take a look at face feature."
     Load(-f sample_face -enqueue true)
+  -OperatorLine(Arithmetic)
+    "OK! Let's take a look at operator line."
+    Load(-f sample_operator_line -enqueue true)
 }
 
 "Let's go to the sample!"

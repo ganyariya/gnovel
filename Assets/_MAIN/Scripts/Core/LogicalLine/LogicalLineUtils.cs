@@ -97,22 +97,15 @@ namespace Core.LogicalLine
             public static readonly string REGEX_ARITHMATIC = "([-+*/=]=?)";
 
             /**
-             * $variableName = AnyString
-             * $variableName {+-/*}= AnyString
+             * $variableName {+-/*}?= AnyString
              */
             public static readonly string REGEX_OPERATOR_LINE = @"^\$\w+\s*(=|\+=|-=|\*=|/=|)\s*";
 
-            /**
-             * 変数識別子
-             * $variableName
-             * !$variableName
-             * $config.sett_ing
-             */
-            public static readonly string REGEX_VARIABLE_IDS = @"[!]?\$[a-zA-Z0-9_.]+";
+            private static readonly string BOOLEAN_EXCLAMATION_MARK = "!";
 
             /// <summary>
             /// $money = 100 + $money * $tax
-            /// における `=` より右側を計算する
+            /// における `=` より右側を評価する
             /// </summary>
             public static object EvaluateRhsExpression(string[] expressionParts)
             {
@@ -130,8 +123,8 @@ namespace Core.LogicalLine
 
                 var operands = operandStrings.Select(EvaluateRightOperand).ToList();
 
-                Evaluate_DivisionMultiplication(operatorStrings, operands);
-                Evaluate_AdditionSubtraction(operatorStrings, operands);
+                Evaluate_Operations(operatorStrings, operands, new[] { "*", "/" });
+                Evaluate_Operations(operatorStrings, operands, new[] { "+", "-" });
 
                 return operands[0];
             }
@@ -144,11 +137,9 @@ namespace Core.LogicalLine
                     var op = operators[i];
                     if (!targetOperators.Contains(op)) continue;
 
-                    var l = Convert.ToDouble(operands[i]);
-                    var r = Convert.ToDouble(operands[i + 1]);
+                    var (l, r) = (Convert.ToDouble(operands[i]), Convert.ToDouble(operands[i + 1]));
 
                     double result;
-
                     switch (op)
                     {
                         case "*":
@@ -170,60 +161,17 @@ namespace Core.LogicalLine
 
                     operands[i] = result;
 
-                    // 処理済み演算子とオペランドを消す
-                    operands.RemoveAt(i + 1);
+                    operands.RemoveAt(i + 1); // 処理済み演算子とオペランドを消す
                     operators.RemoveAt(i);
                     i--;
                 }
             }
 
-            private static void Evaluate_DivisionMultiplication(List<string> operators, List<object> operands)
-            {
-                for (var i = 0; i < operators.Count; i++)
-                {
-                    var op = operators[i];
-                    if (op is "*" or "/")
-                    {
-                        var l = Convert.ToDouble(operands[i]);
-                        var r = Convert.ToDouble(operands[i + 1]);
-                        if (op == "*") operands[i] = l * r;
-                        else
-                        {
-                            if (r == 0) throw new DivideByZeroException();
-                            operands[i] = l / r;
-                        }
-                    }
-
-                    // 処理した演算子とオペランドを消す
-                    operands.RemoveAt(i + 1);
-                    operators.RemoveAt(i);
-                    i--; // out of range 回避
-                }
-            }
-
-            private static void Evaluate_AdditionSubtraction(List<string> operators, List<object> operands)
-            {
-                for (var i = 0; i < operators.Count; i++)
-                {
-                    var op = operators[i];
-                    if (op is "+" or "-")
-                    {
-                        var l = Convert.ToDouble(operands[i]);
-                        var r = Convert.ToDouble(operands[i + 1]);
-                        if (op == "+") operands[i] = l + r;
-                        else operands[i] = l - r;
-                    }
-
-                    operands.RemoveAt(i + 1);
-                    operators.RemoveAt(i);
-                    i--;
-                }
-            }
 
             private static object EvaluateRightOperand(string value)
             {
                 var negate = false;
-                if (value.StartsWith("!"))
+                if (value.StartsWith(BOOLEAN_EXCLAMATION_MARK))
                 {
                     negate = true;
                     value = value[1..];
@@ -237,14 +185,13 @@ namespace Core.LogicalLine
 
                     VariableStore.Instance.TryGetVariableValue<object>(variableName, out var variableValue);
                     if (variableValue is bool b && negate) return !b;
-
                     return variableValue;
                 }
 
-                // 文字列の場合 $moneyTxt = "money is $money; <mainChara>" のように変数やタグを評価しないといけない
+                // 文字列の場合、 $moneyTxt = "money is $money; <mainChara>" のように変数やタグを評価しないといけない
                 if (value.StartsWith('\"') && value.EndsWith('\"'))
                 {
-                    value = TagManager.Instance.Inject(value, true, true);
+                    value = TagManager.Instance.Inject(value);
                     return value.Trim('"');
                 }
 
@@ -252,7 +199,7 @@ namespace Core.LogicalLine
                 if (int.TryParse(value, out var intValue)) return intValue;
                 if (float.TryParse(value, out var floatValue)) return floatValue;
                 if (bool.TryParse(value, out var boolValue)) return negate ? !boolValue : boolValue;
-                return value; // string
+                return value; // パースできなかったため string として扱う
             }
         }
     }
