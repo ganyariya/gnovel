@@ -57,7 +57,7 @@ namespace Core.LogicalLine
             return true;
         }
 
-        public bool TryGetVariable<T>(string name, out T variable)
+        public bool TryGetVariableValue<T>(string name, out T variable)
         {
             var (databaseName, variableName) = VariableInfo.CreateVariableInfo(name).GetTuple();
             var database = GetDatabase(databaseName);
@@ -84,6 +84,13 @@ namespace Core.LogicalLine
             if (!database.HasKey(variableName)) return false;
             database.SetVariableValue(variableName, value);
             return true;
+        }
+
+        public bool HasVariable(string name)
+        {
+            var (databaseName, variableName) = VariableInfo.CreateVariableInfo(name).GetTuple();
+            var database = GetDatabase(databaseName);
+            return database.HasKey(variableName);
         }
 
         public void Clear()
