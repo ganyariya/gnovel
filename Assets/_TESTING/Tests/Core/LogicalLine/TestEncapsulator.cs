@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.DisplayDialogue;
 using Core.LogicalLine;
 using NUnit.Framework;
+using static Core.LogicalLine.LogicalLineUtils;
 
 namespace Tests.Core.LogicalLine
 {
