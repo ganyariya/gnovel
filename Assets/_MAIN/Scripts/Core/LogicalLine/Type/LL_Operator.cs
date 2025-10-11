@@ -43,6 +43,10 @@ namespace Core.LogicalLine.Type
             EvaluateStatement(variableName, op, rhsValue);
         }
 
+        /// <summary>
+        /// $var = (rhs) の式 Expression 全体を評価する
+        /// rhs 自体はすでに Expressions.EvaluateRhsExpression で評価済み
+        /// </summary>
         private static void EvaluateStatement(string variableName, string op, object rhsValue)
         {
             if (!VariableStore.Instance.TryGetVariableValue(variableName, out object currentValue))
