@@ -25,7 +25,6 @@ choice "Sample"
     Load(-f sample_operator_line -enqueue true)
 }
 
-"Let's go to the sample!"
-ganyariya.Move(-x 1.5 -y 0.6 -speed 3), [wait]ganyariya.Hide()
-
-wait(1)
+ganyariya "Let's go to the sample!"
+[wait]ganyariya.Move(-x 1.5 -y 0.6 -speed 3)
+[wait]ganyariya.Hide()
