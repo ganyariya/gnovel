@@ -82,6 +82,7 @@ namespace Core.LogicalLine.Type
 
         private static object Concatenate(object value, object currentValue)
         {
+            if (currentValue is string) return currentValue.ToString() + value;
             if (value is string) return currentValue.ToString() + value;
             return Convert.ToDouble(currentValue) + Convert.ToDouble(value);
         }

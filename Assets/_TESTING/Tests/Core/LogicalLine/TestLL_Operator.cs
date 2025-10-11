@@ -39,6 +39,13 @@ namespace Tests.Core.LogicalLine
         }
 
         [TestCase(new []{"$value = 10"}, "value", 10.0)]
+        [TestCase(new []{"$value = 10 + 5"}, "value", 15.0)]
+        [TestCase(new []{"$value = 10 - 5"}, "value", 5.0)]
+        [TestCase(new []{"$value = 10 * 5"}, "value", 50.0)]
+        [TestCase(new []{"$value = 10 / 5"}, "value", 2.0)]
+        [TestCase(new []{"$x = 10", "$value = $x + 5"}, "value", 15.0)]
+        [TestCase(new []{"$x = 10", "$y = 20", "$value = $x + $y"}, "value", 30.0)]
+        [TestCase(new []{"$answerText = \"initial\"", "$answerText = \"$answerText is $answerText dayo!\""}, "answerText", "initial is initial dayo!")]
         public void Execute_Statement_Evaluation(string[] statements, string getVariable, object expected)
         {
             foreach (var statement in statements)
