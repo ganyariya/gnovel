@@ -76,13 +76,21 @@ namespace Core.DisplayDialogue
             for (var i = matches.Count - 1; i >= 0; i--)
             {
                 var match = matches[i];
-                var variableName = match.Value.TrimStart(VariableStore.VARIABLE_IDENTIFIER);
+                var token = match.Value;
+
+                // !$boolVariable を判定する
+                var negated = token.StartsWith(LogicalLineUtils.Expressions.BOOLEAN_EXCLAMATION_MARK);
+                if (negated) token = token[1..];
+
+                var variableName = token.TrimStart(VariableStore.VARIABLE_IDENTIFIER);
 
                 if (!VariableStore.Instance.TryGetVariableValue(variableName, out object variableValue))
                 {
                     Debug.LogError($"Variable {variableValue} not found in string assignment.");
                     continue;
                 }
+                
+                if (negated && variableValue is bool b) variableValue = !b; // !$boolVariable であれば反転する
 
                 var lengthToBeRemoved = match.Index + match.Length > value.Length
                     ? value.Length - match.Index

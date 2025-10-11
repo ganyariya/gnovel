@@ -99,9 +99,9 @@ namespace Core.LogicalLine
             /**
              * $variableName {+-/*}?= AnyString
              */
-            public static readonly string REGEX_OPERATOR_LINE = @"^\$\w+\s*(=|\+=|-=|\*=|/=|)\s*";
+            public static readonly string REGEX_OPERATOR_LINE = @"^\$\w+\s*(=|\+=|-=|\*=|\/=)\s*";
 
-            private static readonly string BOOLEAN_EXCLAMATION_MARK = "!";
+            public static readonly string BOOLEAN_EXCLAMATION_MARK = "!";
 
             /// <summary>
             /// $money = 100 + $money * $tax
