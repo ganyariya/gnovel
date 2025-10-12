@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Core.DisplayDialogue;
-using Core.ScriptParser;
 using UnityEngine;
 
 namespace Core.LogicalLine
@@ -203,5 +202,98 @@ namespace Core.LogicalLine
                 return value; // パースできなかったため string として扱う
             }
         }
+
+        public static class Conditions
+        {
+            /// <summary>
+            /// `()` キャプチャグループで囲んでいるため、演算子も含んで分割される
+            /// ex:
+            /// "a == b" → ["a", "==", "b"]
+            /// "x>y&&true" → ["x", ">", "y", "&&", true]
+            /// </summary>
+            public static readonly string REGEX_CONDITIONAL_OPERATOR = @"(==|!=|>=|<=|>|<|&&|\|\|)";
+
+            /// <summary>
+            /// 単項もしくは2項の条件式を評価する
+            /// ex: ($name == "ganyariya"), ($boolValue), (!false) ($a && $b) 
+            /// </summary>
+            public static bool EvaluateCondition(string conditionExpression)
+            {
+                // TagManager 経由によって  if($boolValue) → if(true) に置換される
+                conditionExpression =
+                    TagManager.Instance.Inject(conditionExpression, injectTag: true, injectVariable: true);
+                var parts = Regex
+                    .Split(conditionExpression, REGEX_CONDITIONAL_OPERATOR)
+                    .Select(s => s.Trim())
+                    .ToArray();
+
+                // 文字列は unwrap する
+                for (var i = 0; i < parts.Length; i++)
+                    if (parts[i].StartsWith("\"") && parts[i].EndsWith("\""))
+                        parts[i] = parts[i].Substring(1, parts[i].Length - 2);
+
+                if (parts.Length == 1)
+                {
+                    if (bool.TryParse(parts[0], out var boolValue)) return boolValue;
+
+                    Debug.LogError($"invalid condition: {conditionExpression}");
+                    return false;
+                }
+
+                return parts.Length == 3
+                    ? EvaluateExpression(parts[0], parts[1], parts[2])
+                    : throw new InvalidOperationException($"invalid condition: {conditionExpression}");
+            }
+
+            /// <summary>
+            /// `T (l, r) を引数に取り bool を返す` 関数シグネチャを OperatorFunc[T] と定義する
+            /// </summary>
+            private delegate bool OperatorFunc<in T>(T left, T right);
+
+            private static readonly Dictionary<string, OperatorFunc<bool>> BoolOperators = new()
+            {
+                { "&&", (l, r) => l && r },
+                { "||", (l, r) => l || r },
+                { "==", (l, r) => l == r },
+                { "!=", (l, r) => l != r },
+            };
+
+            private static readonly Dictionary<string, OperatorFunc<float>> FloatOperators = new()
+            {
+                { "==", Mathf.Approximately },
+                { "!=", (l, r) => !Mathf.Approximately(l, r) },
+                { ">", (l, r) => l > r },
+                { ">=", (l, r) => l >= r },
+                { "<", (l, r) => l < r },
+                { "<=", (l, r) => l <= r },
+            };
+
+            private static readonly Dictionary<string, OperatorFunc<int>> IntOperators = new()
+            {
+                { "==", (l, r) => l == r },
+                { "!=", (l, r) => l != r },
+                { ">", (l, r) => l > r },
+                { ">=", (l, r) => l >= r },
+                { "<", (l, r) => l < r },
+                { "<=", (l, r) => l <= r },
+            };
+
+            private static bool EvaluateExpression(string left, string op, string right)
+            {
+                if (bool.TryParse(left, out var leftBool) && bool.TryParse(right, out var rightBool))
+                    return BoolOperators[op].Invoke(leftBool, rightBool);
+                if (int.TryParse(left, out var leftInt) && int.TryParse(right, out var rightInt))
+                    return IntOperators[op].Invoke(leftInt, rightInt);
+                if (float.TryParse(left, out var leftFloat) && float.TryParse(right, out var rightFloat))
+                    return FloatOperators[op].Invoke(leftFloat, rightFloat);
+
+                return op switch
+                {
+                    "==" => left == right,
+                    "!=" => left != right,
+                    _ => throw new InvalidOperationException($"invalid operator: {op}")
+                };
+            }
+        };
     }
 }
