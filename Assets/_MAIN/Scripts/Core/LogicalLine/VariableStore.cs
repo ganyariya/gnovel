@@ -10,15 +10,26 @@ namespace Core.LogicalLine
         private const string DEFAULT_DATABASE = "default";
         private const char DATABASE_VARIABLE_SPLITTER = '.';
 
-        public static VariableStore Instance { get; private set; }
+        /**
+         * 変数識別子
+         * $variableName
+         * !$variableName
+         *
+         * $databaseName.variableName にも対応している
+         */
+        public static readonly string REGEX_VARIABLE_PATTERN = @"[!]?\$[a-zA-Z0-9_.]+";
+
+        public const char VARIABLE_IDENTIFIER = '$';
+
+        private static readonly Lazy<VariableStore> _lazy = new Lazy<VariableStore>(() => new VariableStore());
+        public static VariableStore Instance => _lazy.Value;
 
         private readonly Dictionary<string, Database> _databases;
         private Database DefaultDatabase => _databases[DEFAULT_DATABASE];
 
-        public VariableStore()
+        private VariableStore()
         {
             _databases = new Dictionary<string, Database> { [DEFAULT_DATABASE] = new(DEFAULT_DATABASE) };
-            Instance ??= this;
         }
 
         private bool HasKey(string name) => _databases.ContainsKey(name);
@@ -57,7 +68,7 @@ namespace Core.LogicalLine
             return true;
         }
 
-        public bool TryGetVariable<T>(string name, out T variable)
+        public bool TryGetVariableValue<T>(string name, out T variable)
         {
             var (databaseName, variableName) = VariableInfo.CreateVariableInfo(name).GetTuple();
             var database = GetDatabase(databaseName);
@@ -84,6 +95,13 @@ namespace Core.LogicalLine
             if (!database.HasKey(variableName)) return false;
             database.SetVariableValue(variableName, value);
             return true;
+        }
+
+        public bool HasVariable(string name)
+        {
+            var (databaseName, variableName) = VariableInfo.CreateVariableInfo(name).GetTuple();
+            var database = GetDatabase(databaseName);
+            return database.HasKey(variableName);
         }
 
         public void Clear()

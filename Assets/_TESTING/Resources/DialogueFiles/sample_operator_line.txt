@@ -1,0 +1,19 @@
+createCharacter(ganyariya -enabled true)
+[wait]ganyariya.Move(-x 0.5 -y 0.6 -i true)
+ganyariya.Show()
+
+input "what is your favorite game?"
+
+$answerText = "oh! your favorite game is <input>."
+
+ganyariya "$answerText iine!"
+
+$answerText = "$answerText is $answerText dayo!"
+
+ganyariya "$answerText again"
+
+$num.x = 10
+$num.y = 20
+$num.x += $num.y
+
+ganyariya "num.x is $num.x"

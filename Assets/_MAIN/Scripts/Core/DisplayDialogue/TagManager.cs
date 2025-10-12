@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Core.FeaturePanel;
+using Core.LogicalLine;
 using UnityEngine;
 
 namespace Core.DisplayDialogue
@@ -35,11 +37,18 @@ namespace Core.DisplayDialogue
             };
         }
 
+        public string Inject(string text, bool injectTag = true, bool injectVariable = true)
+        {
+            if (injectTag) text = InjectTags(text);
+            if (injectVariable) text = InjectVariables(text);
+            return text;
+        }
+
         /// <summary>
-        /// `text` というもともとの文章が与えられる
-        /// `text` に登録済みのタグが含まれていればそれを置換する
+        /// `text` という文章が与えられる
+        ///  この `text` に登録済みのタグが含まれていればそれを置換する
         /// </summary>
-        public string Inject(string text)
+        private string InjectTags(string text)
         {
             if (string.IsNullOrEmpty(text) || !_tagRegex.IsMatch(text))
             {
@@ -55,6 +64,43 @@ namespace Core.DisplayDialogue
             }
 
             return text;
+        }
+
+        /// <summary>
+        /// `value` のなかに $hoge があったら VariableStore から取り出して Inject する
+        /// </summary>
+        private string InjectVariables(string value)
+        {
+            var matches = Regex.Matches(value, VariableStore.REGEX_VARIABLE_PATTERN).ToList();
+
+            for (var i = matches.Count - 1; i >= 0; i--)
+            {
+                var match = matches[i];
+                var token = match.Value;
+
+                // !$boolVariable を判定する
+                var negated = token.StartsWith(LogicalLineUtils.Expressions.BOOLEAN_EXCLAMATION_MARK);
+                if (negated) token = token[1..];
+
+                var variableName = token.TrimStart(VariableStore.VARIABLE_IDENTIFIER);
+
+                if (!VariableStore.Instance.TryGetVariableValue(variableName, out object variableValue))
+                {
+                    Debug.LogError($"Variable {variableValue} not found in string assignment.");
+                    continue;
+                }
+                
+                if (negated && variableValue is bool b) variableValue = !b; // !$boolVariable であれば反転する
+
+                var lengthToBeRemoved = match.Index + match.Length > value.Length
+                    ? value.Length - match.Index
+                    : match.Length;
+
+                value = value.Remove(match.Index, lengthToBeRemoved);
+                value = value.Insert(match.Index, variableValue.ToString());
+            }
+
+            return value;
         }
     }
 }

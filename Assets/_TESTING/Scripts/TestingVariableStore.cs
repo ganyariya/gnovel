@@ -9,7 +9,7 @@ namespace Testing
     {
         public void Start()
         {
-            VariableStore store = new VariableStore();
+            var store = VariableStore.Instance;
             store.CreateDatabase("db1");
             store.CreateDatabase("db2");
             store.PrintAllDatabases();
@@ -22,7 +22,7 @@ namespace Testing
             store.TrySetValue("db1.var1", 15);
             store.PrintAllVariables();
 
-            store.TryGetVariable("db1.var1", out int x);
+            store.TryGetVariableValue("db1.var1", out int x);
             Debug.Log($"x is {x}");
         }
     }
