@@ -43,7 +43,7 @@ namespace Core.LogicalLine.Type
 
             currentConversation.OverwriteProgress(ifData.EndIndex);
             var selectedData = condition ? ifData : elseData;
-            if (selectedData.Lines.Count > 0) // else が設定されていない場合は Count = 0 で実行されない
+            if (selectedData.Lines.Count > 0) // else が設定されていない場合は Count = 0 で実行されない → else 考慮済み
             {
                 var newConversation = new Conversation(selectedData.Lines);
                 dialogueSystemController.InterruptEnqueueConversation(newConversation);
