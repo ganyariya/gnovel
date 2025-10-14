@@ -27,6 +27,8 @@ namespace Core.LogicalLine
                 public List<string> Lines;
                 public int StartIndex;
                 public int EndIndex;
+                
+                public bool HasScenario => Lines is { Count: > 0 };
             }
 
             private const char ENCAPSULATION_START = '{';
