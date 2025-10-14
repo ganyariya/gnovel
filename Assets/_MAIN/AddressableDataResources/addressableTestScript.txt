@@ -23,6 +23,9 @@ choice "Sample"
   -OperatorLine(Arithmetic)
     "OK! Let's take a look at operator line."
     Load(-f sample_operator_line -enqueue true)
+  -IfExpression
+    "OK! Let's take a look at if expression."
+    Load(-f sample_if_expression -enqueue true)
 }
 
 ganyariya "Let's go to the sample!"

@@ -1,0 +1,37 @@
+createCharacter(ganyariya -enabled true)
+[wait]ganyariya.Move(-x 0.5 -y 0.6 -i true)
+ganyariya.Show()
+
+
+choice "Do you like cat?"
+{
+  -Yes
+    $catliked = true
+  -No
+    $catliked = false
+}
+
+if ($catliked)
+{
+  ganyariya "Oh, you like cat!"
+}
+else
+{
+  ganyariya "Oh, you don't like cat."
+}
+
+$x = 50
+
+if ($x > 40)
+{
+  ganyariya "x is greater than 40, $x = 50 > 40"
+}
+
+$y = 30
+
+if ($y > $x)
+{
+  ganyariya "y is greater than x, $y = 30 > $x = 50"
+} else {
+  ganyariya "y is less than x, $y = 30 < $x = 50"
+}
